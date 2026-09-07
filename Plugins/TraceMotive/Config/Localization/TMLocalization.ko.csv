@@ -1,0 +1,431 @@
+Key,ko,Comment
+## Actor-level findings,## Actor-level findings,TODO-ko
+## Evidence level and limitations,## 증거 수준과 제한사항,
+## Quick fix tips,## Quick fix tips,TODO-ko
+## Suspicious movement nodes,## Suspicious movement nodes,TODO-ko
+"- Actual movement can bypass collision through Sweep=false, Teleport, custom ignore lists, or MovementComponent UpdatedComponent/root mismatch.","- 실제 이동은 Sweep=false, Teleport, 사용자 무시 목록, MovementComponent UpdatedComponent/root 불일치로 충돌을 우회할 수 있습니다.",
+- Best confirmation is a reproduced swept move with Sweep=true and the returned FHitResult.,- 가장 좋은 확인은 Sweep=true로 재현한 스윕 이동과 반환된 FHitResult입니다.,
+- Block possible means settings are compatible with blocking; it is not proof that the real gameplay movement path blocks.,"- Block 가능은 설정이 차단과 호환된다는 뜻이며, 실제 게임플레이 이동 경로가 막힌다는 증명은 아닙니다.",
+- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.,- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.,TODO-ko
+"- PhysicsOnly, Chaos contact resolution, complex BodySetup, and custom primitive collision cannot be fully proven by static/query inspection.","- PhysicsOnly, Chaos 접촉 해결, 복잡한 BodySetup, 사용자 정의 Primitive 충돌은 정적/쿼리 검사만으로 완전히 증명할 수 없습니다.",
+<No Target>,<대상 없음>,
+A and B are the same actor,A and B are the same actor,TODO-ko
+"A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic.","A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic.",TODO-ko
+"A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision.","A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision.",TODO-ko
+A collision response is Ignore,A collision response is Ignore,TODO-ko
+A component,A 컴포넌트,
+Actions,동작,
+Actions you can try now,바로 해볼 수 있는 조치,
+Actor,Actor,TODO-ko
+Actor collision is disabled,Actor collision is disabled,TODO-ko
+"Actor label, class, or path matched.","Actor label, class, or path matched.",TODO-ko
+Actor tag matched.,Actor tag matched.,TODO-ko
+Actor-level and movement checks,Actor-level and movement checks,TODO-ko
+Actors,Actors,TODO-ko
+Actors are in different worlds,Actors are in different worlds,TODO-ko
+Actors share an attachment hierarchy,Actors share an attachment hierarchy,TODO-ko
+Actual contact detected,실제 충돌 감지,
+"Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent.","Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent.",TODO-ko
+Add selected Actor Blueprint/class assets to the class favorites window.,선택한 액터 Blueprint/클래스 에셋을 클래스 즐겨찾기 창에 추가합니다.,
+Add to Class Favorites,클래스 즐겨찾기에 추가,
+All,전체,
+All events,모든 이벤트,
+Allow dragging reference graph nodes to reduce overlap,겹침을 줄이기 위해 참조 그래프 노드를 드래그할 수 있게 합니다,
+Analysis could not start because one or both actors are invalid.,Analysis could not start because one or both actors are invalid.,TODO-ko
+Analyze,Analyze,TODO-ko
+Analyze Collision Between Selected,Analyze Collision Between Selected,TODO-ko
+Analyze why the two selected actors do not Block each other in Editor or PIE.,Analyze why the two selected actors do not Block each other in Editor or PIE.,TODO-ko
+Armed,준비됨,
+Asset or Blueprint related failure,에셋 또는 블루프린트 관련 실패,
+Audio Playback Trace,Audio Playback Trace,TODO-ko
+Audio trace reset.,오디오 추적 기록을 초기화했습니다.,
+Auto Snapshot,자동 스냅샷,
+Automatically detects editor packaging and estimates progress from UAT stages and work counts.,에디터 패키징을 자동 감지하고 UAT 단계와 작업 개수로 전체 진행률을 추정합니다.,
+Auxiliary,보조/무관,
+B component,B 컴포넌트,
+"Best confirmation: reproduce the move with Sweep=true and inspect the returned FHitResult, hit component, and blocking hit flag.","가장 좋은 확인 방법: Sweep=true로 이동을 재현하고 반환된 FHitResult, Hit Component, Blocking Hit 플래그를 확인하세요.",
+Bindings found only in the selected or click-resolved target Blueprint and its relevant Level Blueprint.,선택했거나 클릭으로 확인된 대상 Blueprint와 관련 Level Blueprint의 바인딩만 표시합니다.,
+Bindings found only in the selected or pointer-resolved target Blueprint and its relevant Level Blueprint.,선택했거나 포인터로 확인한 대상 Blueprint와 관련 Level Blueprint의 바인딩만 표시합니다.,
+Block impossible,Block 불가,
+Block possible,Block 가능,
+Block possible means both components are configured to block. It does not prove that the real gameplay movement will be stopped.,Block 가능은 두 컴포넌트가 차단되도록 설정되었다는 뜻입니다. 실제 게임플레이 이동이 반드시 멈춘다는 증명은 아닙니다.,
+BLOCK-capable,BLOCK-capable,TODO-ko
+Block-capable,Block 가능 설정,
+Block-capable settings,Block 가능 설정,
+Blocked,차단됨,
+Blueprint Runtime Error Trace,블루프린트 런타임 오류 추적,
+Browse To Asset,에셋으로 이동,
+Canceled,취소됨,
+Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other.,Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other.,TODO-ko
+Capture Selected,Capture Selected,TODO-ko
+captured,캡처됨,
+CAUSE,CAUSE,TODO-ko
+Cause,Cause,TODO-ko
+Check,Check,TODO-ko
+CHECK,CHECK,TODO-ko
+Choose two different actors.,Choose two different actors.,TODO-ko
+Class,Class,TODO-ko
+Class Favorites,클래스 즐겨찾기,
+Classes,클래스,
+Clear,지우기,
+Clear history,기록 지우기,
+Click anywhere in PIE to capture,PIE에서 아무 곳이나 클릭해 캡처,
+"Click anywhere in PIE to capture the Slate, UMG, actor hit, and bound-event path.","PIE에서 아무 곳이나 클릭하면 Slate, UMG, 액터 히트, 바운드 이벤트 경로를 캡처합니다.",
+Click Event Diagnostics,클릭 이벤트 진단,
+Click history,클릭 기록,
+Click/Touch Event Diagnostics,클릭/터치 이벤트 진단,
+Collapse or expand the reference viewer menu,참조 뷰어 메뉴를 접거나 펼칩니다,
+Collision,충돌,
+Collision geometry may be missing,Collision geometry may be missing,TODO-ko
+Collision is disabled,Collision is disabled,TODO-ko
+Collision modes do not share a common path,Collision modes do not share a common path,TODO-ko
+Collision Pair Analyzer,Collision Pair Analyzer,TODO-ko
+Collision shapes currently overlap,Collision shapes currently overlap,TODO-ko
+Compare two actors at runtime and explain why their primitive components do not Block.,Compare two actors at runtime and explain why their primitive components do not Block.,TODO-ko
+Component,Component,TODO-ko
+Component Details,Component Details,TODO-ko
+Component is not registered,Component is not registered,TODO-ko
+"Component name, class, or path matched.","Component name, class, or path matched.",TODO-ko
+Component tag matched.,Component tag matched.,TODO-ko
+Components,Components,TODO-ko
+Components are not currently touching,Components are not currently touching,TODO-ko
+Confidence,확신도,
+"Confidence: Medium. This is a target-scoped diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-click input-mode changes may need Details/PIE confirmation.","확신도: 중간. 이 진단은 선택/클릭 대상 기준이며, 로드되지 않은 Blueprint, 네이티브 코드, 동적 Delegate, 클릭 이후 Input Mode 변경은 Details/PIE 확인이 필요할 수 있습니다.",
+"Confidence: Medium. This is a target-scoped pointer diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-event input-mode changes may need Details/PIE confirmation.","확신도: 중간. 이 진단은 선택한 포인터 대상 기준이며, 로드되지 않은 Blueprint, 네이티브 코드, 동적 Delegate, 이벤트 이후 Input Mode 변경은 Details/PIE 확인이 필요할 수 있습니다.",
+Confirmed - Normal,확인됨 - 정상,
+Consumed by UI,UI가 소비함,
+Contact / sweep evidence,접촉 / 스윕 증거,
+Copy,복사,
+Copy All,전체 복사,
+Copy Classes,클래스 복사,
+Copy log,로그 복사,
+Copy Logs,로그 복사,
+Copy Report,리포트 복사,
+Copy Results,Copy Results,TODO-ko
+Copy Status,상태 복사,
+Copy the deduplicated class summary.,중복 제거된 클래스 요약을 복사합니다.,
+Copy this class summary.,이 클래스 요약을 복사합니다.,
+Copy this error's debug info.,이 오류의 디버그 정보를 복사합니다.,
+Current Blueprint,현재 블루프린트,
+Current stage progress,현재 단계 진행률,
+Current work,현재 작업,
+Debug Session,디버그 세션,
+Dedup Instances,인스턴스 중복 제거,
+Detail Trace,상세 추적,
+Details variable name/display/category matched.,Details variable name/display/category matched.,TODO-ko
+Details variable value matched.,Details variable value matched.,TODO-ko
+"Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it.","Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it.",TODO-ko
+Detects AudioComponent playback during Editor/PIE and records the best matched Blueprint or actor source.,에디터/PIE 중 AudioComponent 재생을 감지하고 가장 잘 맞는 Blueprint 또는 액터 출처를 기록합니다.,
+Diagnose the seven stages of click/touch delivery.,클릭/터치 전달의 7단계를 진단합니다.,
+Diagnose the seven stages of mouse click delivery.,마우스 클릭 전달의 7단계를 진단합니다.,
+Diagnosis: actor/world state prevents collision,진단: 액터/월드 상태가 충돌을 막고 있습니다,
+Diagnosis: Block-capable pair exists; movement path unverified,진단: Block 가능 조합이 있지만 이동 경로는 미확인입니다,
+Diagnosis: no Block-capable pair found,진단: Block 가능 조합을 찾지 못했습니다,
+Diagnosis: swept query blocking was observed,진단: 스윕 쿼리 차단이 관찰되었습니다,
+Diagnostic Safety,진단 안전 정보,
+"Double-click to open. Place adds at origin, Here adds at the current view, or drag into the level.","더블클릭하면 엽니다. Place는 원점에, Here는 현재 뷰 위치에 추가하며, 드래그로 레벨에 배치할 수도 있습니다.",
+"Drop an actor here, or replace it with the current selection.","Drop an actor here, or replace it with the current selection.",TODO-ko
+Elapsed,경과시간,
+Enhanced Outliner Search,Enhanced Outliner Search,TODO-ko
+Enter a query to search currently loaded level instances.,Enter a query to search currently loaded level instances.,TODO-ko
+Error,오류,
+Estimated,추정,
+"Estimated progress - dynamic cook, cache, shader and compression work can change the remaining time.","추정 진행률입니다. Cook, 캐시, 셰이더, 압축 작업량에 따라 남은 시간은 달라질 수 있습니다.",
+"Estimated progress - the upper bar is the current stage, the lower bar is total packaging progress.","상단 바는 현재 단계, 하단 바는 패키징 전체 진행률입니다.",
+Estimated remaining,예상대기시간,
+Events,이벤트,
+Evidence,판단 근거,
+Explain why two selected actors do not block each other.,Explain why two selected actors do not block each other.,TODO-ko
+Export,내보내기,
+Export current reference report to Project/Saved/TraceMotiveReports,현재 참조 리포트를 Project/Saved/TraceMotiveReports로 내보냅니다,
+Export failed,내보내기 실패,
+Export is already running...,이미 내보내는 중입니다...,
+Export is available after the current search/trace finishes.,현재 검색/추적이 끝난 후 내보낼 수 있습니다.,
+Exported:,내보냄:,
+Exporting {0} report...,{0} 리포트 내보내는 중...,
+Failed,실패,
+Failure analysis,실패 원인 분석,
+"Fast search scans the target Blueprint, loaded Blueprints, and assets that reference the target package. Enable Full Scan to exhaustively scan every Blueprint in the selected scope.","빠른 검색은 대상 Blueprint, 로드된 Blueprint, 대상 패키지를 참조하는 에셋을 검색합니다. Full Scan을 켜면 선택 범위의 모든 Blueprint를 정밀 검색합니다.",
+Filter favorite classes,즐겨찾기 클래스 필터,
+Filters,필터,
+Final result: a Block-capable pair exists,최종 결과: 차단(Block) 가능한 조합이 있음,
+Final result: actor/world state prevents collision,Final result: actor/world state prevents collision,TODO-ko
+Final result: BLOCK confirmed by sweep probe,Final result: BLOCK confirmed by sweep probe,TODO-ko
+Final result: BLOCK-capable pair exists,Final result: BLOCK-capable pair exists,TODO-ko
+Final result: blocking was confirmed by sweep,최종 결과: Sweep으로 차단(Block)이 확인됨,
+Final result: no BLOCK-capable pair found,Final result: no BLOCK-capable pair found,TODO-ko
+Final result: no Block-capable pair found,최종 결과: 차단(Block) 가능한 조합 없음,
+Find where click/touch delivery stops without changing game input behavior.,게임 입력 동작을 바꾸지 않고 클릭/터치 전달이 멈추는 단계를 찾습니다.,
+Find where mouse click delivery stops without changing game input behavior.,게임 입력 동작을 바꾸지 않고 마우스 클릭 전달이 멈추는 단계를 찾습니다.,
+Focus,포커스,
+Format,형식,
+Frame Grid,액자 모드,
+Full Scan,전체 검색,
+Generate Overlap Events does not control blocking,Generate Overlap Events does not control blocking,TODO-ko
+Here,현재 위치,
+Hide full diagnostic steps ^,전체 진단 단계 숨기기 ^,
+Hide Menu,메뉴 숨기기,
+Hide Trace,추적 숨기기,
+Hierarchy,계층,
+High,높음,
+High confidence for swept query blocking; gameplay path still must use Sweep/FHitResult,"스윕 쿼리 Block 가능성은 확실도가 높지만, 실제 게임플레이 경로는 Sweep/FHitResult로 확인해야 합니다",
+High confidence: Block is not possible with current inspected settings,확실도 높음: 현재 검사한 설정으로는 Block이 불가능합니다,
+Hit-event settings are separate,Hit-event settings are separate,TODO-ko
+Idle,대기,
+Ignore State,상태 무시,
+Ignored,무시됨,
+Info,Info,TODO-ko
+INFO,INFO,TODO-ko
+Input mappings have not been scanned. Select a target or press Rescan Input Mappings.,입력 매핑을 아직 스캔하지 않았습니다. 대상을 선택하거나 입력 매핑 다시 스캔을 누르세요.,
+Inspected pairs,Inspected pairs,TODO-ko
+Instance dedup on,인스턴스 중복 제거 켜짐,
+Instance Reference Trace,인스턴스 참조 추적,
+Instances,인스턴스,
+Invalid component,Invalid component,TODO-ko
+Last click - waiting for PIE capture,마지막 클릭 - PIE 캡처 대기 중,
+Latest:,최신:,
+Layout,정렬,
+Lifecycle,생명주기,
+"Likely causes are extracted from the final UAT/cook/build log lines. Use Open target when an asset, Blueprint, class, or source file can be inferred.","마지막 UAT/Cook/Build 로그에서 원인 후보를 추출합니다. 에셋, 블루프린트, 클래스, 소스 파일을 추론할 수 있으면 대상 열기를 사용하세요.",
+Limitations,제한사항,
+List View,리스트 보기,
+Listening while this window is open.,이 창이 열려 있는 동안 추적합니다.,
+Low,낮음,
+Material,머티리얼,
+Medium,중간,
+"Medium confidence: current query contact exists, but movement blocking path is unverified",중간 확실도: 현재 쿼리 접촉은 있지만 이동 차단 경로는 미확인입니다,
+"Medium confidence: settings allow Block, but actual movement blocking is unverified",중간 확실도: 설정상 Block은 가능하지만 실제 이동 차단은 미확인입니다,
+Menu collapsed,메뉴 접힘,
+Mode,모드,
+Monitor packaging stages and estimated overall progress.,패키징 단계와 전체 추정 진행률을 확인합니다.,
+Move Nodes,노드 이동,
+"Move only the selected scene component to the current level viewport camera position. If right-clicking an actor clears component selection, the most recently selected component on that actor is used.",선택한 신 컴포넌트만 현재 레벨 뷰포트 카메라 위치로 이동합니다. 액터 우클릭으로 컴포넌트 선택이 해제되면 해당 액터에서 최근 선택했던 컴포넌트를 사용합니다.,
+Move Selected Component To Current View,선택 컴포넌트만 현재 뷰 위치로,
+Move the active viewport camera to the runtime owner actor.,활성 뷰포트 카메라를 런타임 Owner 액터로 이동합니다.,
+"Move the selected actor as a whole to the current level viewport camera position. If right-clicking changes selection, the most recently selected actor is used when it matches this context.",선택한 액터 전체를 현재 레벨 뷰포트 카메라 위치로 이동합니다. 우클릭으로 선택이 바뀌면 이 컨텍스트와 일치하는 최근 선택 액터를 사용합니다.,
+Move Whole Actor To Current View,액터 전체를 현재 뷰 위치로,
+MoveComponent ignore list excludes this pair,MoveComponent ignore list excludes this pair,TODO-ko
+MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component.,MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component.,TODO-ko
+Movement API cannot be inferred from static state,Movement API cannot be inferred from static state,TODO-ko
+Next checks,다음 확인,
+"No audio playback captured yet. Keep this window open, then start PIE.",아직 캡처된 오디오 재생이 없습니다. 이 창을 열어 둔 상태로 PIE를 시작하세요.,
+No Blueprint runtime errors captured yet. Start PIE with this window open.,아직 캡처된 블루프린트 런타임 오류가 없습니다. 이 창을 연 상태로 PIE를 시작하세요.,
+No changes match the current filters.,현재 필터와 일치하는 변경이 없습니다.,
+No changes match the current filters. Try Watch: All events and enable the category chips.,현재 필터와 일치하는 변경이 없습니다. Watch: All events로 변경하고 카테고리 칩을 켜보세요.,
+No click history yet.,아직 클릭 기록이 없습니다.,
+No component changes captured yet.,아직 캡처된 컴포넌트 변경이 없습니다.,
+No component pair resolves to Block. Review the component pair responses below.,No component pair resolves to Block. Review the component pair responses below.,TODO-ko
+No current overlap contact,No current overlap contact,TODO-ko
+No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult.,No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult.,TODO-ko
+No logs yet.,아직 로그가 없습니다.,
+No matches found in the current editor world.,No matches found in the current editor world.,TODO-ko
+No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.,No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.,TODO-ko
+No primitive collision component,No primitive collision component,TODO-ko
+No specific error line was detected. Check the recent packaging log below.,구체적인 오류 라인을 감지하지 못했습니다. 아래의 최근 패키징 로그를 확인하세요.,
+No target selected. Use a selected asset/actor or pick the next PIE click.,선택된 대상이 없습니다. 선택한 에셋/액터를 사용하거나 다음 PIE 클릭 대상을 선택하세요.,
+No target selected. Use a selected asset/actor or pick the next PIE click/touch.,선택된 대상이 없습니다. 선택한 에셋/액터를 사용하거나 다음 PIE 클릭/터치 대상을 선택하세요.,
+Node,노드,
+Non-blocking / aux,Non-blocking / aux,TODO-ko
+Not reached,도달하지 않음,
+Open,열기,
+Open BP,BP 열기,
+Open Class Favorites,클래스 즐겨찾기 열기,
+Open class favorites for quick viewport placement.,뷰포트에 빠르게 배치할 클래스 즐겨찾기 창을 엽니다.,
+Open Node,Open Node,TODO-ko
+Open target,대상 열기,
+Open the class favorites placement window.,클래스 즐겨찾기 배치 창을 엽니다.,
+Open the class favorites window for quick viewport placement.,뷰포트에 빠르게 배치할 클래스 즐겨찾기 창을 엽니다.,
+Open the click delivery diagnostics panel.,클릭 전달 진단 패널을 엽니다.,
+Open the click/touch delivery diagnostics panel.,클릭/터치 전달 진단 패널을 엽니다.,
+Open the matching Blueprint node when available.,가능한 경우 일치하는 Blueprint 노드를 엽니다.,
+"Open the most recent Blueprint node for this class, or the Blueprint asset.",이 클래스의 가장 최근 Blueprint 노드 또는 Blueprint 에셋을 엽니다.,
+Open the packaging progress monitor.,패키징 진행 상황 모니터를 엽니다.,
+"Open the related asset, Blueprint, or source file when it can be inferred.","관련 에셋, 블루프린트, 소스 파일을 추론할 수 있으면 엽니다.",
+Open the two-actor runtime collision diagnosis window.,Open the two-actor runtime collision diagnosis window.,TODO-ko
+Open this window before PIE to capture audio playback sources.,PIE 시작 전에 이 창을 열어 오디오 재생 출처를 캡처하세요.,
+Other,기타,
+Overall progress,전체 진행률,
+Overlap events are also disabled,Overlap events are also disabled,TODO-ko
+Package Progress,패키징 진행 상황,
+Packaging error log,패키징 오류 로그,
+Packaging failed,패키징 실패,
+PASS,PASS,TODO-ko
+Pass,Pass,TODO-ko
+Passed,통과,
+"PhysicsOnly contacts, Chaos simulation details, complex BodySetup cases, and custom primitive implementations cannot be fully proven by this panel.","PhysicsOnly 접촉, Chaos 시뮬레이션 세부 동작, 복잡한 BodySetup, 사용자 정의 Primitive는 이 패널만으로 완전히 증명할 수 없습니다.",
+Pick Next PIE Click,다음 PIE 클릭 대상 선택,
+Pick Next PIE Click inspects only the UMG widget or Visibility-hit actor under that click. Manual actor/widget selection is also available; no project-wide Blueprint load is performed.,다음 PIE 클릭 대상 선택은 클릭 아래의 UMG 위젯 또는 Visibility에 맞은 액터만 조사합니다. 액터/위젯 직접 선택도 가능하며 프로젝트 전체 Blueprint를 로드하지 않습니다.,
+Pick Next PIE Click/Touch,다음 PIE 클릭/터치 대상 선택,
+Pick Next PIE Click/Touch inspects only the UMG widget or Visibility-hit actor under that pointer event. Manual actor/widget selection is also available; no project-wide Blueprint load is performed.,다음 PIE 클릭/터치 대상 선택은 해당 포인터 이벤트 아래의 UMG 위젯 또는 Visibility에 맞은 액터만 조사합니다. 액터/위젯 직접 선택도 가능하며 프로젝트 전체 Blueprint를 로드하지 않습니다.,
+PIE ended. Audio trace remains armed for the next play session.,PIE가 종료되었습니다. 오디오 추적기는 다음 플레이 세션을 위해 대기합니다.,
+PIE started. Existing AudioComponents scanned.,PIE가 시작되었습니다. 기존 AudioComponent를 스캔했습니다.,
+PIE starting. Audio trace is armed.,PIE 시작 중입니다. 오디오 추적기가 준비되었습니다.,
+Pin,고정,
+Pinned,고정됨,
+Pinned Only,고정만 보기,
+Place,배치,
+Place this class at the current level viewport camera location.,이 클래스를 현재 레벨 뷰포트 카메라 위치에 배치합니다.,
+"Place this class at world origin (0,0,0).","이 클래스를 월드 원점(0,0,0)에 배치합니다.",
+Platform,플랫폼,
+Pointer Event Diagnostics,포인터 이벤트 진단,
+Preparing call chain trace...,호출 체인 추적 준비 중...,
+Preparing Fast Search...,빠른 검색 준비 중...,
+Preparing Full Scan...,전체 검색 준비 중...,
+Project Content,프로젝트 콘텐츠,
+Quick fix tips,Quick fix tips,TODO-ko
+Raw Log,원본 로그,
+Reached target,대상 도달,
+Recent changes,최근 변경,
+Recent packaging log,최근 패키징 로그,
+Reference,참조,
+Referencers,참조자,
+Refresh,새로고침,
+Refresh Search Results,검색 결과를 새로고침합니다,
+Remove this entry from the favorites list. This does not delete actors or assets.,이 항목을 즐겨찾기 목록에서 제거합니다. 액터나 에셋은 삭제하지 않습니다.,
+Replace With Selected,Replace With Selected,TODO-ko
+Rescan Input Mappings,입력 매핑 다시 스캔,
+Reset,초기화,
+Result,Result,TODO-ko
+Row Layout,행 정렬,
+Run required,실행 필요,
+Running,진행 중,
+Runtime Instance,런타임 인스턴스,
+Runtime physics state is missing,Runtime physics state is missing,TODO-ko
+Same Folder,같은 폴더,
+Save Snapshot,스냅샷 저장,
+Scope,범위,
+Search,검색,
+Search / View / Filters / Export / Trace,검색 / 보기 / 필터 / 내보내기 / 추적,
+"Search actor tags, variable names, and variable values in current level instances.","Search actor tags, variable names, and variable values in current level instances.",TODO-ko
+"Search actor, component, tag, variable name, or variable value","Search actor, component, tag, variable name, or variable value",TODO-ko
+Search events,이벤트 검색,
+"Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values.","Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values.",TODO-ko
+"Search loaded level instances, tags, and Details variables without freezing the editor.","Search loaded level instances, tags, and Details variables without freezing the editor.",TODO-ko
+Searching Assets...,에셋 검색 중...,
+Select,선택,
+"Select or capture actor A and B, then run Analyze.","Select or capture actor A and B, then run Analyze.",TODO-ko
+Select the runtime owner actor instance in the editor.,에디터에서 런타임 Owner 액터 인스턴스를 선택합니다.,
+Selected only,Selected only,TODO-ko
+Selection required,Selection required,TODO-ko
+Short sweep probe did not hit this pair,Short sweep probe did not hit this pair,TODO-ko
+Show Call Chain,호출 체인 보기,
+Show Calls,호출 표시,
+Show Classes,클래스 보기,
+Show complete function call chain from root callers,루트 호출자부터 전체 함수 호출 체인을 표시합니다,
+Show Definitions,정의 표시,
+Show Errors,오류 보기,
+Show function references in a visual graph editor,함수 참조 관계를 그래프 편집기에서 시각적으로 표시합니다,
+Show Get,Get 표시,
+Show Ignored,무시 항목 표시,
+Show Lines,연결선 표시,
+Show Menu,메뉴 보기,
+Show only one latest row per runtime instance. Counts still include repeated events and merged error groups.,런타임 인스턴스마다 최신 행 하나만 표시합니다. 카운트에는 반복 이벤트와 병합된 오류 그룹이 계속 포함됩니다.,
+Show references in a visual graph editor,참조 관계를 그래프 편집기에서 시각적으로 표시합니다,
+Show Set,Set 표시,
+Show solid reference lines from the definition node to each referencing node,정의 노드에서 각 참조 노드로 이어지는 실선을 표시합니다,
+Showing,표시,
+Skip,건너뜀,
+Source compile error,소스 컴파일 오류,
+Stats,통계,
+Status,상태,
+Succeeded,성공,
+Suspicious movement nodes,Suspicious movement nodes,TODO-ko
+Swap A / B,Swap A / B,TODO-ko
+Sweep hits,Sweep hits,TODO-ko
+Sweep probe skipped: component has no world.,Sweep probe skipped: component has no world.,TODO-ko
+Sweep probe skipped: components are invalid or not in the same world.,Sweep probe skipped: components are invalid or not in the same world.,TODO-ko
+"Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred.","Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred.",TODO-ko
+"Sweep=false, Teleport, custom ignore lists, or a MovementComponent using a non-blocking UpdatedComponent can bypass otherwise valid blocking collision.","Sweep=false, Teleport, 사용자 무시 목록, 또는 차단하지 않는 UpdatedComponent를 쓰는 MovementComponent는 정상적인 Block 충돌도 우회할 수 있습니다.",
+Swept movement can block,Swept movement can block,TODO-ko
+"Sync the Content Browser to this asset, matching the editor Ctrl+B behavior.",콘텐츠 브라우저를 이 에셋 위치로 이동합니다. 에디터의 Ctrl+B 동작과 같습니다.,
+Tag,Tag,TODO-ko
+Tags,Tags,TODO-ko
+Target: {0},대상: {0},
+Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement.,Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement.,TODO-ko
+"The pair resolves to Overlap, not Block","The pair resolves to Overlap, not Block",TODO-ko
+This component pair is configured to Block,This component pair is configured to Block,TODO-ko
+"This panel reports evidence and likely causes, not an absolute collision verdict.","이 패널은 증거와 가능성 높은 원인을 보고하며, 절대적인 충돌 판정이 아닙니다.",
+This selected item has no captured changes yet. Select the actor root or clear filters to see all recent events.,선택한 항목에 캡처된 변경이 아직 없습니다. 최신 이벤트를 보려면 액터 루트를 선택하거나 필터를 해제하세요.,
+This selected item has no captured changes.,선택한 항목에 캡처된 변경이 없습니다.,
+Toggle between detailed error groups and deduplicated error classes.,상세 오류 그룹 보기와 중복 제거된 오류 클래스 보기를 전환합니다.,
+Trace,추적,
+Trace Details,추적 상세,
+Trace Instance References,인스턴스 참조 추적,
+Track Blueprint runtime errors and identify the live instance that emitted each error.,블루프린트 런타임 오류를 추적하고 각 오류를 발생시킨 실제 인스턴스를 식별합니다.,
+Track Blueprint runtime errors with live PIE instance information.,PIE 인스턴스 정보와 함께 블루프린트 런타임 오류를 추적합니다.,
+Track live references to the selected actor instance during Editor/PIE.,Editor/PIE 중 선택한 액터 인스턴스의 실시간 참조를 추적합니다.,
+Transform,트랜스폼,
+Tree View,트리 보기,
+Two actors are required,Two actors are required,TODO-ko
+Type a search term. The scan runs in small batches so the editor does not freeze.,Type a search term. The scan runs in small batches so the editor does not freeze.,TODO-ko
+Unique groups,고유 그룹,
+Unpin,고정 해제,
+Use Selected Actor,선택 액터 사용,
+Use Selected Widget,선택 위젯 사용,
+Use Two Selected,Use Two Selected,TODO-ko
+Variable name,Variable name,TODO-ko
+Variable names,Variable names,TODO-ko
+Variable value,Variable value,TODO-ko
+Variable values,Variable values,TODO-ko
+Verdict,판정,
+View,보기,
+View full diagnostic steps for last click v,마지막 클릭의 전체 진단 단계 보기 v,
+Visibility,가시성,
+Visual Find Function References,시각적 함수 참조 찾기,
+Visual Find References,시각적 참조 찾기,
+Visual Reference Viewer,시각적 참조 뷰어,
+Visual Variable/Function Reference Viewer,시각적 변수/함수 참조 뷰어,
+Visual Variable/Function References,시각적 변수/함수 참조,
+Waiting,대기 중,
+Watch:,감시:,
+{0} changes,{0} 변경,
+{0} changes (including children),{0} 변경 사항(하위 항목 포함),
+{0} has no visible changes - showing recent matching changes,{0}에 표시할 변경이 없어 최신 일치 이벤트를 표시합니다,
+{0} likely issue(s) found,원인 후보 {0}개 감지,
+{0}\n(Self References),{0}\n(자기 참조),
+Search Boost: ON,검색 부스트: 켜짐,
+Search Boost: OFF,검색 부스트: 꺼짐,
+Use more editor time per tick to finish searches faster.,검색을 더 빠르게 끝내기 위해 틱마다 더 많은 에디터 시간을 사용합니다.,
+Use more editor time per tick for the next call-chain/search operation.,다음 콜체인/검색 작업에서 틱마다 더 많은 에디터 시간을 사용합니다.,
+Variable pair,변수 페어,
+Variable name (ex: a),변수명 (예: a),
+Variable value (ex: abc),변수값 (예: abc),
+Clear pair,페어 지우기,
+Enter both variable name and value to run a pair search.,페어 검색을 실행하려면 변수명과 변수값을 모두 입력하세요.,
+Details variable name and value pair matched.,Details 변수명과 변수값 페어가 일치했습니다.,
+"Applies gameplay time dilation and audio pitch speed together for PIE/Game worlds.","PIE/게임 월드에 시간 배율과 오디오 피치 속도를 함께 적용합니다.",""
+"Arm Skip to Target","대상 도달 시 정지 활성화",""
+"Blueprint class","블루프린트 클래스",""
+"Blueprint class event","블루프린트 클래스 이벤트",""
+"Captured: {0}","캡처됨: {0}",""
+"Caution (4x-6x): use only outside physics, dense AI, complex UI animation, and networking-heavy sections.","주의(4~6배속): 물리, 밀집 AI, 복잡한 UI 애니메이션, 네트워크 부하 구간 밖에서만 사용하세요.",""
+"Choose a target and the action to run when it is reached, then arm it.","대상과 도달 시 실행할 동작을 선택한 뒤 활성화하세요.",""
+"Click an editor area to capture shortcuts. Current default: {0}","에디터 영역을 클릭해 단축키를 캡처합니다. 현재 기본값: {0}",""
+"Configuration","설정",""
+"Context Shortcuts","컨텍스트 단축키",""
+"Control gameplay time dilation and audio playback speed together.","게임 시간 배율과 오디오 재생 속도를 함께 제어합니다.",""
+"Copy all recent packaging log lines.","최근 패키징 로그 전체를 복사합니다.",""
+"Copy errors","오류만 복사",""
+"Copy only error-like packaging log lines.","오류로 보이는 패키징 로그만 복사합니다.",""
+"e.g. BossPhase2 or a log category","예: BossPhase2 또는 로그 카테고리",""
+"Enable editing to remove favorites or reorder the list.","즐겨찾기를 제거하거나 순서를 바꾸려면 편집을 활성화하세요.",""
+"Function","함수",""
+"Global Speed Control","전체 배속 제어",""
+"High speed (over 6x): physics, timers, complex animation, and networking can become unreliable. Prefer Skip to Target.","고속(6배속 초과): 물리, 타이머, 복잡한 애니메이션, 네트워크 동작이 불안정할 수 있습니다. 대상 도달 시 정지를 우선 사용하세요.",""
+"Limitations: pitch-based audio speed can affect sound pitch, and some systems with custom clocks, media playback, network replication, or native timers may not follow global time dilation exactly.","제한사항: 피치 기반 오디오 속도는 음높이에 영향을 줄 수 있으며, 사용자 시계·미디어 재생·네트워크 복제·네이티브 타이머는 전체 시간 배율을 정확히 따르지 않을 수 있습니다.",""
+"Matches Output Log text or category, case-insensitively.","Output Log 텍스트 또는 카테고리와 대소문자 구분 없이 일치합니다.",""
+"Matches the selected Blueprint class (including children) and exact function name.","선택한 블루프린트 클래스(하위 클래스 포함)와 정확한 함수 이름에 일치합니다.",""
+"Maximum 20x: frame skips, timer order changes, collision misses, and UI/audio desync can occur. Use only with Skip to Target.","최대 20배속: 프레임 누락, 타이머 순서 변경, 충돌 누락, UI/오디오 비동기화가 발생할 수 있습니다. 대상 도달 시 정지와 함께만 사용하세요.",""
+"Mouse-under-widget path: {0}","마우스 아래 위젯 경로: {0}",""
+"Open a window that speeds up gameplay time dilation and audio playback together.","게임 시간 배율과 오디오 재생을 함께 빠르게 하는 창을 엽니다.",""
+"Output Log text","Output Log 텍스트",""
+"Pause PIE/Game (restore 1x)","PIE/게임 일시정지(1배속 복구)",""
+"Restore 1x","1배속 복구",""
+"Search and select Blueprint class...","블루프린트 클래스 검색 및 선택...",""
+"Select function...","함수 선택...",""
+"Show UMG/Slate speed limitations","UMG/Slate 배속 제한사항 표시",""
+"Skip-only speed (8x+): not recommended for normal play. Use this to reach a log or event target, then pause.","스킵 전용 배속(8배속 이상): 일반 플레이에는 권장하지 않습니다. 로그 또는 이벤트 대상까지 도달한 뒤 일시정지하는 용도로 사용하세요.",""
+"Speed","속도",""
+"Speed snaps to 0.1x steps from 0.1x to 20x. Integer values are rounded cleanly; 1x restores normal time and audio pitch.","속도는 0.1배속부터 20배속까지 0.1 단위로 조절됩니다. 정수 값은 보기 좋게 보정되며, 1배속은 시간과 오디오 피치를 정상으로 복구합니다.",""
+"Warning: high speed can increase CPU load and make heavy projects, many Tick events, timers, physics, animation, and audio updates unstable or harder to debug.","경고: 고속 재생은 CPU 부하를 높이고, 무거운 프로젝트·많은 Tick 이벤트·타이머·물리·애니메이션·오디오 업데이트를 불안정하거나 디버깅하기 어렵게 만들 수 있습니다.",""
+"Copy all","전체 복사",

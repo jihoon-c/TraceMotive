@@ -1,0 +1,3157 @@
+# TraceMotive en translation.
+# Generated from manifest + Config/Localization/TMLocalization.ko.csv.
+msgid ""
+msgstr ""
+"Project-Id-Version: TraceMotive\n"
+"POT-Creation-Date: 2026-07-23 15:19\n"
+"PO-Revision-Date: 2026-07-23 15:19\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Key:	DefTitle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(452)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(452)
+msgctxt "FTraceMotiveModule,DefTitle"
+msgid "{0}\n({1} Definition)"
+msgstr "{0}\n({1} Definition)"
+
+#. Key:	GraphTitle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(469)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(469)
+msgctxt "FTraceMotiveModule,GraphTitle"
+msgid "Visual Reference Viewer"
+msgstr "Visual Reference Viewer"
+
+#. Key:	InitializingSearchText
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(548)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(548)
+msgctxt "FTraceMotiveModule,InitializingSearchText"
+msgid "Initializing Search..."
+msgstr "Initializing Search..."
+
+#. Key:	RefreshButton
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(780)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(780)
+msgctxt "FTraceMotiveModule,RefreshButton"
+msgid "Refresh"
+msgstr "Refresh"
+
+#. Key:	RefreshTooltip
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(764)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(764)
+msgctxt "FTraceMotiveModule,RefreshTooltip"
+msgid "Refresh Search Results"
+msgstr "Refresh Search Results"
+
+#. Key:	SearchingAssetsText
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(949)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(949)
+msgctxt "FTraceMotiveModule,SearchingAssetsText"
+msgid "Searching Assets..."
+msgstr "Searching Assets..."
+
+#. Key:	SelfRefTitle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(610)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(610)
+msgctxt "FTraceMotiveModule,SelfRefTitle"
+msgid "{0}\n(Self References)"
+msgstr "{0}\n(Self References)"
+
+#. Key:	ShowCallChainButton
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(923)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(923)
+msgctxt "FTraceMotiveModule,ShowCallChainButton"
+msgid "Show Call Chain"
+msgstr "Show Call Chain"
+
+#. Key:	ShowCallChainTooltip
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(855)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(855)
+msgctxt "FTraceMotiveModule,ShowCallChainTooltip"
+msgid "Show complete function call chain from root callers"
+msgstr "Show complete function call chain from root callers"
+
+#. Key:	ShowGetLabel
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(828)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(828)
+msgctxt "FTraceMotiveModule,ShowGetLabel"
+msgid "Show Get"
+msgstr "Show Get"
+
+#. Key:	ShowSetLabel
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(845)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(845)
+msgctxt "FTraceMotiveModule,ShowSetLabel"
+msgid "Show Set"
+msgstr "Show Set"
+
+#. Key:	VisualFindFuncRef
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(109)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(109)
+msgctxt "FTraceMotiveModule,VisualFindFuncRef"
+msgid "Visual Find Function References"
+msgstr "Visual Find Function References"
+
+#. Key:	VisualFindFuncRefTooltip
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(110)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(110)
+msgctxt "FTraceMotiveModule,VisualFindFuncRefTooltip"
+msgid "Show function references in a visual graph editor"
+msgstr "Show function references in a visual graph editor"
+
+#. Key:	VisualFindRef
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(86)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(86)
+msgctxt "FTraceMotiveModule,VisualFindRef"
+msgid "Visual Find References"
+msgstr "Visual Find References"
+
+#. Key:	VisualFindRefTooltip
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(87)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(87)
+msgctxt "FTraceMotiveModule,VisualFindRefTooltip"
+msgid "Show references in a visual graph editor"
+msgstr "Show references in a visual graph editor"
+
+#. Key:	WindowTitle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(974)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TraceMotive.cpp(974)
+msgctxt "FTraceMotiveModule,WindowTitle"
+msgid "Visual Variable/Function References"
+msgstr "Visual Variable/Function References"
+
+#. Key:	PlaceFavoriteActorAtCurrentViewTransaction
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(793)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(793)
+msgctxt "TMClassFavorites,PlaceFavoriteActorAtCurrentViewTransaction"
+msgid "Place Favorite Actor At Current View"
+msgstr "Place Favorite Actor At Current View"
+
+#. Key:	PlaceFavoriteActorTransaction
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(765)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(765)
+msgctxt "TMClassFavorites,PlaceFavoriteActorTransaction"
+msgid "Place Favorite Actor"
+msgstr "Place Favorite Actor"
+
+#. Key:	RemoveFavoriteButton
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(1384)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMClassFavorites.cpp(1384)
+msgctxt "TMClassFavorites,RemoveFavoriteButton"
+msgid "X"
+msgstr "X"
+
+#. Key:	## Actor-level findings
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(11)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(11)
+msgctxt "TraceMotive,## Actor-level findings"
+msgid "## Actor-level findings"
+msgstr "## Actor-level findings"
+
+#. Key:	## Evidence level and limitations
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(12)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(12)
+msgctxt "TraceMotive,## Evidence level and limitations"
+msgid "## Evidence level and limitations"
+msgstr "## Evidence level and limitations"
+
+#. Key:	## Quick fix tips
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(13)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(13)
+msgctxt "TraceMotive,## Quick fix tips"
+msgid "## Quick fix tips"
+msgstr "## Quick fix tips"
+
+#. Key:	## Suspicious movement nodes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(14)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(14)
+msgctxt "TraceMotive,## Suspicious movement nodes"
+msgid "## Suspicious movement nodes"
+msgstr "## Suspicious movement nodes"
+
+#. Key:	- Actual movement can bypass collision through Sweep=false, Teleport, custom ignore lists, or MovementComponent UpdatedComponent/root mismatch.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(15)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(15)
+msgctxt "TraceMotive,- Actual movement can bypass collision through Sweep=false, Teleport, custom ignore lists, or MovementComponent UpdatedComponent/root mismatch."
+msgid "- Actual movement can bypass collision through Sweep=false, Teleport, custom ignore lists, or MovementComponent UpdatedComponent/root mismatch."
+msgstr "- Actual movement can bypass collision through Sweep=false, Teleport, custom ignore lists, or MovementComponent UpdatedComponent/root mismatch."
+
+#. Key:	- Best confirmation is a reproduced swept move with Sweep=true and the returned FHitResult.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(16)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(16)
+msgctxt "TraceMotive,- Best confirmation is a reproduced swept move with Sweep=true and the returned FHitResult."
+msgid "- Best confirmation is a reproduced swept move with Sweep=true and the returned FHitResult."
+msgstr "- Best confirmation is a reproduced swept move with Sweep=true and the returned FHitResult."
+
+#. Key:	- Block possible means settings are compatible with blocking; it is not proof that the real gameplay movement path blocks.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(17)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(17)
+msgctxt "TraceMotive,- Block possible means settings are compatible with blocking; it is not proof that the real gameplay movement path blocks."
+msgid "- Block possible means settings are compatible with blocking; it is not proof that the real gameplay movement path blocks."
+msgstr "- Block possible means settings are compatible with blocking; it is not proof that the real gameplay movement path blocks."
+
+#. Key:	- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(18)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(18)
+msgctxt "TraceMotive,- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+msgid "- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+msgstr "- No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+
+#. Key:	- PhysicsOnly, Chaos contact resolution, complex BodySetup, and custom primitive collision cannot be fully proven by static/query inspection.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(19)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(19)
+msgctxt "TraceMotive,- PhysicsOnly, Chaos contact resolution, complex BodySetup, and custom primitive collision cannot be fully proven by static/query inspection."
+msgid "- PhysicsOnly, Chaos contact resolution, complex BodySetup, and custom primitive collision cannot be fully proven by static/query inspection."
+msgstr "- PhysicsOnly, Chaos contact resolution, complex BodySetup, and custom primitive collision cannot be fully proven by static/query inspection."
+
+#. Key:	<No Target>
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(20)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(20)
+msgctxt "TraceMotive,<No Target>"
+msgid "<No Target>"
+msgstr "<No Target>"
+
+#. Key:	A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(21)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(21)
+msgctxt "TraceMotive,A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic."
+msgid "A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic."
+msgstr "A BLOCK-capable pair already exists and the sweep probe hit it. Usually no collision preset change is needed; if gameplay still passes through, check Sweep=true, Teleport=false, and custom ignore logic."
+
+#. Key:	A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(22)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(22)
+msgctxt "TraceMotive,A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision."
+msgid "A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision."
+msgstr "A BLOCK-capable pair already exists. If gameplay still passes through, move the actor/component with Sweep=true, avoid Teleport, and make sure the movement component uses the blocking primitive as its UpdatedComponent/root collision."
+
+#. Key:	A and B are the same actor
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(23)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(23)
+msgctxt "TraceMotive,A and B are the same actor"
+msgid "A and B are the same actor"
+msgstr "A and B are the same actor"
+
+#. Key:	A collision response is Ignore
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(24)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(24)
+msgctxt "TraceMotive,A collision response is Ignore"
+msgid "A collision response is Ignore"
+msgstr "A collision response is Ignore"
+
+#. Key:	A component
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(25)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(25)
+msgctxt "TraceMotive,A component"
+msgid "A component"
+msgstr "A component"
+
+#. Key:	Actions
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(26)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(26)
+msgctxt "TraceMotive,Actions"
+msgid "Actions"
+msgstr "Actions"
+
+#. Key:	Actions you can try now
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(27)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(27)
+msgctxt "TraceMotive,Actions you can try now"
+msgid "Actions you can try now"
+msgstr "Actions you can try now"
+
+#. Key:	Actor
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(28)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(28)
+msgctxt "TraceMotive,Actor"
+msgid "Actor"
+msgstr "Actor"
+
+#. Key:	Actor collision is disabled
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(29)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(29)
+msgctxt "TraceMotive,Actor collision is disabled"
+msgid "Actor collision is disabled"
+msgstr "Actor collision is disabled"
+
+#. Key:	Actor label, class, or path matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(30)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(30)
+msgctxt "TraceMotive,Actor label, class, or path matched."
+msgid "Actor label, class, or path matched."
+msgstr "Actor label, class, or path matched."
+
+#. Key:	Actor tag matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(31)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(31)
+msgctxt "TraceMotive,Actor tag matched."
+msgid "Actor tag matched."
+msgstr "Actor tag matched."
+
+#. Key:	Actor-level and movement checks
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(32)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(32)
+msgctxt "TraceMotive,Actor-level and movement checks"
+msgid "Actor-level and movement checks"
+msgstr "Actor-level and movement checks"
+
+#. Key:	Actors
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(33)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(33)
+msgctxt "TraceMotive,Actors"
+msgid "Actors"
+msgstr "Actors"
+
+#. Key:	Actors are in different worlds
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(34)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(34)
+msgctxt "TraceMotive,Actors are in different worlds"
+msgid "Actors are in different worlds"
+msgstr "Actors are in different worlds"
+
+#. Key:	Actors share an attachment hierarchy
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(35)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(35)
+msgctxt "TraceMotive,Actors share an attachment hierarchy"
+msgid "Actors share an attachment hierarchy"
+msgstr "Actors share an attachment hierarchy"
+
+#. Key:	Actual contact detected
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(36)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(36)
+msgctxt "TraceMotive,Actual contact detected"
+msgid "Actual contact detected"
+msgstr "Actual contact detected"
+
+#. Key:	Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(37)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(37)
+msgctxt "TraceMotive,Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent."
+msgid "Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent."
+msgstr "Add or enable a PrimitiveComponent with collision, such as CapsuleComponent, BoxComponent, StaticMeshComponent, or BrushComponent."
+
+#. Key:	Add selected Actor Blueprint/class assets to the class favorites window.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(38)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(38)
+msgctxt "TraceMotive,Add selected Actor Blueprint/class assets to the class favorites window."
+msgid "Add selected Actor Blueprint/class assets to the class favorites window."
+msgstr "Add selected Actor Blueprint/class assets to the class favorites window."
+
+#. Key:	Add to Class Favorites
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(39)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(39)
+msgctxt "TraceMotive,Add to Class Favorites"
+msgid "Add to Class Favorites"
+msgstr "Add to Class Favorites"
+
+#. Key:	All
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(40)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(40)
+msgctxt "TraceMotive,All"
+msgid "All"
+msgstr "All"
+
+#. Key:	All events
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(41)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(41)
+msgctxt "TraceMotive,All events"
+msgid "All events"
+msgstr "All events"
+
+#. Key:	Allow dragging reference graph nodes to reduce overlap
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(42)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(42)
+msgctxt "TraceMotive,Allow dragging reference graph nodes to reduce overlap"
+msgid "Allow dragging reference graph nodes to reduce overlap"
+msgstr "Allow dragging reference graph nodes to reduce overlap"
+
+#. Key:	Analysis could not start because one or both actors are invalid.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(43)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(43)
+msgctxt "TraceMotive,Analysis could not start because one or both actors are invalid."
+msgid "Analysis could not start because one or both actors are invalid."
+msgstr "Analysis could not start because one or both actors are invalid."
+
+#. Key:	Analyze
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(44)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(44)
+msgctxt "TraceMotive,Analyze"
+msgid "Analyze"
+msgstr "Analyze"
+
+#. Key:	Analyze Collision Between Selected
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(45)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(45)
+msgctxt "TraceMotive,Analyze Collision Between Selected"
+msgid "Analyze Collision Between Selected"
+msgstr "Analyze Collision Between Selected"
+
+#. Key:	Analyze why the two selected actors do not Block each other in Editor or PIE.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(46)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(46)
+msgctxt "TraceMotive,Analyze why the two selected actors do not Block each other in Editor or PIE."
+msgid "Analyze why the two selected actors do not Block each other in Editor or PIE."
+msgstr "Analyze why the two selected actors do not Block each other in Editor or PIE."
+
+#. Key:	Applies gameplay time dilation and audio pitch speed together for PIE/Game worlds.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(47)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(47)
+msgctxt "TraceMotive,Applies gameplay time dilation and audio pitch speed together for PIE/Game worlds."
+msgid "Applies gameplay time dilation and audio pitch speed together for PIE/Game worlds."
+msgstr "Applies gameplay time dilation and audio pitch speed together for PIE/Game worlds."
+
+#. Key:	Arm Skip to Target
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(48)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(48)
+msgctxt "TraceMotive,Arm Skip to Target"
+msgid "Arm Skip to Target"
+msgstr "Arm Skip to Target"
+
+#. Key:	Armed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(49)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(49)
+msgctxt "TraceMotive,Armed"
+msgid "Armed"
+msgstr "Armed"
+
+#. Key:	Asset or Blueprint related failure
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(50)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(50)
+msgctxt "TraceMotive,Asset or Blueprint related failure"
+msgid "Asset or Blueprint related failure"
+msgstr "Asset or Blueprint related failure"
+
+#. Key:	Audio Playback Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(51)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(51)
+msgctxt "TraceMotive,Audio Playback Trace"
+msgid "Audio Playback Trace"
+msgstr "Audio Playback Trace"
+
+#. Key:	Audio trace reset.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(52)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(52)
+msgctxt "TraceMotive,Audio trace reset."
+msgid "Audio trace reset."
+msgstr "Audio trace reset."
+
+#. Key:	Auto Snapshot
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(53)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(53)
+msgctxt "TraceMotive,Auto Snapshot"
+msgid "Auto Snapshot"
+msgstr "Auto Snapshot"
+
+#. Key:	Automatically detects editor packaging and estimates progress from UAT stages and work counts.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(54)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(54)
+msgctxt "TraceMotive,Automatically detects editor packaging and estimates progress from UAT stages and work counts."
+msgid "Automatically detects editor packaging and estimates progress from UAT stages and work counts."
+msgstr "Automatically detects editor packaging and estimates progress from UAT stages and work counts."
+
+#. Key:	Auxiliary
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(55)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(55)
+msgctxt "TraceMotive,Auxiliary"
+msgid "Auxiliary"
+msgstr "Auxiliary"
+
+#. Key:	B component
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(56)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(56)
+msgctxt "TraceMotive,B component"
+msgid "B component"
+msgstr "B component"
+
+#. Key:	BLOCK-capable
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(57)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(57)
+msgctxt "TraceMotive,BLOCK-capable"
+msgid "BLOCK-capable"
+msgstr "BLOCK-capable"
+
+#. Key:	Best confirmation: reproduce the move with Sweep=true and inspect the returned FHitResult, hit component, and blocking hit flag.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(58)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(58)
+msgctxt "TraceMotive,Best confirmation: reproduce the move with Sweep=true and inspect the returned FHitResult, hit component, and blocking hit flag."
+msgid "Best confirmation: reproduce the move with Sweep=true and inspect the returned FHitResult, hit component, and blocking hit flag."
+msgstr "Best confirmation: reproduce the move with Sweep=true and inspect the returned FHitResult, hit component, and blocking hit flag."
+
+#. Key:	Bindings found only in the selected or click-resolved target Blueprint and its relevant Level Blueprint.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(59)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(59)
+msgctxt "TraceMotive,Bindings found only in the selected or click-resolved target Blueprint and its relevant Level Blueprint."
+msgid "Bindings found only in the selected or click-resolved target Blueprint and its relevant Level Blueprint."
+msgstr "Bindings found only in the selected or click-resolved target Blueprint and its relevant Level Blueprint."
+
+#. Key:	Bindings found only in the selected or pointer-resolved target Blueprint and its relevant Level Blueprint.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(60)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(60)
+msgctxt "TraceMotive,Bindings found only in the selected or pointer-resolved target Blueprint and its relevant Level Blueprint."
+msgid "Bindings found only in the selected or pointer-resolved target Blueprint and its relevant Level Blueprint."
+msgstr "Bindings found only in the selected or pointer-resolved target Blueprint and its relevant Level Blueprint."
+
+#. Key:	Block impossible
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(61)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(61)
+msgctxt "TraceMotive,Block impossible"
+msgid "Block impossible"
+msgstr "Block impossible"
+
+#. Key:	Block possible
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(62)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(62)
+msgctxt "TraceMotive,Block possible"
+msgid "Block possible"
+msgstr "Block possible"
+
+#. Key:	Block possible means both components are configured to block. It does not prove that the real gameplay movement will be stopped.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(63)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(63)
+msgctxt "TraceMotive,Block possible means both components are configured to block. It does not prove that the real gameplay movement will be stopped."
+msgid "Block possible means both components are configured to block. It does not prove that the real gameplay movement will be stopped."
+msgstr "Block possible means both components are configured to block. It does not prove that the real gameplay movement will be stopped."
+
+#. Key:	Block-capable
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(64)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(64)
+msgctxt "TraceMotive,Block-capable"
+msgid "Block-capable"
+msgstr "Block-capable"
+
+#. Key:	Block-capable settings
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(65)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(65)
+msgctxt "TraceMotive,Block-capable settings"
+msgid "Block-capable settings"
+msgstr "Block-capable settings"
+
+#. Key:	Blocked
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(66)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(66)
+msgctxt "TraceMotive,Blocked"
+msgid "Blocked"
+msgstr "Blocked"
+
+#. Key:	Blueprint Runtime Error Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(67)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(67)
+msgctxt "TraceMotive,Blueprint Runtime Error Trace"
+msgid "Blueprint Runtime Error Trace"
+msgstr "Blueprint Runtime Error Trace"
+
+#. Key:	Blueprint class
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(68)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(68)
+msgctxt "TraceMotive,Blueprint class"
+msgid "Blueprint class"
+msgstr "Blueprint class"
+
+#. Key:	Blueprint class event
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(69)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(69)
+msgctxt "TraceMotive,Blueprint class event"
+msgid "Blueprint class event"
+msgstr "Blueprint class event"
+
+#. Key:	Browse To Asset
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(70)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(70)
+msgctxt "TraceMotive,Browse To Asset"
+msgid "Browse To Asset"
+msgstr "Browse To Asset"
+
+#. Key:	CAUSE
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(71)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(71)
+msgctxt "TraceMotive,CAUSE"
+msgid "CAUSE"
+msgstr "CAUSE"
+
+#. Key:	CHECK
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(72)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(72)
+msgctxt "TraceMotive,CHECK"
+msgid "CHECK"
+msgstr "CHECK"
+
+#. Key:	Canceled
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(73)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(73)
+msgctxt "TraceMotive,Canceled"
+msgid "Canceled"
+msgstr "Canceled"
+
+#. Key:	Capture Selected
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(74)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(74)
+msgctxt "TraceMotive,Capture Selected"
+msgid "Capture Selected"
+msgstr "Capture Selected"
+
+#. Key:	Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(75)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(75)
+msgctxt "TraceMotive,Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other."
+msgid "Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other."
+msgstr "Capture both actors from the same PIE/Game world. Editor-world and PIE-world actors cannot collide with each other."
+
+#. Key:	Captured: {0}
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(76)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(76)
+msgctxt "TraceMotive,Captured: {0}"
+msgid "Captured: {0}"
+msgstr "Captured: {0}"
+
+#. Key:	Cause
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(77)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(77)
+msgctxt "TraceMotive,Cause"
+msgid "Cause"
+msgstr "Cause"
+
+#. Key:	Caution (4x-6x): use only outside physics, dense AI, complex UI animation, and networking-heavy sections.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(78)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(78)
+msgctxt "TraceMotive,Caution (4x-6x): use only outside physics, dense AI, complex UI animation, and networking-heavy sections."
+msgid "Caution (4x-6x): use only outside physics, dense AI, complex UI animation, and networking-heavy sections."
+msgstr "Caution (4x-6x): use only outside physics, dense AI, complex UI animation, and networking-heavy sections."
+
+#. Key:	Check
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(79)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(79)
+msgctxt "TraceMotive,Check"
+msgid "Check"
+msgstr "Check"
+
+#. Key:	Choose a target and the action to run when it is reached, then arm it.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(80)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(80)
+msgctxt "TraceMotive,Choose a target and the action to run when it is reached, then arm it."
+msgid "Choose a target and the action to run when it is reached, then arm it."
+msgstr "Choose a target and the action to run when it is reached, then arm it."
+
+#. Key:	Choose two different actors.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(81)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(81)
+msgctxt "TraceMotive,Choose two different actors."
+msgid "Choose two different actors."
+msgstr "Choose two different actors."
+
+#. Key:	Class
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(82)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(82)
+msgctxt "TraceMotive,Class"
+msgid "Class"
+msgstr "Class"
+
+#. Key:	Class Favorites
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(83)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(83)
+msgctxt "TraceMotive,Class Favorites"
+msgid "Class Favorites"
+msgstr "Class Favorites"
+
+#. Key:	Classes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(84)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(84)
+msgctxt "TraceMotive,Classes"
+msgid "Classes"
+msgstr "Classes"
+
+#. Key:	Clear
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(85)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(85)
+msgctxt "TraceMotive,Clear"
+msgid "Clear"
+msgstr "Clear"
+
+#. Key:	Clear history
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(86)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(86)
+msgctxt "TraceMotive,Clear history"
+msgid "Clear history"
+msgstr "Clear history"
+
+#. Key:	Clear pair
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(87)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(87)
+msgctxt "TraceMotive,Clear pair"
+msgid "Clear pair"
+msgstr "Clear pair"
+
+#. Key:	Click Event Diagnostics
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(88)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(88)
+msgctxt "TraceMotive,Click Event Diagnostics"
+msgid "Click Event Diagnostics"
+msgstr "Click Event Diagnostics"
+
+#. Key:	Click an editor area to capture shortcuts. Current default: {0}
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(89)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(89)
+msgctxt "TraceMotive,Click an editor area to capture shortcuts. Current default: {0}"
+msgid "Click an editor area to capture shortcuts. Current default: {0}"
+msgstr "Click an editor area to capture shortcuts. Current default: {0}"
+
+#. Key:	Click anywhere in PIE to capture
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(90)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(90)
+msgctxt "TraceMotive,Click anywhere in PIE to capture"
+msgid "Click anywhere in PIE to capture"
+msgstr "Click anywhere in PIE to capture"
+
+#. Key:	Click anywhere in PIE to capture the Slate, UMG, actor hit, and bound-event path.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(91)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(91)
+msgctxt "TraceMotive,Click anywhere in PIE to capture the Slate, UMG, actor hit, and bound-event path."
+msgid "Click anywhere in PIE to capture the Slate, UMG, actor hit, and bound-event path."
+msgstr "Click anywhere in PIE to capture the Slate, UMG, actor hit, and bound-event path."
+
+#. Key:	Click history
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(92)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(92)
+msgctxt "TraceMotive,Click history"
+msgid "Click history"
+msgstr "Click history"
+
+#. Key:	Click/Touch Event Diagnostics
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(93)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(93)
+msgctxt "TraceMotive,Click/Touch Event Diagnostics"
+msgid "Click/Touch Event Diagnostics"
+msgstr "Click/Touch Event Diagnostics"
+
+#. Key:	Collapse or expand the reference viewer menu
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(94)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(94)
+msgctxt "TraceMotive,Collapse or expand the reference viewer menu"
+msgid "Collapse or expand the reference viewer menu"
+msgstr "Collapse or expand the reference viewer menu"
+
+#. Key:	Collision
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(95)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(95)
+msgctxt "TraceMotive,Collision"
+msgid "Collision"
+msgstr "Collision"
+
+#. Key:	Collision Pair Analyzer
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(96)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(96)
+msgctxt "TraceMotive,Collision Pair Analyzer"
+msgid "Collision Pair Analyzer"
+msgstr "Collision Pair Analyzer"
+
+#. Key:	Collision geometry may be missing
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(97)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(97)
+msgctxt "TraceMotive,Collision geometry may be missing"
+msgid "Collision geometry may be missing"
+msgstr "Collision geometry may be missing"
+
+#. Key:	Collision is disabled
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(98)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(98)
+msgctxt "TraceMotive,Collision is disabled"
+msgid "Collision is disabled"
+msgstr "Collision is disabled"
+
+#. Key:	Collision modes do not share a common path
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(99)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(99)
+msgctxt "TraceMotive,Collision modes do not share a common path"
+msgid "Collision modes do not share a common path"
+msgstr "Collision modes do not share a common path"
+
+#. Key:	Collision shapes currently overlap
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(100)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(100)
+msgctxt "TraceMotive,Collision shapes currently overlap"
+msgid "Collision shapes currently overlap"
+msgstr "Collision shapes currently overlap"
+
+#. Key:	Compare two actors at runtime and explain why their primitive components do not Block.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(101)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(101)
+msgctxt "TraceMotive,Compare two actors at runtime and explain why their primitive components do not Block."
+msgid "Compare two actors at runtime and explain why their primitive components do not Block."
+msgstr "Compare two actors at runtime and explain why their primitive components do not Block."
+
+#. Key:	Component
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(102)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(102)
+msgctxt "TraceMotive,Component"
+msgid "Component"
+msgstr "Component"
+
+#. Key:	Component Details
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(103)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(103)
+msgctxt "TraceMotive,Component Details"
+msgid "Component Details"
+msgstr "Component Details"
+
+#. Key:	Component is not registered
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(104)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(104)
+msgctxt "TraceMotive,Component is not registered"
+msgid "Component is not registered"
+msgstr "Component is not registered"
+
+#. Key:	Component name, class, or path matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(105)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(105)
+msgctxt "TraceMotive,Component name, class, or path matched."
+msgid "Component name, class, or path matched."
+msgstr "Component name, class, or path matched."
+
+#. Key:	Component tag matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(106)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(106)
+msgctxt "TraceMotive,Component tag matched."
+msgid "Component tag matched."
+msgstr "Component tag matched."
+
+#. Key:	Components
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(107)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(107)
+msgctxt "TraceMotive,Components"
+msgid "Components"
+msgstr "Components"
+
+#. Key:	Components are not currently touching
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(108)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(108)
+msgctxt "TraceMotive,Components are not currently touching"
+msgid "Components are not currently touching"
+msgstr "Components are not currently touching"
+
+#. Key:	Confidence
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(109)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(109)
+msgctxt "TraceMotive,Confidence"
+msgid "Confidence"
+msgstr "Confidence"
+
+#. Key:	Confidence: Medium. This is a target-scoped diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-click input-mode changes may need Details/PIE confirmation.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(110)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(110)
+msgctxt "TraceMotive,Confidence: Medium. This is a target-scoped diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-click input-mode changes may need Details/PIE confirmation."
+msgid "Confidence: Medium. This is a target-scoped diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-click input-mode changes may need Details/PIE confirmation."
+msgstr "Confidence: Medium. This is a target-scoped diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-click input-mode changes may need Details/PIE confirmation."
+
+#. Key:	Confidence: Medium. This is a target-scoped pointer diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-event input-mode changes may need Details/PIE confirmation.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(111)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(111)
+msgctxt "TraceMotive,Confidence: Medium. This is a target-scoped pointer diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-event input-mode changes may need Details/PIE confirmation."
+msgid "Confidence: Medium. This is a target-scoped pointer diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-event input-mode changes may need Details/PIE confirmation."
+msgstr "Confidence: Medium. This is a target-scoped pointer diagnosis; unloaded Blueprints, native code, dynamic delegates, and post-event input-mode changes may need Details/PIE confirmation."
+
+#. Key:	Configuration
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(112)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(112)
+msgctxt "TraceMotive,Configuration"
+msgid "Configuration"
+msgstr "Configuration"
+
+#. Key:	Confirmed - Normal
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(113)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(113)
+msgctxt "TraceMotive,Confirmed - Normal"
+msgid "Confirmed - Normal"
+msgstr "Confirmed - Normal"
+
+#. Key:	Consumed by UI
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(114)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(114)
+msgctxt "TraceMotive,Consumed by UI"
+msgid "Consumed by UI"
+msgstr "Consumed by UI"
+
+#. Key:	Contact / sweep evidence
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(115)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(115)
+msgctxt "TraceMotive,Contact / sweep evidence"
+msgid "Contact / sweep evidence"
+msgstr "Contact / sweep evidence"
+
+#. Key:	Context Shortcuts
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(116)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(116)
+msgctxt "TraceMotive,Context Shortcuts"
+msgid "Context Shortcuts"
+msgstr "Context Shortcuts"
+
+#. Key:	Control gameplay time dilation and audio playback speed together.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(117)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(117)
+msgctxt "TraceMotive,Control gameplay time dilation and audio playback speed together."
+msgid "Control gameplay time dilation and audio playback speed together."
+msgstr "Control gameplay time dilation and audio playback speed together."
+
+#. Key:	Copy
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(118)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(118)
+msgctxt "TraceMotive,Copy"
+msgid "Copy"
+msgstr "Copy"
+
+#. Key:	Copy All
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(119)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(119)
+msgctxt "TraceMotive,Copy All"
+msgid "Copy All"
+msgstr "Copy All"
+
+#. Key:	Copy Classes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(120)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(120)
+msgctxt "TraceMotive,Copy Classes"
+msgid "Copy Classes"
+msgstr "Copy Classes"
+
+#. Key:	Copy Logs
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(121)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(121)
+msgctxt "TraceMotive,Copy Logs"
+msgid "Copy Logs"
+msgstr "Copy Logs"
+
+#. Key:	Copy Report
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(122)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(122)
+msgctxt "TraceMotive,Copy Report"
+msgid "Copy Report"
+msgstr "Copy Report"
+
+#. Key:	Copy Results
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(123)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(123)
+msgctxt "TraceMotive,Copy Results"
+msgid "Copy Results"
+msgstr "Copy Results"
+
+#. Key:	Copy Status
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(124)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(124)
+msgctxt "TraceMotive,Copy Status"
+msgid "Copy Status"
+msgstr "Copy Status"
+
+#. Key:	Copy all
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(125)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(125)
+msgctxt "TraceMotive,Copy all"
+msgid "Copy all"
+msgstr "Copy all"
+
+#. Key:	Copy all recent packaging log lines.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(126)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(126)
+msgctxt "TraceMotive,Copy all recent packaging log lines."
+msgid "Copy all recent packaging log lines."
+msgstr "Copy all recent packaging log lines."
+
+#. Key:	Copy errors
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(127)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(127)
+msgctxt "TraceMotive,Copy errors"
+msgid "Copy errors"
+msgstr "Copy errors"
+
+#. Key:	Copy log
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(128)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(128)
+msgctxt "TraceMotive,Copy log"
+msgid "Copy log"
+msgstr "Copy log"
+
+#. Key:	Copy only error-like packaging log lines.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(129)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(129)
+msgctxt "TraceMotive,Copy only error-like packaging log lines."
+msgid "Copy only error-like packaging log lines."
+msgstr "Copy only error-like packaging log lines."
+
+#. Key:	Copy the deduplicated class summary.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(130)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(130)
+msgctxt "TraceMotive,Copy the deduplicated class summary."
+msgid "Copy the deduplicated class summary."
+msgstr "Copy the deduplicated class summary."
+
+#. Key:	Copy this class summary.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(131)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(131)
+msgctxt "TraceMotive,Copy this class summary."
+msgid "Copy this class summary."
+msgstr "Copy this class summary."
+
+#. Key:	Copy this error's debug info.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(132)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(132)
+msgctxt "TraceMotive,Copy this error's debug info."
+msgid "Copy this error's debug info."
+msgstr "Copy this error's debug info."
+
+#. Key:	Current Blueprint
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(133)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(133)
+msgctxt "TraceMotive,Current Blueprint"
+msgid "Current Blueprint"
+msgstr "Current Blueprint"
+
+#. Key:	Current stage progress
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(134)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(134)
+msgctxt "TraceMotive,Current stage progress"
+msgid "Current stage progress"
+msgstr "Current stage progress"
+
+#. Key:	Current work
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(135)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(135)
+msgctxt "TraceMotive,Current work"
+msgid "Current work"
+msgstr "Current work"
+
+#. Key:	Debug Session
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(136)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(136)
+msgctxt "TraceMotive,Debug Session"
+msgid "Debug Session"
+msgstr "Debug Session"
+
+#. Key:	Dedup Instances
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(137)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(137)
+msgctxt "TraceMotive,Dedup Instances"
+msgid "Dedup Instances"
+msgstr "Dedup Instances"
+
+#. Key:	Detail Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(138)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(138)
+msgctxt "TraceMotive,Detail Trace"
+msgid "Detail Trace"
+msgstr "Detail Trace"
+
+#. Key:	Details variable name and value pair matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(139)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(139)
+msgctxt "TraceMotive,Details variable name and value pair matched."
+msgid "Details variable name and value pair matched."
+msgstr "Details variable name and value pair matched."
+
+#. Key:	Details variable name/display/category matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(140)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(140)
+msgctxt "TraceMotive,Details variable name/display/category matched."
+msgid "Details variable name/display/category matched."
+msgstr "Details variable name/display/category matched."
+
+#. Key:	Details variable value matched.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(141)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(141)
+msgctxt "TraceMotive,Details variable value matched."
+msgid "Details variable value matched."
+msgstr "Details variable value matched."
+
+#. Key:	Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(142)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(142)
+msgctxt "TraceMotive,Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it."
+msgid "Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it."
+msgstr "Detect audio playback during PIE and show which actor, component, Blueprint function, or runtime source triggered it."
+
+#. Key:	Detects AudioComponent playback during Editor/PIE and records the best matched Blueprint or actor source.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(143)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(143)
+msgctxt "TraceMotive,Detects AudioComponent playback during Editor/PIE and records the best matched Blueprint or actor source."
+msgid "Detects AudioComponent playback during Editor/PIE and records the best matched Blueprint or actor source."
+msgstr "Detects AudioComponent playback during Editor/PIE and records the best matched Blueprint or actor source."
+
+#. Key:	Diagnose the seven stages of click/touch delivery.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(144)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(144)
+msgctxt "TraceMotive,Diagnose the seven stages of click/touch delivery."
+msgid "Diagnose the seven stages of click/touch delivery."
+msgstr "Diagnose the seven stages of click/touch delivery."
+
+#. Key:	Diagnose the seven stages of mouse click delivery.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(145)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(145)
+msgctxt "TraceMotive,Diagnose the seven stages of mouse click delivery."
+msgid "Diagnose the seven stages of mouse click delivery."
+msgstr "Diagnose the seven stages of mouse click delivery."
+
+#. Key:	Diagnosis: Block-capable pair exists; movement path unverified
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(146)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(146)
+msgctxt "TraceMotive,Diagnosis: Block-capable pair exists; movement path unverified"
+msgid "Diagnosis: Block-capable pair exists; movement path unverified"
+msgstr "Diagnosis: Block-capable pair exists; movement path unverified"
+
+#. Key:	Diagnosis: actor/world state prevents collision
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(147)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(147)
+msgctxt "TraceMotive,Diagnosis: actor/world state prevents collision"
+msgid "Diagnosis: actor/world state prevents collision"
+msgstr "Diagnosis: actor/world state prevents collision"
+
+#. Key:	Diagnosis: no Block-capable pair found
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(148)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(148)
+msgctxt "TraceMotive,Diagnosis: no Block-capable pair found"
+msgid "Diagnosis: no Block-capable pair found"
+msgstr "Diagnosis: no Block-capable pair found"
+
+#. Key:	Diagnosis: swept query blocking was observed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(149)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(149)
+msgctxt "TraceMotive,Diagnosis: swept query blocking was observed"
+msgid "Diagnosis: swept query blocking was observed"
+msgstr "Diagnosis: swept query blocking was observed"
+
+#. Key:	Diagnostic Safety
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(150)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(150)
+msgctxt "TraceMotive,Diagnostic Safety"
+msgid "Diagnostic Safety"
+msgstr "Diagnostic Safety"
+
+#. Key:	Double-click to open. Place adds at origin, Here adds at the current view, or drag into the level.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(151)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(151)
+msgctxt "TraceMotive,Double-click to open. Place adds at origin, Here adds at the current view, or drag into the level."
+msgid "Double-click to open. Place adds at origin, Here adds at the current view, or drag into the level."
+msgstr "Double-click to open. Place adds at origin, Here adds at the current view, or drag into the level."
+
+#. Key:	Drop an actor here, or replace it with the current selection.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(152)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(152)
+msgctxt "TraceMotive,Drop an actor here, or replace it with the current selection."
+msgid "Drop an actor here, or replace it with the current selection."
+msgstr "Drop an actor here, or replace it with the current selection."
+
+#. Key:	Elapsed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(153)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(153)
+msgctxt "TraceMotive,Elapsed"
+msgid "Elapsed"
+msgstr "Elapsed"
+
+#. Key:	Enable editing to remove favorites or reorder the list.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(154)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(154)
+msgctxt "TraceMotive,Enable editing to remove favorites or reorder the list."
+msgid "Enable editing to remove favorites or reorder the list."
+msgstr "Enable editing to remove favorites or reorder the list."
+
+#. Key:	Enhanced Outliner Search
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(155)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(155)
+msgctxt "TraceMotive,Enhanced Outliner Search"
+msgid "Enhanced Outliner Search"
+msgstr "Enhanced Outliner Search"
+
+#. Key:	Enter a query to search currently loaded level instances.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(156)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(156)
+msgctxt "TraceMotive,Enter a query to search currently loaded level instances."
+msgid "Enter a query to search currently loaded level instances."
+msgstr "Enter a query to search currently loaded level instances."
+
+#. Key:	Enter both variable name and value to run a pair search.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(157)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(157)
+msgctxt "TraceMotive,Enter both variable name and value to run a pair search."
+msgid "Enter both variable name and value to run a pair search."
+msgstr "Enter both variable name and value to run a pair search."
+
+#. Key:	Error
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(158)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(158)
+msgctxt "TraceMotive,Error"
+msgid "Error"
+msgstr "Error"
+
+#. Key:	Estimated
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(159)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(159)
+msgctxt "TraceMotive,Estimated"
+msgid "Estimated"
+msgstr "Estimated"
+
+#. Key:	Estimated progress - dynamic cook, cache, shader and compression work can change the remaining time.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(160)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(160)
+msgctxt "TraceMotive,Estimated progress - dynamic cook, cache, shader and compression work can change the remaining time."
+msgid "Estimated progress - dynamic cook, cache, shader and compression work can change the remaining time."
+msgstr "Estimated progress - dynamic cook, cache, shader and compression work can change the remaining time."
+
+#. Key:	Estimated progress - the upper bar is the current stage, the lower bar is total packaging progress.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(161)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(161)
+msgctxt "TraceMotive,Estimated progress - the upper bar is the current stage, the lower bar is total packaging progress."
+msgid "Estimated progress - the upper bar is the current stage, the lower bar is total packaging progress."
+msgstr "Estimated progress - the upper bar is the current stage, the lower bar is total packaging progress."
+
+#. Key:	Estimated remaining
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(162)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(162)
+msgctxt "TraceMotive,Estimated remaining"
+msgid "Estimated remaining"
+msgstr "Estimated remaining"
+
+#. Key:	Events
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(163)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(163)
+msgctxt "TraceMotive,Events"
+msgid "Events"
+msgstr "Events"
+
+#. Key:	Evidence
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(164)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(164)
+msgctxt "TraceMotive,Evidence"
+msgid "Evidence"
+msgstr "Evidence"
+
+#. Key:	Explain why two selected actors do not block each other.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(165)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(165)
+msgctxt "TraceMotive,Explain why two selected actors do not block each other."
+msgid "Explain why two selected actors do not block each other."
+msgstr "Explain why two selected actors do not block each other."
+
+#. Key:	Export
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(166)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(166)
+msgctxt "TraceMotive,Export"
+msgid "Export"
+msgstr "Export"
+
+#. Key:	Export current reference report to Project/Saved/TraceMotiveReports
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(167)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(167)
+msgctxt "TraceMotive,Export current reference report to Project/Saved/TraceMotiveReports"
+msgid "Export current reference report to Project/Saved/TraceMotiveReports"
+msgstr "Export current reference report to Project/Saved/TraceMotiveReports"
+
+#. Key:	Export failed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(168)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(168)
+msgctxt "TraceMotive,Export failed"
+msgid "Export failed"
+msgstr "Export failed"
+
+#. Key:	Export is already running...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(169)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(169)
+msgctxt "TraceMotive,Export is already running..."
+msgid "Export is already running..."
+msgstr "Export is already running..."
+
+#. Key:	Export is available after the current search/trace finishes.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(170)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(170)
+msgctxt "TraceMotive,Export is available after the current search/trace finishes."
+msgid "Export is available after the current search/trace finishes."
+msgstr "Export is available after the current search/trace finishes."
+
+#. Key:	Exported:
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(171)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(171)
+msgctxt "TraceMotive,Exported:"
+msgid "Exported:"
+msgstr "Exported:"
+
+#. Key:	Exporting {0} report...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(172)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(172)
+msgctxt "TraceMotive,Exporting {0} report..."
+msgid "Exporting {0} report..."
+msgstr "Exporting {0} report..."
+
+#. Key:	Failed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(173)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(173)
+msgctxt "TraceMotive,Failed"
+msgid "Failed"
+msgstr "Failed"
+
+#. Key:	Failure analysis
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(174)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(174)
+msgctxt "TraceMotive,Failure analysis"
+msgid "Failure analysis"
+msgstr "Failure analysis"
+
+#. Key:	Fast search scans the target Blueprint, loaded Blueprints, and assets that reference the target package. Enable Full Scan to exhaustively scan every Blueprint in the selected scope.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(175)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(175)
+msgctxt "TraceMotive,Fast search scans the target Blueprint, loaded Blueprints, and assets that reference the target package. Enable Full Scan to exhaustively scan every Blueprint in the selected scope."
+msgid "Fast search scans the target Blueprint, loaded Blueprints, and assets that reference the target package. Enable Full Scan to exhaustively scan every Blueprint in the selected scope."
+msgstr "Fast search scans the target Blueprint, loaded Blueprints, and assets that reference the target package. Enable Full Scan to exhaustively scan every Blueprint in the selected scope."
+
+#. Key:	Filter favorite classes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(176)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(176)
+msgctxt "TraceMotive,Filter favorite classes"
+msgid "Filter favorite classes"
+msgstr "Filter favorite classes"
+
+#. Key:	Filters
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(177)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(177)
+msgctxt "TraceMotive,Filters"
+msgid "Filters"
+msgstr "Filters"
+
+#. Key:	Final result: BLOCK confirmed by sweep probe
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(178)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(178)
+msgctxt "TraceMotive,Final result: BLOCK confirmed by sweep probe"
+msgid "Final result: BLOCK confirmed by sweep probe"
+msgstr "Final result: BLOCK confirmed by sweep probe"
+
+#. Key:	Final result: BLOCK-capable pair exists
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(179)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(179)
+msgctxt "TraceMotive,Final result: BLOCK-capable pair exists"
+msgid "Final result: BLOCK-capable pair exists"
+msgstr "Final result: BLOCK-capable pair exists"
+
+#. Key:	Final result: a Block-capable pair exists
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(180)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(180)
+msgctxt "TraceMotive,Final result: a Block-capable pair exists"
+msgid "Final result: a Block-capable pair exists"
+msgstr "Final result: a Block-capable pair exists"
+
+#. Key:	Final result: actor/world state prevents collision
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(181)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(181)
+msgctxt "TraceMotive,Final result: actor/world state prevents collision"
+msgid "Final result: actor/world state prevents collision"
+msgstr "Final result: actor/world state prevents collision"
+
+#. Key:	Final result: blocking was confirmed by sweep
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(182)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(182)
+msgctxt "TraceMotive,Final result: blocking was confirmed by sweep"
+msgid "Final result: blocking was confirmed by sweep"
+msgstr "Final result: blocking was confirmed by sweep"
+
+#. Key:	Final result: no BLOCK-capable pair found
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(183)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(183)
+msgctxt "TraceMotive,Final result: no BLOCK-capable pair found"
+msgid "Final result: no BLOCK-capable pair found"
+msgstr "Final result: no BLOCK-capable pair found"
+
+#. Key:	Final result: no Block-capable pair found
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(184)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(184)
+msgctxt "TraceMotive,Final result: no Block-capable pair found"
+msgid "Final result: no Block-capable pair found"
+msgstr "Final result: no Block-capable pair found"
+
+#. Key:	Find where click/touch delivery stops without changing game input behavior.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(185)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(185)
+msgctxt "TraceMotive,Find where click/touch delivery stops without changing game input behavior."
+msgid "Find where click/touch delivery stops without changing game input behavior."
+msgstr "Find where click/touch delivery stops without changing game input behavior."
+
+#. Key:	Find where mouse click delivery stops without changing game input behavior.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(186)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(186)
+msgctxt "TraceMotive,Find where mouse click delivery stops without changing game input behavior."
+msgid "Find where mouse click delivery stops without changing game input behavior."
+msgstr "Find where mouse click delivery stops without changing game input behavior."
+
+#. Key:	Focus
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(187)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(187)
+msgctxt "TraceMotive,Focus"
+msgid "Focus"
+msgstr "Focus"
+
+#. Key:	Format
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(188)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(188)
+msgctxt "TraceMotive,Format"
+msgid "Format"
+msgstr "Format"
+
+#. Key:	Frame Grid
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(189)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(189)
+msgctxt "TraceMotive,Frame Grid"
+msgid "Frame Grid"
+msgstr "Frame Grid"
+
+#. Key:	Full Scan
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(190)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(190)
+msgctxt "TraceMotive,Full Scan"
+msgid "Full Scan"
+msgstr "Full Scan"
+
+#. Key:	Function
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(191)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(191)
+msgctxt "TraceMotive,Function"
+msgid "Function"
+msgstr "Function"
+
+#. Key:	Generate Overlap Events does not control blocking
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(192)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(192)
+msgctxt "TraceMotive,Generate Overlap Events does not control blocking"
+msgid "Generate Overlap Events does not control blocking"
+msgstr "Generate Overlap Events does not control blocking"
+
+#. Key:	Global Speed Control
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(193)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(193)
+msgctxt "TraceMotive,Global Speed Control"
+msgid "Global Speed Control"
+msgstr "Global Speed Control"
+
+#. Key:	Here
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(194)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(194)
+msgctxt "TraceMotive,Here"
+msgid "Here"
+msgstr "Here"
+
+#. Key:	Hide Menu
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(195)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(195)
+msgctxt "TraceMotive,Hide Menu"
+msgid "Hide Menu"
+msgstr "Hide Menu"
+
+#. Key:	Hide Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(196)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(196)
+msgctxt "TraceMotive,Hide Trace"
+msgid "Hide Trace"
+msgstr "Hide Trace"
+
+#. Key:	Hide full diagnostic steps ^
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(197)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(197)
+msgctxt "TraceMotive,Hide full diagnostic steps ^"
+msgid "Hide full diagnostic steps ^"
+msgstr "Hide full diagnostic steps ^"
+
+#. Key:	Hierarchy
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(198)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(198)
+msgctxt "TraceMotive,Hierarchy"
+msgid "Hierarchy"
+msgstr "Hierarchy"
+
+#. Key:	High
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(199)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(199)
+msgctxt "TraceMotive,High"
+msgid "High"
+msgstr "High"
+
+#. Key:	High confidence for swept query blocking; gameplay path still must use Sweep/FHitResult
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(200)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(200)
+msgctxt "TraceMotive,High confidence for swept query blocking; gameplay path still must use Sweep/FHitResult"
+msgid "High confidence for swept query blocking; gameplay path still must use Sweep/FHitResult"
+msgstr "High confidence for swept query blocking; gameplay path still must use Sweep/FHitResult"
+
+#. Key:	High confidence: Block is not possible with current inspected settings
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(201)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(201)
+msgctxt "TraceMotive,High confidence: Block is not possible with current inspected settings"
+msgid "High confidence: Block is not possible with current inspected settings"
+msgstr "High confidence: Block is not possible with current inspected settings"
+
+#. Key:	High speed (over 6x): physics, timers, complex animation, and networking can become unreliable. Prefer Skip to Target.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(202)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(202)
+msgctxt "TraceMotive,High speed (over 6x): physics, timers, complex animation, and networking can become unreliable. Prefer Skip to Target."
+msgid "High speed (over 6x): physics, timers, complex animation, and networking can become unreliable. Prefer Skip to Target."
+msgstr "High speed (over 6x): physics, timers, complex animation, and networking can become unreliable. Prefer Skip to Target."
+
+#. Key:	Hit-event settings are separate
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(203)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(203)
+msgctxt "TraceMotive,Hit-event settings are separate"
+msgid "Hit-event settings are separate"
+msgstr "Hit-event settings are separate"
+
+#. Key:	INFO
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(204)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(204)
+msgctxt "TraceMotive,INFO"
+msgid "INFO"
+msgstr "INFO"
+
+#. Key:	Idle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(205)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(205)
+msgctxt "TraceMotive,Idle"
+msgid "Idle"
+msgstr "Idle"
+
+#. Key:	Ignore State
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(206)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(206)
+msgctxt "TraceMotive,Ignore State"
+msgid "Ignore State"
+msgstr "Ignore State"
+
+#. Key:	Ignored
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(207)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(207)
+msgctxt "TraceMotive,Ignored"
+msgid "Ignored"
+msgstr "Ignored"
+
+#. Key:	Info
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(208)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(208)
+msgctxt "TraceMotive,Info"
+msgid "Info"
+msgstr "Info"
+
+#. Key:	Input mappings have not been scanned. Select a target or press Rescan Input Mappings.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(209)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(209)
+msgctxt "TraceMotive,Input mappings have not been scanned. Select a target or press Rescan Input Mappings."
+msgid "Input mappings have not been scanned. Select a target or press Rescan Input Mappings."
+msgstr "Input mappings have not been scanned. Select a target or press Rescan Input Mappings."
+
+#. Key:	Inspected pairs
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(210)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(210)
+msgctxt "TraceMotive,Inspected pairs"
+msgid "Inspected pairs"
+msgstr "Inspected pairs"
+
+#. Key:	Instance Reference Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(211)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(211)
+msgctxt "TraceMotive,Instance Reference Trace"
+msgid "Instance Reference Trace"
+msgstr "Instance Reference Trace"
+
+#. Key:	Instance dedup on
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(212)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(212)
+msgctxt "TraceMotive,Instance dedup on"
+msgid "Instance dedup on"
+msgstr "Instance dedup on"
+
+#. Key:	Instances
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(213)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(213)
+msgctxt "TraceMotive,Instances"
+msgid "Instances"
+msgstr "Instances"
+
+#. Key:	Invalid component
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(214)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(214)
+msgctxt "TraceMotive,Invalid component"
+msgid "Invalid component"
+msgstr "Invalid component"
+
+#. Key:	Last click - waiting for PIE capture
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(215)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(215)
+msgctxt "TraceMotive,Last click - waiting for PIE capture"
+msgid "Last click - waiting for PIE capture"
+msgstr "Last click - waiting for PIE capture"
+
+#. Key:	Latest:
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(216)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(216)
+msgctxt "TraceMotive,Latest:"
+msgid "Latest:"
+msgstr "Latest:"
+
+#. Key:	Layout
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(217)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(217)
+msgctxt "TraceMotive,Layout"
+msgid "Layout"
+msgstr "Layout"
+
+#. Key:	Lifecycle
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(218)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(218)
+msgctxt "TraceMotive,Lifecycle"
+msgid "Lifecycle"
+msgstr "Lifecycle"
+
+#. Key:	Likely causes are extracted from the final UAT/cook/build log lines. Use Open target when an asset, Blueprint, class, or source file can be inferred.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(219)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(219)
+msgctxt "TraceMotive,Likely causes are extracted from the final UAT/cook/build log lines. Use Open target when an asset, Blueprint, class, or source file can be inferred."
+msgid "Likely causes are extracted from the final UAT/cook/build log lines. Use Open target when an asset, Blueprint, class, or source file can be inferred."
+msgstr "Likely causes are extracted from the final UAT/cook/build log lines. Use Open target when an asset, Blueprint, class, or source file can be inferred."
+
+#. Key:	Limitations
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(220)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(220)
+msgctxt "TraceMotive,Limitations"
+msgid "Limitations"
+msgstr "Limitations"
+
+#. Key:	Limitations: pitch-based audio speed can affect sound pitch, and some systems with custom clocks, media playback, network replication, or native timers may not follow global time dilation exactly.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(221)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(221)
+msgctxt "TraceMotive,Limitations: pitch-based audio speed can affect sound pitch, and some systems with custom clocks, media playback, network replication, or native timers may not follow global time dilation exactly."
+msgid "Limitations: pitch-based audio speed can affect sound pitch, and some systems with custom clocks, media playback, network replication, or native timers may not follow global time dilation exactly."
+msgstr "Limitations: pitch-based audio speed can affect sound pitch, and some systems with custom clocks, media playback, network replication, or native timers may not follow global time dilation exactly."
+
+#. Key:	List View
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(222)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(222)
+msgctxt "TraceMotive,List View"
+msgid "List View"
+msgstr "List View"
+
+#. Key:	Listening while this window is open.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(223)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(223)
+msgctxt "TraceMotive,Listening while this window is open."
+msgid "Listening while this window is open."
+msgstr "Listening while this window is open."
+
+#. Key:	Low
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(224)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(224)
+msgctxt "TraceMotive,Low"
+msgid "Low"
+msgstr "Low"
+
+#. Key:	Matches Output Log text or category, case-insensitively.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(225)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(225)
+msgctxt "TraceMotive,Matches Output Log text or category, case-insensitively."
+msgid "Matches Output Log text or category, case-insensitively."
+msgstr "Matches Output Log text or category, case-insensitively."
+
+#. Key:	Matches the selected Blueprint class (including children) and exact function name.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(226)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(226)
+msgctxt "TraceMotive,Matches the selected Blueprint class (including children) and exact function name."
+msgid "Matches the selected Blueprint class (including children) and exact function name."
+msgstr "Matches the selected Blueprint class (including children) and exact function name."
+
+#. Key:	Material
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(227)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(227)
+msgctxt "TraceMotive,Material"
+msgid "Material"
+msgstr "Material"
+
+#. Key:	Maximum 20x: frame skips, timer order changes, collision misses, and UI/audio desync can occur. Use only with Skip to Target.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(228)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(228)
+msgctxt "TraceMotive,Maximum 20x: frame skips, timer order changes, collision misses, and UI/audio desync can occur. Use only with Skip to Target."
+msgid "Maximum 20x: frame skips, timer order changes, collision misses, and UI/audio desync can occur. Use only with Skip to Target."
+msgstr "Maximum 20x: frame skips, timer order changes, collision misses, and UI/audio desync can occur. Use only with Skip to Target."
+
+#. Key:	Medium
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(229)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(229)
+msgctxt "TraceMotive,Medium"
+msgid "Medium"
+msgstr "Medium"
+
+#. Key:	Medium confidence: current query contact exists, but movement blocking path is unverified
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(230)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(230)
+msgctxt "TraceMotive,Medium confidence: current query contact exists, but movement blocking path is unverified"
+msgid "Medium confidence: current query contact exists, but movement blocking path is unverified"
+msgstr "Medium confidence: current query contact exists, but movement blocking path is unverified"
+
+#. Key:	Medium confidence: settings allow Block, but actual movement blocking is unverified
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(231)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(231)
+msgctxt "TraceMotive,Medium confidence: settings allow Block, but actual movement blocking is unverified"
+msgid "Medium confidence: settings allow Block, but actual movement blocking is unverified"
+msgstr "Medium confidence: settings allow Block, but actual movement blocking is unverified"
+
+#. Key:	Menu collapsed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(232)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(232)
+msgctxt "TraceMotive,Menu collapsed"
+msgid "Menu collapsed"
+msgstr "Menu collapsed"
+
+#. Key:	Mode
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(233)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(233)
+msgctxt "TraceMotive,Mode"
+msgid "Mode"
+msgstr "Mode"
+
+#. Key:	Monitor packaging stages and estimated overall progress.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(234)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(234)
+msgctxt "TraceMotive,Monitor packaging stages and estimated overall progress."
+msgid "Monitor packaging stages and estimated overall progress."
+msgstr "Monitor packaging stages and estimated overall progress."
+
+#. Key:	Mouse-under-widget path: {0}
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(235)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(235)
+msgctxt "TraceMotive,Mouse-under-widget path: {0}"
+msgid "Mouse-under-widget path: {0}"
+msgstr "Mouse-under-widget path: {0}"
+
+#. Key:	Move Nodes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(236)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(236)
+msgctxt "TraceMotive,Move Nodes"
+msgid "Move Nodes"
+msgstr "Move Nodes"
+
+#. Key:	Move Selected Component To Current View
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(237)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(237)
+msgctxt "TraceMotive,Move Selected Component To Current View"
+msgid "Move Selected Component To Current View"
+msgstr "Move Selected Component To Current View"
+
+#. Key:	Move Whole Actor To Current View
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(238)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(238)
+msgctxt "TraceMotive,Move Whole Actor To Current View"
+msgid "Move Whole Actor To Current View"
+msgstr "Move Whole Actor To Current View"
+
+#. Key:	Move only the selected scene component to the current level viewport camera position. If right-clicking an actor clears component selection, the most recently selected component on that actor is used.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(239)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(239)
+msgctxt "TraceMotive,Move only the selected scene component to the current level viewport camera position. If right-clicking an actor clears component selection, the most recently selected component on that actor is used."
+msgid "Move only the selected scene component to the current level viewport camera position. If right-clicking an actor clears component selection, the most recently selected component on that actor is used."
+msgstr "Move only the selected scene component to the current level viewport camera position. If right-clicking an actor clears component selection, the most recently selected component on that actor is used."
+
+#. Key:	Move the active viewport camera to the runtime owner actor.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(240)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(240)
+msgctxt "TraceMotive,Move the active viewport camera to the runtime owner actor."
+msgid "Move the active viewport camera to the runtime owner actor."
+msgstr "Move the active viewport camera to the runtime owner actor."
+
+#. Key:	Move the selected actor as a whole to the current level viewport camera position. If right-clicking changes selection, the most recently selected actor is used when it matches this context.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(241)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(241)
+msgctxt "TraceMotive,Move the selected actor as a whole to the current level viewport camera position. If right-clicking changes selection, the most recently selected actor is used when it matches this context."
+msgid "Move the selected actor as a whole to the current level viewport camera position. If right-clicking changes selection, the most recently selected actor is used when it matches this context."
+msgstr "Move the selected actor as a whole to the current level viewport camera position. If right-clicking changes selection, the most recently selected actor is used when it matches this context."
+
+#. Key:	MoveComponent ignore list excludes this pair
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(242)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(242)
+msgctxt "TraceMotive,MoveComponent ignore list excludes this pair"
+msgid "MoveComponent ignore list excludes this pair"
+msgstr "MoveComponent ignore list excludes this pair"
+
+#. Key:	MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(243)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(243)
+msgctxt "TraceMotive,MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component."
+msgid "MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component."
+msgstr "MoveComponent-style node found. Confirm that this path uses swept movement and does not ignore the blocking component."
+
+#. Key:	Movement API cannot be inferred from static state
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(244)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(244)
+msgctxt "TraceMotive,Movement API cannot be inferred from static state"
+msgid "Movement API cannot be inferred from static state"
+msgstr "Movement API cannot be inferred from static state"
+
+#. Key:	Next checks
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(245)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(245)
+msgctxt "TraceMotive,Next checks"
+msgid "Next checks"
+msgstr "Next checks"
+
+#. Key:	No Blueprint runtime errors captured yet. Start PIE with this window open.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(246)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(246)
+msgctxt "TraceMotive,No Blueprint runtime errors captured yet. Start PIE with this window open."
+msgid "No Blueprint runtime errors captured yet. Start PIE with this window open."
+msgstr "No Blueprint runtime errors captured yet. Start PIE with this window open."
+
+#. Key:	No audio playback captured yet. Keep this window open, then start PIE.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(247)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(247)
+msgctxt "TraceMotive,No audio playback captured yet. Keep this window open, then start PIE."
+msgid "No audio playback captured yet. Keep this window open, then start PIE."
+msgstr "No audio playback captured yet. Keep this window open, then start PIE."
+
+#. Key:	No changes match the current filters.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(248)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(248)
+msgctxt "TraceMotive,No changes match the current filters."
+msgid "No changes match the current filters."
+msgstr "No changes match the current filters."
+
+#. Key:	No changes match the current filters. Try Watch: All events and enable the category chips.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(249)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(249)
+msgctxt "TraceMotive,No changes match the current filters. Try Watch: All events and enable the category chips."
+msgid "No changes match the current filters. Try Watch: All events and enable the category chips."
+msgstr "No changes match the current filters. Try Watch: All events and enable the category chips."
+
+#. Key:	No click history yet.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(250)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(250)
+msgctxt "TraceMotive,No click history yet."
+msgid "No click history yet."
+msgstr "No click history yet."
+
+#. Key:	No component changes captured yet.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(251)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(251)
+msgctxt "TraceMotive,No component changes captured yet."
+msgid "No component changes captured yet."
+msgstr "No component changes captured yet."
+
+#. Key:	No component pair resolves to Block. Review the component pair responses below.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(252)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(252)
+msgctxt "TraceMotive,No component pair resolves to Block. Review the component pair responses below."
+msgid "No component pair resolves to Block. Review the component pair responses below."
+msgstr "No component pair resolves to Block. Review the component pair responses below."
+
+#. Key:	No current overlap contact
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(253)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(253)
+msgctxt "TraceMotive,No current overlap contact"
+msgid "No current overlap contact"
+msgstr "No current overlap contact"
+
+#. Key:	No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(254)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(254)
+msgctxt "TraceMotive,No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult."
+msgid "No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult."
+msgstr "No direct collision-option fix was detected. Prefer testing the actual movement path with Sweep=true and inspect the returned FHitResult."
+
+#. Key:	No logs yet.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(255)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(255)
+msgctxt "TraceMotive,No logs yet."
+msgid "No logs yet."
+msgstr "No logs yet."
+
+#. Key:	No matches found in the current editor world.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(256)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(256)
+msgctxt "TraceMotive,No matches found in the current editor world."
+msgid "No matches found in the current editor world."
+msgstr "No matches found in the current editor world."
+
+#. Key:	No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(257)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(257)
+msgctxt "TraceMotive,No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+msgid "No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+msgstr "No obvious Sweep=false or Teleport movement node was found in the selected actors' Blueprint class chain."
+
+#. Key:	No primitive collision component
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(258)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(258)
+msgctxt "TraceMotive,No primitive collision component"
+msgid "No primitive collision component"
+msgstr "No primitive collision component"
+
+#. Key:	No specific error line was detected. Check the recent packaging log below.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(259)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(259)
+msgctxt "TraceMotive,No specific error line was detected. Check the recent packaging log below."
+msgid "No specific error line was detected. Check the recent packaging log below."
+msgstr "No specific error line was detected. Check the recent packaging log below."
+
+#. Key:	No target selected. Use a selected asset/actor or pick the next PIE click.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(260)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(260)
+msgctxt "TraceMotive,No target selected. Use a selected asset/actor or pick the next PIE click."
+msgid "No target selected. Use a selected asset/actor or pick the next PIE click."
+msgstr "No target selected. Use a selected asset/actor or pick the next PIE click."
+
+#. Key:	No target selected. Use a selected asset/actor or pick the next PIE click/touch.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(261)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(261)
+msgctxt "TraceMotive,No target selected. Use a selected asset/actor or pick the next PIE click/touch."
+msgid "No target selected. Use a selected asset/actor or pick the next PIE click/touch."
+msgstr "No target selected. Use a selected asset/actor or pick the next PIE click/touch."
+
+#. Key:	Node
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(262)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(262)
+msgctxt "TraceMotive,Node"
+msgid "Node"
+msgstr "Node"
+
+#. Key:	Non-blocking / aux
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(263)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(263)
+msgctxt "TraceMotive,Non-blocking / aux"
+msgid "Non-blocking / aux"
+msgstr "Non-blocking / aux"
+
+#. Key:	Not reached
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(264)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(264)
+msgctxt "TraceMotive,Not reached"
+msgid "Not reached"
+msgstr "Not reached"
+
+#. Key:	Open
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(265)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(265)
+msgctxt "TraceMotive,Open"
+msgid "Open"
+msgstr "Open"
+
+#. Key:	Open BP
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(266)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(266)
+msgctxt "TraceMotive,Open BP"
+msgid "Open BP"
+msgstr "Open BP"
+
+#. Key:	Open Class Favorites
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(267)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(267)
+msgctxt "TraceMotive,Open Class Favorites"
+msgid "Open Class Favorites"
+msgstr "Open Class Favorites"
+
+#. Key:	Open Node
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(268)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(268)
+msgctxt "TraceMotive,Open Node"
+msgid "Open Node"
+msgstr "Open Node"
+
+#. Key:	Open a window that speeds up gameplay time dilation and audio playback together.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(269)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(269)
+msgctxt "TraceMotive,Open a window that speeds up gameplay time dilation and audio playback together."
+msgid "Open a window that speeds up gameplay time dilation and audio playback together."
+msgstr "Open a window that speeds up gameplay time dilation and audio playback together."
+
+#. Key:	Open class favorites for quick viewport placement.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(270)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(270)
+msgctxt "TraceMotive,Open class favorites for quick viewport placement."
+msgid "Open class favorites for quick viewport placement."
+msgstr "Open class favorites for quick viewport placement."
+
+#. Key:	Open target
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(271)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(271)
+msgctxt "TraceMotive,Open target"
+msgid "Open target"
+msgstr "Open target"
+
+#. Key:	Open the class favorites placement window.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(272)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(272)
+msgctxt "TraceMotive,Open the class favorites placement window."
+msgid "Open the class favorites placement window."
+msgstr "Open the class favorites placement window."
+
+#. Key:	Open the class favorites window for quick viewport placement.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(273)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(273)
+msgctxt "TraceMotive,Open the class favorites window for quick viewport placement."
+msgid "Open the class favorites window for quick viewport placement."
+msgstr "Open the class favorites window for quick viewport placement."
+
+#. Key:	Open the click delivery diagnostics panel.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(274)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(274)
+msgctxt "TraceMotive,Open the click delivery diagnostics panel."
+msgid "Open the click delivery diagnostics panel."
+msgstr "Open the click delivery diagnostics panel."
+
+#. Key:	Open the click/touch delivery diagnostics panel.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(275)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(275)
+msgctxt "TraceMotive,Open the click/touch delivery diagnostics panel."
+msgid "Open the click/touch delivery diagnostics panel."
+msgstr "Open the click/touch delivery diagnostics panel."
+
+#. Key:	Open the matching Blueprint node when available.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(276)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(276)
+msgctxt "TraceMotive,Open the matching Blueprint node when available."
+msgid "Open the matching Blueprint node when available."
+msgstr "Open the matching Blueprint node when available."
+
+#. Key:	Open the most recent Blueprint node for this class, or the Blueprint asset.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(277)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(277)
+msgctxt "TraceMotive,Open the most recent Blueprint node for this class, or the Blueprint asset."
+msgid "Open the most recent Blueprint node for this class, or the Blueprint asset."
+msgstr "Open the most recent Blueprint node for this class, or the Blueprint asset."
+
+#. Key:	Open the packaging progress monitor.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(278)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(278)
+msgctxt "TraceMotive,Open the packaging progress monitor."
+msgid "Open the packaging progress monitor."
+msgstr "Open the packaging progress monitor."
+
+#. Key:	Open the related asset, Blueprint, or source file when it can be inferred.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(279)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(279)
+msgctxt "TraceMotive,Open the related asset, Blueprint, or source file when it can be inferred."
+msgid "Open the related asset, Blueprint, or source file when it can be inferred."
+msgstr "Open the related asset, Blueprint, or source file when it can be inferred."
+
+#. Key:	Open the two-actor runtime collision diagnosis window.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(280)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(280)
+msgctxt "TraceMotive,Open the two-actor runtime collision diagnosis window."
+msgid "Open the two-actor runtime collision diagnosis window."
+msgstr "Open the two-actor runtime collision diagnosis window."
+
+#. Key:	Open this window before PIE to capture audio playback sources.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(281)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(281)
+msgctxt "TraceMotive,Open this window before PIE to capture audio playback sources."
+msgid "Open this window before PIE to capture audio playback sources."
+msgstr "Open this window before PIE to capture audio playback sources."
+
+#. Key:	Other
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(282)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(282)
+msgctxt "TraceMotive,Other"
+msgid "Other"
+msgstr "Other"
+
+#. Key:	Output Log text
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(283)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(283)
+msgctxt "TraceMotive,Output Log text"
+msgid "Output Log text"
+msgstr "Output Log text"
+
+#. Key:	Overall progress
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(284)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(284)
+msgctxt "TraceMotive,Overall progress"
+msgid "Overall progress"
+msgstr "Overall progress"
+
+#. Key:	Overlap events are also disabled
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(285)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(285)
+msgctxt "TraceMotive,Overlap events are also disabled"
+msgid "Overlap events are also disabled"
+msgstr "Overlap events are also disabled"
+
+#. Key:	PASS
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(286)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(286)
+msgctxt "TraceMotive,PASS"
+msgid "PASS"
+msgstr "PASS"
+
+#. Key:	PIE ended. Audio trace remains armed for the next play session.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(287)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(287)
+msgctxt "TraceMotive,PIE ended. Audio trace remains armed for the next play session."
+msgid "PIE ended. Audio trace remains armed for the next play session."
+msgstr "PIE ended. Audio trace remains armed for the next play session."
+
+#. Key:	PIE started. Existing AudioComponents scanned.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(288)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(288)
+msgctxt "TraceMotive,PIE started. Existing AudioComponents scanned."
+msgid "PIE started. Existing AudioComponents scanned."
+msgstr "PIE started. Existing AudioComponents scanned."
+
+#. Key:	PIE starting. Audio trace is armed.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(289)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(289)
+msgctxt "TraceMotive,PIE starting. Audio trace is armed."
+msgid "PIE starting. Audio trace is armed."
+msgstr "PIE starting. Audio trace is armed."
+
+#. Key:	Package Progress
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(290)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(290)
+msgctxt "TraceMotive,Package Progress"
+msgid "Package Progress"
+msgstr "Package Progress"
+
+#. Key:	Packaging error log
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(291)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(291)
+msgctxt "TraceMotive,Packaging error log"
+msgid "Packaging error log"
+msgstr "Packaging error log"
+
+#. Key:	Packaging failed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(292)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(292)
+msgctxt "TraceMotive,Packaging failed"
+msgid "Packaging failed"
+msgstr "Packaging failed"
+
+#. Key:	Pass
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(293)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(293)
+msgctxt "TraceMotive,Pass"
+msgid "Pass"
+msgstr "Pass"
+
+#. Key:	Passed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(294)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(294)
+msgctxt "TraceMotive,Passed"
+msgid "Passed"
+msgstr "Passed"
+
+#. Key:	Pause PIE/Game (restore 1x)
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(295)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(295)
+msgctxt "TraceMotive,Pause PIE/Game (restore 1x)"
+msgid "Pause PIE/Game (restore 1x)"
+msgstr "Pause PIE/Game (restore 1x)"
+
+#. Key:	PhysicsOnly contacts, Chaos simulation details, complex BodySetup cases, and custom primitive implementations cannot be fully proven by this panel.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(296)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(296)
+msgctxt "TraceMotive,PhysicsOnly contacts, Chaos simulation details, complex BodySetup cases, and custom primitive implementations cannot be fully proven by this panel."
+msgid "PhysicsOnly contacts, Chaos simulation details, complex BodySetup cases, and custom primitive implementations cannot be fully proven by this panel."
+msgstr "PhysicsOnly contacts, Chaos simulation details, complex BodySetup cases, and custom primitive implementations cannot be fully proven by this panel."
+
+#. Key:	Pick Next PIE Click
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(297)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(297)
+msgctxt "TraceMotive,Pick Next PIE Click"
+msgid "Pick Next PIE Click"
+msgstr "Pick Next PIE Click"
+
+#. Key:	Pick Next PIE Click inspects only the UMG widget or Visibility-hit actor under that click. Manual actor/widget selection is also available; no project-wide Blueprint load is performed.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(298)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(298)
+msgctxt "TraceMotive,Pick Next PIE Click inspects only the UMG widget or Visibility-hit actor under that click. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+msgid "Pick Next PIE Click inspects only the UMG widget or Visibility-hit actor under that click. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+msgstr "Pick Next PIE Click inspects only the UMG widget or Visibility-hit actor under that click. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+
+#. Key:	Pick Next PIE Click/Touch
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(299)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(299)
+msgctxt "TraceMotive,Pick Next PIE Click/Touch"
+msgid "Pick Next PIE Click/Touch"
+msgstr "Pick Next PIE Click/Touch"
+
+#. Key:	Pick Next PIE Click/Touch inspects only the UMG widget or Visibility-hit actor under that pointer event. Manual actor/widget selection is also available; no project-wide Blueprint load is performed.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(300)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(300)
+msgctxt "TraceMotive,Pick Next PIE Click/Touch inspects only the UMG widget or Visibility-hit actor under that pointer event. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+msgid "Pick Next PIE Click/Touch inspects only the UMG widget or Visibility-hit actor under that pointer event. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+msgstr "Pick Next PIE Click/Touch inspects only the UMG widget or Visibility-hit actor under that pointer event. Manual actor/widget selection is also available; no project-wide Blueprint load is performed."
+
+#. Key:	Pin
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(301)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(301)
+msgctxt "TraceMotive,Pin"
+msgid "Pin"
+msgstr "Pin"
+
+#. Key:	Pinned
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(302)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(302)
+msgctxt "TraceMotive,Pinned"
+msgid "Pinned"
+msgstr "Pinned"
+
+#. Key:	Pinned Only
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(303)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(303)
+msgctxt "TraceMotive,Pinned Only"
+msgid "Pinned Only"
+msgstr "Pinned Only"
+
+#. Key:	Place
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(304)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(304)
+msgctxt "TraceMotive,Place"
+msgid "Place"
+msgstr "Place"
+
+#. Key:	Place this class at the current level viewport camera location.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(305)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(305)
+msgctxt "TraceMotive,Place this class at the current level viewport camera location."
+msgid "Place this class at the current level viewport camera location."
+msgstr "Place this class at the current level viewport camera location."
+
+#. Key:	Place this class at world origin (0,0,0).
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(306)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(306)
+msgctxt "TraceMotive,Place this class at world origin (0,0,0)."
+msgid "Place this class at world origin (0,0,0)."
+msgstr "Place this class at world origin (0,0,0)."
+
+#. Key:	Platform
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(307)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(307)
+msgctxt "TraceMotive,Platform"
+msgid "Platform"
+msgstr "Platform"
+
+#. Key:	Pointer Event Diagnostics
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(308)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(308)
+msgctxt "TraceMotive,Pointer Event Diagnostics"
+msgid "Pointer Event Diagnostics"
+msgstr "Pointer Event Diagnostics"
+
+#. Key:	Preparing Fast Search...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(309)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(309)
+msgctxt "TraceMotive,Preparing Fast Search..."
+msgid "Preparing Fast Search..."
+msgstr "Preparing Fast Search..."
+
+#. Key:	Preparing Full Scan...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(310)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(310)
+msgctxt "TraceMotive,Preparing Full Scan..."
+msgid "Preparing Full Scan..."
+msgstr "Preparing Full Scan..."
+
+#. Key:	Preparing call chain trace...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(311)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(311)
+msgctxt "TraceMotive,Preparing call chain trace..."
+msgid "Preparing call chain trace..."
+msgstr "Preparing call chain trace..."
+
+#. Key:	Project Content
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(312)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(312)
+msgctxt "TraceMotive,Project Content"
+msgid "Project Content"
+msgstr "Project Content"
+
+#. Key:	Quick fix tips
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(313)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(313)
+msgctxt "TraceMotive,Quick fix tips"
+msgid "Quick fix tips"
+msgstr "Quick fix tips"
+
+#. Key:	Raw Log
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(314)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(314)
+msgctxt "TraceMotive,Raw Log"
+msgid "Raw Log"
+msgstr "Raw Log"
+
+#. Key:	Reached target
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(315)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(315)
+msgctxt "TraceMotive,Reached target"
+msgid "Reached target"
+msgstr "Reached target"
+
+#. Key:	Recent changes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(316)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(316)
+msgctxt "TraceMotive,Recent changes"
+msgid "Recent changes"
+msgstr "Recent changes"
+
+#. Key:	Recent packaging log
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(317)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(317)
+msgctxt "TraceMotive,Recent packaging log"
+msgid "Recent packaging log"
+msgstr "Recent packaging log"
+
+#. Key:	Reference
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(318)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(318)
+msgctxt "TraceMotive,Reference"
+msgid "Reference"
+msgstr "Reference"
+
+#. Key:	Referencers
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(319)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(319)
+msgctxt "TraceMotive,Referencers"
+msgid "Referencers"
+msgstr "Referencers"
+
+#. Key:	Refresh
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(320)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(320)
+msgctxt "TraceMotive,Refresh"
+msgid "Refresh"
+msgstr "Refresh"
+
+#. Key:	Refresh Search Results
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(321)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(321)
+msgctxt "TraceMotive,Refresh Search Results"
+msgid "Refresh Search Results"
+msgstr "Refresh Search Results"
+
+#. Key:	Remove this entry from the favorites list. This does not delete actors or assets.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(322)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(322)
+msgctxt "TraceMotive,Remove this entry from the favorites list. This does not delete actors or assets."
+msgid "Remove this entry from the favorites list. This does not delete actors or assets."
+msgstr "Remove this entry from the favorites list. This does not delete actors or assets."
+
+#. Key:	Replace With Selected
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(323)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(323)
+msgctxt "TraceMotive,Replace With Selected"
+msgid "Replace With Selected"
+msgstr "Replace With Selected"
+
+#. Key:	Rescan Input Mappings
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(324)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(324)
+msgctxt "TraceMotive,Rescan Input Mappings"
+msgid "Rescan Input Mappings"
+msgstr "Rescan Input Mappings"
+
+#. Key:	Reset
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(325)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(325)
+msgctxt "TraceMotive,Reset"
+msgid "Reset"
+msgstr "Reset"
+
+#. Key:	Restore 1x
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(326)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(326)
+msgctxt "TraceMotive,Restore 1x"
+msgid "Restore 1x"
+msgstr "Restore 1x"
+
+#. Key:	Result
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(327)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(327)
+msgctxt "TraceMotive,Result"
+msgid "Result"
+msgstr "Result"
+
+#. Key:	Row Layout
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(328)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(328)
+msgctxt "TraceMotive,Row Layout"
+msgid "Row Layout"
+msgstr "Row Layout"
+
+#. Key:	Run required
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(329)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(329)
+msgctxt "TraceMotive,Run required"
+msgid "Run required"
+msgstr "Run required"
+
+#. Key:	Running
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(330)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(330)
+msgctxt "TraceMotive,Running"
+msgid "Running"
+msgstr "Running"
+
+#. Key:	Runtime Instance
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(331)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(331)
+msgctxt "TraceMotive,Runtime Instance"
+msgid "Runtime Instance"
+msgstr "Runtime Instance"
+
+#. Key:	Runtime physics state is missing
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(332)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(332)
+msgctxt "TraceMotive,Runtime physics state is missing"
+msgid "Runtime physics state is missing"
+msgstr "Runtime physics state is missing"
+
+#. Key:	Same Folder
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(333)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(333)
+msgctxt "TraceMotive,Same Folder"
+msgid "Same Folder"
+msgstr "Same Folder"
+
+#. Key:	Save Snapshot
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(334)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(334)
+msgctxt "TraceMotive,Save Snapshot"
+msgid "Save Snapshot"
+msgstr "Save Snapshot"
+
+#. Key:	Scope
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(335)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(335)
+msgctxt "TraceMotive,Scope"
+msgid "Scope"
+msgstr "Scope"
+
+#. Key:	Search
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(336)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(336)
+msgctxt "TraceMotive,Search"
+msgid "Search"
+msgstr "Search"
+
+#. Key:	Search / View / Filters / Export / Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(337)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(337)
+msgctxt "TraceMotive,Search / View / Filters / Export / Trace"
+msgid "Search / View / Filters / Export / Trace"
+msgstr "Search / View / Filters / Export / Trace"
+
+#. Key:	Search Boost: OFF
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(338)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(338)
+msgctxt "TraceMotive,Search Boost: OFF"
+msgid "Search Boost: OFF"
+msgstr "Search Boost: OFF"
+
+#. Key:	Search Boost: ON
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(339)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(339)
+msgctxt "TraceMotive,Search Boost: ON"
+msgid "Search Boost: ON"
+msgstr "Search Boost: ON"
+
+#. Key:	Search actor tags, variable names, and variable values in current level instances.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(340)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(340)
+msgctxt "TraceMotive,Search actor tags, variable names, and variable values in current level instances."
+msgid "Search actor tags, variable names, and variable values in current level instances."
+msgstr "Search actor tags, variable names, and variable values in current level instances."
+
+#. Key:	Search actor, component, tag, variable name, or variable value
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(341)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(341)
+msgctxt "TraceMotive,Search actor, component, tag, variable name, or variable value"
+msgid "Search actor, component, tag, variable name, or variable value"
+msgstr "Search actor, component, tag, variable name, or variable value"
+
+#. Key:	Search and select Blueprint class...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(342)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(342)
+msgctxt "TraceMotive,Search and select Blueprint class..."
+msgid "Search and select Blueprint class..."
+msgstr "Search and select Blueprint class..."
+
+#. Key:	Search events
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(343)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(343)
+msgctxt "TraceMotive,Search events"
+msgid "Search events"
+msgstr "Search events"
+
+#. Key:	Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(344)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(344)
+msgctxt "TraceMotive,Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values."
+msgid "Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values."
+msgstr "Search loaded editor-world instances without loading every Blueprint. Includes tags, Details variable names, and variable values."
+
+#. Key:	Search loaded level instances, tags, and Details variables without freezing the editor.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(345)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(345)
+msgctxt "TraceMotive,Search loaded level instances, tags, and Details variables without freezing the editor."
+msgid "Search loaded level instances, tags, and Details variables without freezing the editor."
+msgstr "Search loaded level instances, tags, and Details variables without freezing the editor."
+
+#. Key:	Searching Assets...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(346)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(346)
+msgctxt "TraceMotive,Searching Assets..."
+msgid "Searching Assets..."
+msgstr "Searching Assets..."
+
+#. Key:	Select
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(347)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(347)
+msgctxt "TraceMotive,Select"
+msgid "Select"
+msgstr "Select"
+
+#. Key:	Select function...
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(348)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(348)
+msgctxt "TraceMotive,Select function..."
+msgid "Select function..."
+msgstr "Select function..."
+
+#. Key:	Select or capture actor A and B, then run Analyze.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(349)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(349)
+msgctxt "TraceMotive,Select or capture actor A and B, then run Analyze."
+msgid "Select or capture actor A and B, then run Analyze."
+msgstr "Select or capture actor A and B, then run Analyze."
+
+#. Key:	Select the runtime owner actor instance in the editor.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(350)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(350)
+msgctxt "TraceMotive,Select the runtime owner actor instance in the editor."
+msgid "Select the runtime owner actor instance in the editor."
+msgstr "Select the runtime owner actor instance in the editor."
+
+#. Key:	Selected only
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(351)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(351)
+msgctxt "TraceMotive,Selected only"
+msgid "Selected only"
+msgstr "Selected only"
+
+#. Key:	Selection required
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(352)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(352)
+msgctxt "TraceMotive,Selection required"
+msgid "Selection required"
+msgstr "Selection required"
+
+#. Key:	Short sweep probe did not hit this pair
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(353)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(353)
+msgctxt "TraceMotive,Short sweep probe did not hit this pair"
+msgid "Short sweep probe did not hit this pair"
+msgstr "Short sweep probe did not hit this pair"
+
+#. Key:	Show Call Chain
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(354)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(354)
+msgctxt "TraceMotive,Show Call Chain"
+msgid "Show Call Chain"
+msgstr "Show Call Chain"
+
+#. Key:	Show Calls
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(355)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(355)
+msgctxt "TraceMotive,Show Calls"
+msgid "Show Calls"
+msgstr "Show Calls"
+
+#. Key:	Show Classes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(356)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(356)
+msgctxt "TraceMotive,Show Classes"
+msgid "Show Classes"
+msgstr "Show Classes"
+
+#. Key:	Show Definitions
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(357)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(357)
+msgctxt "TraceMotive,Show Definitions"
+msgid "Show Definitions"
+msgstr "Show Definitions"
+
+#. Key:	Show Errors
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(358)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(358)
+msgctxt "TraceMotive,Show Errors"
+msgid "Show Errors"
+msgstr "Show Errors"
+
+#. Key:	Show Get
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(359)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(359)
+msgctxt "TraceMotive,Show Get"
+msgid "Show Get"
+msgstr "Show Get"
+
+#. Key:	Show Ignored
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(360)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(360)
+msgctxt "TraceMotive,Show Ignored"
+msgid "Show Ignored"
+msgstr "Show Ignored"
+
+#. Key:	Show Lines
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(361)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(361)
+msgctxt "TraceMotive,Show Lines"
+msgid "Show Lines"
+msgstr "Show Lines"
+
+#. Key:	Show Menu
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(362)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(362)
+msgctxt "TraceMotive,Show Menu"
+msgid "Show Menu"
+msgstr "Show Menu"
+
+#. Key:	Show Set
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(363)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(363)
+msgctxt "TraceMotive,Show Set"
+msgid "Show Set"
+msgstr "Show Set"
+
+#. Key:	Show UMG/Slate speed limitations
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(364)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(364)
+msgctxt "TraceMotive,Show UMG/Slate speed limitations"
+msgid "Show UMG/Slate speed limitations"
+msgstr "Show UMG/Slate speed limitations"
+
+#. Key:	Show complete function call chain from root callers
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(365)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(365)
+msgctxt "TraceMotive,Show complete function call chain from root callers"
+msgid "Show complete function call chain from root callers"
+msgstr "Show complete function call chain from root callers"
+
+#. Key:	Show function references in a visual graph editor
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(366)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(366)
+msgctxt "TraceMotive,Show function references in a visual graph editor"
+msgid "Show function references in a visual graph editor"
+msgstr "Show function references in a visual graph editor"
+
+#. Key:	Show only one latest row per runtime instance. Counts still include repeated events and merged error groups.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(367)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(367)
+msgctxt "TraceMotive,Show only one latest row per runtime instance. Counts still include repeated events and merged error groups."
+msgid "Show only one latest row per runtime instance. Counts still include repeated events and merged error groups."
+msgstr "Show only one latest row per runtime instance. Counts still include repeated events and merged error groups."
+
+#. Key:	Show references in a visual graph editor
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(368)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(368)
+msgctxt "TraceMotive,Show references in a visual graph editor"
+msgid "Show references in a visual graph editor"
+msgstr "Show references in a visual graph editor"
+
+#. Key:	Show solid reference lines from the definition node to each referencing node
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(369)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(369)
+msgctxt "TraceMotive,Show solid reference lines from the definition node to each referencing node"
+msgid "Show solid reference lines from the definition node to each referencing node"
+msgstr "Show solid reference lines from the definition node to each referencing node"
+
+#. Key:	Showing
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(370)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(370)
+msgctxt "TraceMotive,Showing"
+msgid "Showing"
+msgstr "Showing"
+
+#. Key:	Skip
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(371)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(371)
+msgctxt "TraceMotive,Skip"
+msgid "Skip"
+msgstr "Skip"
+
+#. Key:	Skip-only speed (8x+): not recommended for normal play. Use this to reach a log or event target, then pause.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(372)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(372)
+msgctxt "TraceMotive,Skip-only speed (8x+): not recommended for normal play. Use this to reach a log or event target, then pause."
+msgid "Skip-only speed (8x+): not recommended for normal play. Use this to reach a log or event target, then pause."
+msgstr "Skip-only speed (8x+): not recommended for normal play. Use this to reach a log or event target, then pause."
+
+#. Key:	Source compile error
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(373)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(373)
+msgctxt "TraceMotive,Source compile error"
+msgid "Source compile error"
+msgstr "Source compile error"
+
+#. Key:	Speed
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(374)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(374)
+msgctxt "TraceMotive,Speed"
+msgid "Speed"
+msgstr "Speed"
+
+#. Key:	Speed snaps to 0.1x steps from 0.1x to 20x. Integer values are rounded cleanly; 1x restores normal time and audio pitch.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(375)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(375)
+msgctxt "TraceMotive,Speed snaps to 0.1x steps from 0.1x to 20x. Integer values are rounded cleanly; 1x restores normal time and audio pitch."
+msgid "Speed snaps to 0.1x steps from 0.1x to 20x. Integer values are rounded cleanly; 1x restores normal time and audio pitch."
+msgstr "Speed snaps to 0.1x steps from 0.1x to 20x. Integer values are rounded cleanly; 1x restores normal time and audio pitch."
+
+#. Key:	Stats
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(376)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(376)
+msgctxt "TraceMotive,Stats"
+msgid "Stats"
+msgstr "Stats"
+
+#. Key:	Status
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(377)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(377)
+msgctxt "TraceMotive,Status"
+msgid "Status"
+msgstr "Status"
+
+#. Key:	Succeeded
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(378)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(378)
+msgctxt "TraceMotive,Succeeded"
+msgid "Succeeded"
+msgstr "Succeeded"
+
+#. Key:	Suspicious movement nodes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(379)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(379)
+msgctxt "TraceMotive,Suspicious movement nodes"
+msgid "Suspicious movement nodes"
+msgstr "Suspicious movement nodes"
+
+#. Key:	Swap A / B
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(380)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(380)
+msgctxt "TraceMotive,Swap A / B"
+msgid "Swap A / B"
+msgstr "Swap A / B"
+
+#. Key:	Sweep hits
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(381)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(381)
+msgctxt "TraceMotive,Sweep hits"
+msgid "Sweep hits"
+msgstr "Sweep hits"
+
+#. Key:	Sweep probe skipped: component has no world.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(382)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(382)
+msgctxt "TraceMotive,Sweep probe skipped: component has no world."
+msgid "Sweep probe skipped: component has no world."
+msgstr "Sweep probe skipped: component has no world."
+
+#. Key:	Sweep probe skipped: components are invalid or not in the same world.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(383)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(383)
+msgctxt "TraceMotive,Sweep probe skipped: components are invalid or not in the same world."
+msgid "Sweep probe skipped: components are invalid or not in the same world."
+msgstr "Sweep probe skipped: components are invalid or not in the same world."
+
+#. Key:	Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(384)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(384)
+msgctxt "TraceMotive,Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred."
+msgid "Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred."
+msgstr "Sweep probe skipped: the components share the same center, so no reliable sweep direction could be inferred."
+
+#. Key:	Sweep=false, Teleport, custom ignore lists, or a MovementComponent using a non-blocking UpdatedComponent can bypass otherwise valid blocking collision.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(385)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(385)
+msgctxt "TraceMotive,Sweep=false, Teleport, custom ignore lists, or a MovementComponent using a non-blocking UpdatedComponent can bypass otherwise valid blocking collision."
+msgid "Sweep=false, Teleport, custom ignore lists, or a MovementComponent using a non-blocking UpdatedComponent can bypass otherwise valid blocking collision."
+msgstr "Sweep=false, Teleport, custom ignore lists, or a MovementComponent using a non-blocking UpdatedComponent can bypass otherwise valid blocking collision."
+
+#. Key:	Swept movement can block
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(386)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(386)
+msgctxt "TraceMotive,Swept movement can block"
+msgid "Swept movement can block"
+msgstr "Swept movement can block"
+
+#. Key:	Sync the Content Browser to this asset, matching the editor Ctrl+B behavior.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(387)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(387)
+msgctxt "TraceMotive,Sync the Content Browser to this asset, matching the editor Ctrl+B behavior."
+msgid "Sync the Content Browser to this asset, matching the editor Ctrl+B behavior."
+msgstr "Sync the Content Browser to this asset, matching the editor Ctrl+B behavior."
+
+#. Key:	Tag
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(388)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(388)
+msgctxt "TraceMotive,Tag"
+msgid "Tag"
+msgstr "Tag"
+
+#. Key:	Tags
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(389)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(389)
+msgctxt "TraceMotive,Tags"
+msgid "Tags"
+msgstr "Tags"
+
+#. Key:	Target: {0}
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(390)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(390)
+msgctxt "TraceMotive,Target: {0}"
+msgid "Target: {0}"
+msgstr "Target: {0}"
+
+#. Key:	Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(391)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(391)
+msgctxt "TraceMotive,Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement."
+msgid "Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement."
+msgstr "Teleport-style movement can bypass normal swept blocking. Verify this is intentional for collision-critical movement."
+
+#. Key:	The pair resolves to Overlap, not Block
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(392)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(392)
+msgctxt "TraceMotive,The pair resolves to Overlap, not Block"
+msgid "The pair resolves to Overlap, not Block"
+msgstr "The pair resolves to Overlap, not Block"
+
+#. Key:	This component pair is configured to Block
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(393)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(393)
+msgctxt "TraceMotive,This component pair is configured to Block"
+msgid "This component pair is configured to Block"
+msgstr "This component pair is configured to Block"
+
+#. Key:	This panel reports evidence and likely causes, not an absolute collision verdict.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(394)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(394)
+msgctxt "TraceMotive,This panel reports evidence and likely causes, not an absolute collision verdict."
+msgid "This panel reports evidence and likely causes, not an absolute collision verdict."
+msgstr "This panel reports evidence and likely causes, not an absolute collision verdict."
+
+#. Key:	This selected item has no captured changes yet. Select the actor root or clear filters to see all recent events.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(395)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(395)
+msgctxt "TraceMotive,This selected item has no captured changes yet. Select the actor root or clear filters to see all recent events."
+msgid "This selected item has no captured changes yet. Select the actor root or clear filters to see all recent events."
+msgstr "This selected item has no captured changes yet. Select the actor root or clear filters to see all recent events."
+
+#. Key:	This selected item has no captured changes.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(396)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(396)
+msgctxt "TraceMotive,This selected item has no captured changes."
+msgid "This selected item has no captured changes."
+msgstr "This selected item has no captured changes."
+
+#. Key:	Toggle between detailed error groups and deduplicated error classes.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(397)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(397)
+msgctxt "TraceMotive,Toggle between detailed error groups and deduplicated error classes."
+msgid "Toggle between detailed error groups and deduplicated error classes."
+msgstr "Toggle between detailed error groups and deduplicated error classes."
+
+#. Key:	Trace
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(398)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(398)
+msgctxt "TraceMotive,Trace"
+msgid "Trace"
+msgstr "Trace"
+
+#. Key:	Trace Details
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(399)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(399)
+msgctxt "TraceMotive,Trace Details"
+msgid "Trace Details"
+msgstr "Trace Details"
+
+#. Key:	Trace Instance References
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(400)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(400)
+msgctxt "TraceMotive,Trace Instance References"
+msgid "Trace Instance References"
+msgstr "Trace Instance References"
+
+#. Key:	Track Blueprint runtime errors and identify the live instance that emitted each error.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(401)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(401)
+msgctxt "TraceMotive,Track Blueprint runtime errors and identify the live instance that emitted each error."
+msgid "Track Blueprint runtime errors and identify the live instance that emitted each error."
+msgstr "Track Blueprint runtime errors and identify the live instance that emitted each error."
+
+#. Key:	Track Blueprint runtime errors with live PIE instance information.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(402)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(402)
+msgctxt "TraceMotive,Track Blueprint runtime errors with live PIE instance information."
+msgid "Track Blueprint runtime errors with live PIE instance information."
+msgstr "Track Blueprint runtime errors with live PIE instance information."
+
+#. Key:	Track live references to the selected actor instance during Editor/PIE.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(403)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(403)
+msgctxt "TraceMotive,Track live references to the selected actor instance during Editor/PIE."
+msgid "Track live references to the selected actor instance during Editor/PIE."
+msgstr "Track live references to the selected actor instance during Editor/PIE."
+
+#. Key:	Transform
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(404)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(404)
+msgctxt "TraceMotive,Transform"
+msgid "Transform"
+msgstr "Transform"
+
+#. Key:	Tree View
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(405)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(405)
+msgctxt "TraceMotive,Tree View"
+msgid "Tree View"
+msgstr "Tree View"
+
+#. Key:	Two actors are required
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(406)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(406)
+msgctxt "TraceMotive,Two actors are required"
+msgid "Two actors are required"
+msgstr "Two actors are required"
+
+#. Key:	Type a search term. The scan runs in small batches so the editor does not freeze.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(407)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(407)
+msgctxt "TraceMotive,Type a search term. The scan runs in small batches so the editor does not freeze."
+msgid "Type a search term. The scan runs in small batches so the editor does not freeze."
+msgstr "Type a search term. The scan runs in small batches so the editor does not freeze."
+
+#. Key:	Unique groups
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(408)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(408)
+msgctxt "TraceMotive,Unique groups"
+msgid "Unique groups"
+msgstr "Unique groups"
+
+#. Key:	Unpin
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(409)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(409)
+msgctxt "TraceMotive,Unpin"
+msgid "Unpin"
+msgstr "Unpin"
+
+#. Key:	Use Selected Actor
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(410)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(410)
+msgctxt "TraceMotive,Use Selected Actor"
+msgid "Use Selected Actor"
+msgstr "Use Selected Actor"
+
+#. Key:	Use Selected Widget
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(411)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(411)
+msgctxt "TraceMotive,Use Selected Widget"
+msgid "Use Selected Widget"
+msgstr "Use Selected Widget"
+
+#. Key:	Use Two Selected
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(412)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(412)
+msgctxt "TraceMotive,Use Two Selected"
+msgid "Use Two Selected"
+msgstr "Use Two Selected"
+
+#. Key:	Use more editor time per tick for the next call-chain/search operation.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(413)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(413)
+msgctxt "TraceMotive,Use more editor time per tick for the next call-chain/search operation."
+msgid "Use more editor time per tick for the next call-chain/search operation."
+msgstr "Use more editor time per tick for the next call-chain/search operation."
+
+#. Key:	Use more editor time per tick to finish searches faster.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(414)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(414)
+msgctxt "TraceMotive,Use more editor time per tick to finish searches faster."
+msgid "Use more editor time per tick to finish searches faster."
+msgstr "Use more editor time per tick to finish searches faster."
+
+#. Key:	Variable name
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(415)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(415)
+msgctxt "TraceMotive,Variable name"
+msgid "Variable name"
+msgstr "Variable name"
+
+#. Key:	Variable name (ex: a)
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(416)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(416)
+msgctxt "TraceMotive,Variable name (ex: a)"
+msgid "Variable name (ex: a)"
+msgstr "Variable name (ex: a)"
+
+#. Key:	Variable names
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(417)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(417)
+msgctxt "TraceMotive,Variable names"
+msgid "Variable names"
+msgstr "Variable names"
+
+#. Key:	Variable pair
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(418)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(418)
+msgctxt "TraceMotive,Variable pair"
+msgid "Variable pair"
+msgstr "Variable pair"
+
+#. Key:	Variable value
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(419)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(419)
+msgctxt "TraceMotive,Variable value"
+msgid "Variable value"
+msgstr "Variable value"
+
+#. Key:	Variable value (ex: abc)
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(420)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(420)
+msgctxt "TraceMotive,Variable value (ex: abc)"
+msgid "Variable value (ex: abc)"
+msgstr "Variable value (ex: abc)"
+
+#. Key:	Variable values
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(421)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(421)
+msgctxt "TraceMotive,Variable values"
+msgid "Variable values"
+msgstr "Variable values"
+
+#. Key:	Verdict
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(422)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(422)
+msgctxt "TraceMotive,Verdict"
+msgid "Verdict"
+msgstr "Verdict"
+
+#. Key:	View
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(423)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(423)
+msgctxt "TraceMotive,View"
+msgid "View"
+msgstr "View"
+
+#. Key:	View full diagnostic steps for last click v
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(424)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(424)
+msgctxt "TraceMotive,View full diagnostic steps for last click v"
+msgid "View full diagnostic steps for last click v"
+msgstr "View full diagnostic steps for last click v"
+
+#. Key:	Visibility
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(425)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(425)
+msgctxt "TraceMotive,Visibility"
+msgid "Visibility"
+msgstr "Visibility"
+
+#. Key:	Visual Find Function References
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(426)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(426)
+msgctxt "TraceMotive,Visual Find Function References"
+msgid "Visual Find Function References"
+msgstr "Visual Find Function References"
+
+#. Key:	Visual Find References
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(427)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(427)
+msgctxt "TraceMotive,Visual Find References"
+msgid "Visual Find References"
+msgstr "Visual Find References"
+
+#. Key:	Visual Reference Viewer
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(428)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(428)
+msgctxt "TraceMotive,Visual Reference Viewer"
+msgid "Visual Reference Viewer"
+msgstr "Visual Reference Viewer"
+
+#. Key:	Visual Variable/Function Reference Viewer
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(429)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(429)
+msgctxt "TraceMotive,Visual Variable/Function Reference Viewer"
+msgid "Visual Variable/Function Reference Viewer"
+msgstr "Visual Variable/Function Reference Viewer"
+
+#. Key:	Visual Variable/Function References
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(430)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(430)
+msgctxt "TraceMotive,Visual Variable/Function References"
+msgid "Visual Variable/Function References"
+msgstr "Visual Variable/Function References"
+
+#. Key:	Waiting
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(431)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(431)
+msgctxt "TraceMotive,Waiting"
+msgid "Waiting"
+msgstr "Waiting"
+
+#. Key:	Warning: high speed can increase CPU load and make heavy projects, many Tick events, timers, physics, animation, and audio updates unstable or harder to debug.
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(432)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(432)
+msgctxt "TraceMotive,Warning: high speed can increase CPU load and make heavy projects, many Tick events, timers, physics, animation, and audio updates unstable or harder to debug."
+msgid "Warning: high speed can increase CPU load and make heavy projects, many Tick events, timers, physics, animation, and audio updates unstable or harder to debug."
+msgstr "Warning: high speed can increase CPU load and make heavy projects, many Tick events, timers, physics, animation, and audio updates unstable or harder to debug."
+
+#. Key:	Watch:
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(433)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(433)
+msgctxt "TraceMotive,Watch:"
+msgid "Watch:"
+msgstr "Watch:"
+
+#. Key:	captured
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(434)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(434)
+msgctxt "TraceMotive,captured"
+msgid "captured"
+msgstr "captured"
+
+#. Key:	e.g. BossPhase2 or a log category
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(435)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(435)
+msgctxt "TraceMotive,e.g. BossPhase2 or a log category"
+msgid "e.g. BossPhase2 or a log category"
+msgstr "e.g. BossPhase2 or a log category"
+
+#. Key:	{0}\n(Self References)
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(436)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(436)
+msgctxt "TraceMotive,{0}\n(Self References)"
+msgid "{0}\n(Self References)"
+msgstr "{0}\n(Self References)"
+
+#. Key:	{0} changes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(437)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(437)
+msgctxt "TraceMotive,{0} changes"
+msgid "{0} changes"
+msgstr "{0} changes"
+
+#. Key:	{0} changes (including children)
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(438)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(438)
+msgctxt "TraceMotive,{0} changes (including children)"
+msgid "{0} changes (including children)"
+msgstr "{0} changes (including children)"
+
+#. Key:	{0} has no visible changes - showing recent matching changes
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(439)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(439)
+msgctxt "TraceMotive,{0} has no visible changes - showing recent matching changes"
+msgid "{0} has no visible changes - showing recent matching changes"
+msgstr "{0} has no visible changes - showing recent matching changes"
+
+#. Key:	{0} likely issue(s) found
+#. SourceLocation:	Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(440)
+#: Plugins/TraceMotive/Source/TraceMotive/Private/TMLocTextKeys.cpp(440)
+msgctxt "TraceMotive,{0} likely issue(s) found"
+msgid "{0} likely issue(s) found"
+msgstr "{0} likely issue(s) found"
+
