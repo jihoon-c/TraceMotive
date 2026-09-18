@@ -15,6 +15,7 @@
 #include "Engine/World.h"
 
 #include "HAL/PlatformTime.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
 #include "HAL/FileManager.h"
 
 #include "K2Node_CallFunction.h"
@@ -931,6 +932,7 @@ FunctionCallChainTracer::~FunctionCallChainTracer()
 
     }
 
+    if (ActivePackageLoadHandle.IsValid()) ActivePackageLoadHandle->CancelHandle();
 }
 
 void FunctionCallChainTracer::StartTrace()
@@ -963,6 +965,10 @@ void FunctionCallChainTracer::StartTrace()
 
     bIsTracing = true;
     TraceSession.Begin();
+    CancellationGeneration = TMPerf::GetCancellationGeneration();
+    if (ActivePackageLoadHandle.IsValid()) ActivePackageLoadHandle->CancelHandle();
+    ActivePackageLoadHandle.Reset();
+    PendingPackageLoadName = NAME_None;
 
     ProcessQueue.Empty();
 
@@ -981,6 +987,9 @@ void FunctionCallChainTracer::StartTrace()
     CppSourceFilesToScan.Empty();
 
     CppSourceFileIndex = 0;
+    CurrentCppSourceLines.Empty();
+    CurrentCppSourceLineIndex = 0;
+    bCurrentCppSourceLoaded = false;
 
     AddedCppSourceCallKeys.Empty();
 
@@ -989,6 +998,11 @@ void FunctionCallChainTracer::StartTrace()
     PackagesToScan.Empty();
 
     CachedCallerMap.Empty();
+    CallerCacheBlueprints.Empty();
+    CallerCacheGraphs.Empty();
+    CallerCacheBlueprintIndex = 0;
+    CallerCacheGraphIndex = 0;
+    CallerCacheNodeIndex = 0;
 
     CppSourceFilesToScan.Empty();
 
@@ -997,6 +1011,7 @@ void FunctionCallChainTracer::StartTrace()
     ReleaseScanObjectReferences();
 
     LoadedPackageIndex = 0;
+    ResetActivePackageScan();
 
     ProcessedCount = 0;
 
@@ -1039,6 +1054,15 @@ void FunctionCallChainTracer::CancelTrace()
 
     CachedCallerMap.Empty();
 
+    CallerCacheBlueprints.Empty();
+    CallerCacheGraphs.Empty();
+    CurrentCppSourceLines.Empty();
+    bCurrentCppSourceLoaded = false;
+    if (ActivePackageLoadHandle.IsValid()) ActivePackageLoadHandle->CancelHandle();
+    ActivePackageLoadHandle.Reset();
+    PendingPackageLoadName = NAME_None;
+    ResetActivePackageScan();
+
     ReleaseScanObjectReferences();
 
     OnTraceProgress.Unbind();
@@ -1054,6 +1078,12 @@ bool FunctionCallChainTracer::Tick(float DeltaTime)
 {
 
     if (!bIsTracing || !TraceSession.IsActive()) return false;
+
+    if (CancellationGeneration != TMPerf::GetCancellationGeneration())
+    {
+        CancelTrace();
+        return false;
+    }
 
     double StartTime = FPlatformTime::Seconds();
 
@@ -1083,6 +1113,12 @@ bool FunctionCallChainTracer::Tick(float DeltaTime)
             UE_LOG(LogCallChainTracer, Verbose, TEXT(">>> [2/3] Scanning Assets... (%d / %d)"), LoadedPackageIndex, TotalCount);
 
             if (!TickState_ScanningPackages(StartTime, TimeLimit)) return true;
+
+            break;
+
+        case ETraceState::BuildingCallerCache:
+
+            if (!TickState_BuildingCallerCache(StartTime, TimeLimit)) return true;
 
             break;
 
@@ -1352,6 +1388,7 @@ bool FunctionCallChainTracer::TickState_FindingReferencers()
 
 // =====================================================
 
+#if 0
 bool FunctionCallChainTracer::TickState_ScanningPackages(double StartTime, double TimeLimit)
 
 {
@@ -1408,6 +1445,100 @@ bool FunctionCallChainTracer::TickState_ScanningPackages(double StartTime, doubl
 
     return true;
 
+}
+
+#endif
+
+bool FunctionCallChainTracer::TickState_ScanningPackages(double StartTime, double TimeLimit)
+{
+    TRACE_CPUPROFILER_EVENT_SCOPE(TraceMotive_CallChainTick);
+    const double DeadlineSeconds = StartTime + TimeLimit;
+    while (LoadedPackageIndex < PackagesToScan.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+    {
+        if (!ActiveScanPackage.IsValid())
+        {
+            const FName PackageName = PackagesToScan[LoadedPackageIndex];
+            UPackage* Package = FindPackage(nullptr, *PackageName.ToString());
+            if (!Package && ActivePackageLoadHandle.IsValid())
+            {
+                if (!ActivePackageLoadHandle->HasLoadCompleted()) return true;
+                ActivePackageLoadHandle.Reset();
+                PendingPackageLoadName = NAME_None;
+                Package = FindPackage(nullptr, *PackageName.ToString());
+            }
+            if (!Package)
+            {
+                FAssetRegistryModule& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
+                TArray<FAssetData> PackageAssets;
+                AssetRegistry.Get().GetAssetsByPackageName(PackageName, PackageAssets);
+                TArray<FSoftObjectPath> PathsToLoad;
+                for (const FAssetData& Asset : PackageAssets)
+                {
+                    if (Asset.AssetClassPath == UBlueprint::StaticClass()->GetClassPathName()) PathsToLoad.Add(Asset.ToSoftObjectPath());
+                }
+                if (!PathsToLoad.IsEmpty())
+                {
+                    PendingPackageLoadName = PackageName;
+                    ActivePackageLoadHandle = PackageStreamableManager.RequestAsyncLoad(PathsToLoad);
+                    if (ActivePackageLoadHandle.IsValid()) return true;
+                    PendingPackageLoadName = NAME_None;
+                }
+            }
+            if (!Package) { ++LoadedPackageIndex; continue; }
+            ActiveScanPackage.Reset(Package);
+            KeepObjectAlive(Package);
+            ForEachObjectWithPackage(Package, [this](UObject* Object)
+            {
+                if (UBlueprint* Blueprint = Cast<UBlueprint>(Object)) ActivePackageBlueprints.AddUnique(Blueprint);
+                return true;
+            });
+            if (UBlueprint* MainBlueprint = Cast<UBlueprint>(Package->FindAssetInPackage())) ActivePackageBlueprints.AddUnique(MainBlueprint);
+        }
+
+        while (ActivePackageBlueprintIndex < ActivePackageBlueprints.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+        {
+            UBlueprint* Blueprint = ActivePackageBlueprints[ActivePackageBlueprintIndex].Get();
+            if (!Blueprint) { ++ActivePackageBlueprintIndex; continue; }
+            KeepObjectAlive(Blueprint);
+            if (ActivePackageGraphs.IsEmpty())
+            {
+                TArray<UEdGraph*> Graphs;
+                GetBlueprintGraphs(Blueprint, Graphs);
+                for (UEdGraph* Graph : Graphs) ActivePackageGraphs.Add(Graph);
+            }
+            while (ActivePackageGraphIndex < ActivePackageGraphs.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+            {
+                UEdGraph* Graph = ActivePackageGraphs[ActivePackageGraphIndex].Get();
+                if (!Graph) { ++ActivePackageGraphIndex; ActivePackageNodeIndex = 0; continue; }
+                KeepObjectAlive(Graph);
+                while (ActivePackageNodeIndex < Graph->Nodes.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+                {
+                    UEdGraphNode* Node = Graph->Nodes[ActivePackageNodeIndex++];
+                    if (DoesNodeReferenceFunction(Node, TargetFunctionName, TargetBlueprint.Get(), TargetFunctionOwnerClass.Get(), TargetFunctionGuid)) InitialCallers.AddUnique(Node);
+                }
+                if (ActivePackageNodeIndex >= Graph->Nodes.Num()) { ++ActivePackageGraphIndex; ActivePackageNodeIndex = 0; }
+            }
+            if (ActivePackageGraphIndex >= ActivePackageGraphs.Num())
+            {
+                ++ActivePackageBlueprintIndex;
+                ActivePackageGraphs.Empty();
+                ActivePackageGraphIndex = 0;
+                ActivePackageNodeIndex = 0;
+            }
+        }
+        if (ActivePackageBlueprintIndex >= ActivePackageBlueprints.Num())
+        {
+            ResetActivePackageScan();
+            ++LoadedPackageIndex;
+            OnTraceProgress.ExecuteIfBound(TEXT("Scanning Assets..."), LoadedPackageIndex, TotalCount);
+        }
+    }
+    if (LoadedPackageIndex >= PackagesToScan.Num())
+    {
+        PrepareCallerCache();
+        CurrentState = ETraceState::BuildingCallerCache;
+    }
+    return true;
 }
 
 // =====================================================
@@ -2016,8 +2147,6 @@ void FunctionCallChainTracer::InitializeProcessQueue()
 
 {
 
-    BuildCallerCache();
-
     Result.DirectCallerCount = InitialCallers.Num();
 
     UE_LOG(LogCallChainTracer, Display, TEXT("Found %d direct caller node(s) for %s."), InitialCallers.Num(), *TargetFunctionName.ToString());
@@ -2156,6 +2285,7 @@ void FunctionCallChainTracer::BuildCppSourceFileQueue()
     OnTraceProgress.ExecuteIfBound(TEXT("Scanning C++ source files..."), 0, CppSourceFilesToScan.Num());
 }
 
+#if 0
 bool FunctionCallChainTracer::TickState_ScanningCppSources(double StartTime, double TimeLimit)
 {
     int32 ProcessedThisTick = 0;
@@ -2173,6 +2303,51 @@ bool FunctionCallChainTracer::TickState_ScanningCppSources(double StartTime, dou
     {
         CurrentState = ETraceState::Complete;
     }
+    return true;
+}
+
+#endif
+
+bool FunctionCallChainTracer::TickState_ScanningCppSources(double StartTime, double TimeLimit)
+{
+    const double DeadlineSeconds = StartTime + TimeLimit;
+    const FString FunctionName = TargetFunctionName.ToString();
+    while (CppSourceFileIndex < CppSourceFilesToScan.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+    {
+        const FString& SourceFilePath = CppSourceFilesToScan[CppSourceFileIndex];
+        if (!bCurrentCppSourceLoaded)
+        {
+            FString FileText;
+            bCurrentCppSourceLoaded = true;
+            CurrentCppSourceLineIndex = 0;
+            CurrentCppSourceLines.Empty();
+            if (FFileHelper::LoadFileToString(FileText, *SourceFilePath) && FileText.Contains(FunctionName, ESearchCase::CaseSensitive))
+            {
+                FileText.ParseIntoArrayLines(CurrentCppSourceLines, false);
+            }
+        }
+
+        while (CurrentCppSourceLineIndex < CurrentCppSourceLines.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+        {
+            const int32 LineIndex = CurrentCppSourceLineIndex++;
+            int32 ColumnNumber = INDEX_NONE;
+            if (LooksLikeCppCallSite(CurrentCppSourceLines[LineIndex], FunctionName, ColumnNumber))
+            {
+                AddCppSourceCallerPath(SourceFilePath, LineIndex + 1, ColumnNumber, CurrentCppSourceLines[LineIndex]);
+            }
+        }
+
+        if (CurrentCppSourceLineIndex >= CurrentCppSourceLines.Num())
+        {
+            ++CppSourceFileIndex;
+            CurrentCppSourceLines.Empty();
+            CurrentCppSourceLineIndex = 0;
+            bCurrentCppSourceLoaded = false;
+        }
+    }
+
+    OnTraceProgress.ExecuteIfBound(TEXT("Scanning C++ source files..."), CppSourceFileIndex, CppSourceFilesToScan.Num());
+    if (CppSourceFileIndex >= CppSourceFilesToScan.Num()) CurrentState = ETraceState::Complete;
     return true;
 }
 
@@ -2577,6 +2752,95 @@ FCallChainNode FunctionCallChainTracer::CreateChainNode(UEdGraphNode* Node, UBlu
 
     return ChainNode;
 
+}
+
+void FunctionCallChainTracer::ResetActivePackageScan()
+{
+    ActiveScanPackage.Reset();
+    ActivePackageBlueprints.Empty();
+    ActivePackageGraphs.Empty();
+    ActivePackageBlueprintIndex = 0;
+    ActivePackageGraphIndex = 0;
+    ActivePackageNodeIndex = 0;
+}
+
+void FunctionCallChainTracer::PrepareCallerCache()
+{
+    CachedCallerMap.Empty();
+
+    CallerCacheBlueprints.Empty();
+    CallerCacheGraphs.Empty();
+    CurrentCppSourceLines.Empty();
+    bCurrentCppSourceLoaded = false;
+    if (ActivePackageLoadHandle.IsValid()) ActivePackageLoadHandle->CancelHandle();
+    ActivePackageLoadHandle.Reset();
+    PendingPackageLoadName = NAME_None;
+    ResetActivePackageScan();
+    CallerCacheBlueprints.Empty();
+    CallerCacheGraphs.Empty();
+    CallerCacheBlueprintIndex = 0;
+    CallerCacheGraphIndex = 0;
+    CallerCacheNodeIndex = 0;
+    for (TObjectIterator<UBlueprint> It; It; ++It)
+    {
+        UBlueprint* Blueprint = *It;
+        if (!Blueprint || Blueprint->HasAnyFlags(RF_Transient | RF_ClassDefaultObject)) continue;
+        UPackage* Package = Blueprint->GetOutermost();
+        if (Package && IsTraceablePackageName(Package->GetFName())) CallerCacheBlueprints.Add(Blueprint);
+    }
+    OnTraceProgress.ExecuteIfBound(TEXT("Building caller cache..."), 0, CallerCacheBlueprints.Num());
+}
+
+bool FunctionCallChainTracer::TickState_BuildingCallerCache(double StartTime, double TimeLimit)
+{
+    const double DeadlineSeconds = StartTime + TimeLimit;
+    while (CallerCacheBlueprintIndex < CallerCacheBlueprints.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+    {
+        UBlueprint* Blueprint = CallerCacheBlueprints[CallerCacheBlueprintIndex].Get();
+        if (!Blueprint) { ++CallerCacheBlueprintIndex; continue; }
+        KeepObjectAlive(Blueprint);
+        if (CallerCacheGraphs.IsEmpty())
+        {
+            TArray<UEdGraph*> Graphs;
+            GetBlueprintGraphs(Blueprint, Graphs);
+            for (UEdGraph* Graph : Graphs) CallerCacheGraphs.Add(Graph);
+            if (CallerCacheGraphs.IsEmpty()) { ++CallerCacheBlueprintIndex; continue; }
+        }
+        while (CallerCacheGraphIndex < CallerCacheGraphs.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+        {
+            UEdGraph* Graph = CallerCacheGraphs[CallerCacheGraphIndex].Get();
+            if (!Graph) { ++CallerCacheGraphIndex; CallerCacheNodeIndex = 0; continue; }
+            KeepObjectAlive(Graph);
+            while (CallerCacheNodeIndex < Graph->Nodes.Num() && FPlatformTime::Seconds() < DeadlineSeconds)
+            {
+                UEdGraphNode* Node = Graph->Nodes[CallerCacheNodeIndex++];
+                TArray<FName> ReferencedFunctionNames;
+                AddReferencedFunctionNames(Node, ReferencedFunctionNames);
+                for (const FName& FunctionName : ReferencedFunctionNames)
+                {
+                    if (!FunctionName.IsNone()) CachedCallerMap.FindOrAdd(FunctionName).AddUnique(Node);
+                }
+            }
+            if (CallerCacheNodeIndex >= Graph->Nodes.Num()) { ++CallerCacheGraphIndex; CallerCacheNodeIndex = 0; }
+        }
+        if (CallerCacheGraphIndex >= CallerCacheGraphs.Num())
+        {
+            ++CallerCacheBlueprintIndex;
+            CallerCacheGraphs.Empty();
+            CallerCacheGraphIndex = 0;
+            CallerCacheNodeIndex = 0;
+            OnTraceProgress.ExecuteIfBound(TEXT("Building caller cache..."), CallerCacheBlueprintIndex, CallerCacheBlueprints.Num());
+        }
+    }
+    if (CallerCacheBlueprintIndex >= CallerCacheBlueprints.Num())
+    {
+        CallerCacheBlueprints.Empty();
+        CallerCacheGraphs.Empty();
+        InitializeProcessQueue();
+        CurrentState = ETraceState::ProcessingCallChain;
+        ProcessedCount = 0;
+    }
+    return true;
 }
 
 void FunctionCallChainTracer::BuildCallerCache()

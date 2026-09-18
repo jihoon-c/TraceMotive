@@ -8,11 +8,13 @@
 
 #include "Containers/Ticker.h"
 
+#include "Engine/StreamableManager.h"
+
 #include "UObject/StrongObjectPtr.h"
 
 #include "UObject/WeakObjectPtr.h"
 
-// #include "YourStructHeader.h" 
+// #include "YourStructHeader.h"
 
 // ==============================================================================
 
@@ -130,6 +132,8 @@ enum class ETraceState
 
     ScanningPackages,
 
+    BuildingCallerCache,
+
     ProcessingCallChain,
 
     ScanningCppSources,
@@ -170,6 +174,8 @@ public:
 
 private:
 
+    friend class FTMCallChainResumeTest;
+
     // 硫붿씤 猷⑦봽 (FTSTicker)
 
     bool Tick(float DeltaTime);
@@ -181,6 +187,8 @@ private:
     bool TickState_FindingReferencers();
 
     bool TickState_ScanningPackages(double StartTime, double TimeLimit);
+
+    bool TickState_BuildingCallerCache(double StartTime, double TimeLimit);
 
     bool TickState_ProcessingCallChain(double StartTime, double TimeLimit);
 
@@ -262,6 +270,24 @@ private:
 
     int32 LoadedPackageIndex;       // Current package index while scanning.
 
+    TStrongObjectPtr<UPackage> ActiveScanPackage;
+
+    FStreamableManager PackageStreamableManager;
+
+    TSharedPtr<FStreamableHandle> ActivePackageLoadHandle;
+
+    FName PendingPackageLoadName;
+
+    TArray<TWeakObjectPtr<UBlueprint>> ActivePackageBlueprints;
+
+    TArray<TWeakObjectPtr<UEdGraph>> ActivePackageGraphs;
+
+    int32 ActivePackageBlueprintIndex = 0;
+
+    int32 ActivePackageGraphIndex = 0;
+
+    int32 ActivePackageNodeIndex = 0;
+
     TArray<TStrongObjectPtr<UObject>> LoadedObjectsToKeepAlive;
 
     TArray<class UEdGraphNode*> InitialCallers;
@@ -270,13 +296,35 @@ private:
 
     TMap<FName, TArray<TWeakObjectPtr<UEdGraphNode>>> CachedCallerMap;
 
+    TArray<TWeakObjectPtr<UBlueprint>> CallerCacheBlueprints;
+
+    TArray<TWeakObjectPtr<UEdGraph>> CallerCacheGraphs;
+
+    int32 CallerCacheBlueprintIndex = 0;
+
+    int32 CallerCacheGraphIndex = 0;
+
+    int32 CallerCacheNodeIndex = 0;
+
     TArray<FString> CppSourceFilesToScan;
 
     int32 CppSourceFileIndex = 0;
 
+    TArray<FString> CurrentCppSourceLines;
+
+    int32 CurrentCppSourceLineIndex = 0;
+
+    bool bCurrentCppSourceLoaded = false;
+
     TSet<FString> AddedCppSourceCallKeys;
 
+    uint64 CancellationGeneration = 0;
+
     void BuildCallerCache();
+
+    void PrepareCallerCache();
+
+    void ResetActivePackageScan();
 
     FGuid GetCallableGuidForGraph(class UEdGraph* Graph) const;
 

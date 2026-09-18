@@ -11,6 +11,7 @@
 #include "TMDockTabHelper.h"
 #include "TMPerformanceGuard.h"
 #include "TMSettings.h"
+#include "TMFeatureVisibility.h"
 #include "TMSupportBundle.h"
 #include "TMVariableValueTrace.h"
 #include "TMWidgetClickFlowTrace.h"
@@ -523,6 +524,11 @@ namespace TMInvestigationSession
 
     void RegisterTab()
     {
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            return;
+        }
+
         Load();
         if (bTabRegistered) return;
         FGlobalTabmanager::Get()->RegisterNomadTabSpawner(InvestigationTabId, FOnSpawnTab::CreateStatic(&SpawnTab))
@@ -542,12 +548,22 @@ namespace TMInvestigationSession
 
     void OpenWindow()
     {
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            return;
+        }
+
         RegisterTab();
         ExistingTab = FGlobalTabmanager::Get()->TryInvokeTab(InvestigationTabId);
     }
 
     void StartScenario(FName ScenarioId)
     {
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            return;
+        }
+
         Load();
         FInvestigation Item;
         Item.Id = FGuid::NewGuid().ToString(EGuidFormats::DigitsWithHyphensLower);
@@ -575,6 +591,11 @@ namespace TMInvestigationSession
 
     void RecordEvidence(const FString& SourceTool, const FString& Summary, const FString& Target)
     {
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            return;
+        }
+
         if (!Active())
         {
             FInvestigation NewItem;

@@ -7,6 +7,7 @@
 #include "Internationalization/Culture.h"
 
 #include "Internationalization/Internationalization.h"
+#include "Interfaces/IPluginManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/ConfigCacheIni.h"
 #include "Misc/Paths.h"
@@ -98,7 +99,11 @@ namespace TMLoc
                 Translations.Add(Row[0], Row[1]);
             }
         };
-        const FString LocalizationDir = FPaths::Combine(FPaths::ProjectPluginsDir(), TEXT("TraceMotive/Config/Localization"));
+        const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(TEXT("TraceMotive"));
+        const FString PluginBaseDir = Plugin.IsValid()
+            ? Plugin->GetBaseDir()
+            : FPaths::Combine(FPaths::ProjectPluginsDir(), TEXT("TraceMotive"));
+        const FString LocalizationDir = FPaths::Combine(PluginBaseDir, TEXT("Config/Localization"));
         LoadCsv(FPaths::Combine(LocalizationDir, TEXT("TMLocalization.ko.csv")));
         LoadCsv(FPaths::Combine(LocalizationDir, TEXT("TMLocalization.ko.overrides.csv")));
         return Translations;
@@ -139,6 +144,5 @@ namespace TMLoc
     }
 
 }
-
 
 

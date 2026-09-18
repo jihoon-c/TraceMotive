@@ -94,6 +94,8 @@ public:
 
 private:
 
+    friend class FTMVisualRefResumeTest;
+
     bool Tick(float DeltaTime);
 
     void FinishSearch();
@@ -179,6 +181,8 @@ private:
     TArray<TStrongObjectPtr<UBlueprint>> LoadedBlueprintQueue;
 
     TSet<TWeakObjectPtr<UEdGraphNode>> ProcessedNodes;
+
+    TMap<TWeakObjectPtr<UBlueprint>, int32> BlueprintResumeNodeOffsets;
 
     TSet<FName> ProcessedPackages;
 

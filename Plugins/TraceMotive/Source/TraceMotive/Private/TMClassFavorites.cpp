@@ -872,14 +872,13 @@ namespace
 
         {
 
-            // Favorite-level navigation calls LoadMap directly, which does not prompt to
-            // save the active map. Save first and keep the current level open if saving
-            // was cancelled or failed.
-            if (!FEditorFileUtils::SaveCurrentLevel())
+            // LoadMap does not protect every dirty streaming level. Save all loaded map
+            // packages (including external actor packages) and abort on save/cancel failure.
+            if (!FEditorFileUtils::SaveDirtyPackages(false, true, false, false, false, false))
 
             {
 
-                UE_LOG(LogTraceMotive, Warning, TEXT("Class Favorites: cancelled level switch because the current level was not saved."));
+                UE_LOG(LogTraceMotive, Warning, TEXT("Class Favorites: cancelled level switch because one or more dirty map packages were not saved."));
 
                 return false;
 

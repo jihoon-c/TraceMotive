@@ -57,6 +57,7 @@
 #include "GameFramework/Pawn.h"
 
 #include "HAL/PlatformApplicationMisc.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
 
 #include "LevelEditorMenuContext.h"
 
@@ -1136,7 +1137,9 @@ namespace
 
         Report.bBoundsOverlap = ComponentA->Bounds.GetBox().Intersect(ComponentB->Bounds.GetBox());
 
-        if (bQueryCompatible && bGeometryA && bGeometryB && ComponentA->GetWorld() == ComponentB->GetWorld())
+        // Bounds are a cheap broad phase. Exact overlap cannot be true when the
+        // current component bounds do not intersect, so avoid a scene query then.
+        if (Report.bBoundsOverlap && bQueryCompatible && bGeometryA && bGeometryB && ComponentA->GetWorld() == ComponentB->GetWorld())
 
         {
 
@@ -1162,7 +1165,9 @@ namespace
 
         FString SweepDetailB;
 
-        if (Report.bBlockConfigured && bQueryCompatible && bGeometryA && bGeometryB && ComponentA->GetWorld() == ComponentB->GetWorld())
+        const float SweepReach = ComponentA->Bounds.SphereRadius + ComponentB->Bounds.SphereRadius + 300.0f;
+        const bool bWithinSweepReach = FVector::DistSquared(ComponentA->Bounds.Origin, ComponentB->Bounds.Origin) <= FMath::Square(SweepReach);
+        if (Report.bBlockConfigured && bWithinSweepReach && bQueryCompatible && bGeometryA && bGeometryB && ComponentA->GetWorld() == ComponentB->GetWorld())
 
         {
 
@@ -1270,16 +1275,35 @@ namespace
 
 
 
-    FCollisionAnalysisResult AnalyzeActors(AActor* InputA, AActor* InputB)
+    struct FCollisionScan
+    {
+        FCollisionAnalysisResult Result;
+        TArray<TWeakObjectPtr<UPrimitiveComponent>> ComponentsA, ComponentsB;
+        int32 PairIndex = 0;
+        bool bInitialized = false;
+        bool bComplete = false;
+        bool bInvalidated = false;
+        TWeakObjectPtr<UWorld> World;
+    };
+
+    const FCollisionAnalysisResult& AnalyzeActors(AActor* InputA, AActor* InputB, FCollisionScan& Scan, double TickBudget = 0.003)
 
     {
+        TRACE_CPUPROFILER_EVENT_SCOPE(TraceMotive_CollisionPairAnalysis);
 
-        FCollisionAnalysisResult Result;
+        FCollisionAnalysisResult& Result = Scan.Result;
 
         AActor* ActorA = ResolvePIECounterpart(InputA);
 
         AActor* ActorB = ResolvePIECounterpart(InputB);
 
+        if (Scan.bInitialized && (!ActorA || !ActorB || !Scan.World.IsValid() || ActorA->GetWorld() != Scan.World.Get() || ActorB->GetWorld() != Scan.World.Get()))
+        {
+            Scan.bInvalidated = true; Scan.bComplete = true; return Result;
+        }
+
+        if (!Scan.bInitialized)
+        {
         Result.ActorAName = GetCollisionActorLabelSafe(ActorA);
 
         Result.ActorBName = GetCollisionActorLabelSafe(ActorB);
@@ -1296,6 +1320,7 @@ namespace
 
             Result.CauseCount = 1;
 
+            Scan.bComplete = true;
             return Result;
 
         }
@@ -1310,6 +1335,7 @@ namespace
 
             Result.CauseCount = 1;
 
+            Scan.bComplete = true;
             return Result;
 
         }
@@ -1386,37 +1412,30 @@ namespace
 
 
 
-        for (UPrimitiveComponent* ComponentA : ComponentsA)
-
-        {
-
-            for (UPrimitiveComponent* ComponentB : ComponentsB)
-
-            {
-
-                FCollisionPairReport Pair = AnalyzeComponentPair(ActorA, ActorB, ComponentA, ComponentB);
-
-                if (Pair.bBlockConfigured) ++Result.BlockConfiguredPairCount;
-
-                if (Pair.bShapeOverlap && Pair.bBlockConfigured) ++Result.ShapeOverlapPairCount;
-
-                if (Pair.bSweepBlockingHit && Pair.bBlockConfigured) ++Result.SweepBlockingPairCount;
-
-                for (const FCollisionFinding& Finding : Pair.Findings)
-
-                {
-
-                    if (Finding.Severity == ECollisionFindingSeverity::Cause) ++Result.CauseCount;
-
-                }
-
-                Result.PairReports.Add(MoveTemp(Pair));
-
-            }
-
+        for (UPrimitiveComponent* C : ComponentsA) Scan.ComponentsA.Add(C);
+        for (UPrimitiveComponent* C : ComponentsB) Scan.ComponentsB.Add(C);
+        Scan.bInitialized = true;
+        Scan.World = ActorA->GetWorld();
         }
-
-
+        if (!ActorA || !ActorB) { Scan.bComplete = true; return Result; }
+        const double Deadline = FPlatformTime::Seconds() + TickBudget;
+        const int32 TotalPairs = Scan.ComponentsA.Num() * Scan.ComponentsB.Num();
+        while (Scan.PairIndex < TotalPairs)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) return Result;
+            const int32 Index = Scan.PairIndex++;
+            UPrimitiveComponent* ComponentA = Scan.ComponentsA[Index / Scan.ComponentsB.Num()].Get();
+            UPrimitiveComponent* ComponentB = Scan.ComponentsB[Index % Scan.ComponentsB.Num()].Get();
+            if (!ComponentA || !ComponentB) { Scan.bInvalidated = true; Scan.bComplete = true; return Result; }
+            FCollisionPairReport Pair = AnalyzeComponentPair(ActorA, ActorB, ComponentA, ComponentB);
+            if (Pair.bBlockConfigured) ++Result.BlockConfiguredPairCount;
+            if (Pair.bShapeOverlap && Pair.bBlockConfigured) ++Result.ShapeOverlapPairCount;
+            if (Pair.bSweepBlockingHit && Pair.bBlockConfigured) ++Result.SweepBlockingPairCount;
+            for (const FCollisionFinding& Finding : Pair.Findings)
+                if (Finding.Severity == ECollisionFindingSeverity::Cause) ++Result.CauseCount;
+            Result.PairReports.Add(MoveTemp(Pair));
+        }
+        Scan.bComplete = true;
 
         Result.PairReports.Sort([](const FCollisionPairReport& Left, const FCollisionPairReport& Right)
 
@@ -1884,7 +1903,9 @@ namespace
 
                     [
 
-                        SNew(SButton).Text(TMLoc::Text(TEXT("Analyze"), TEXT("Analyze"))).OnClicked(this, &SCollisionPairAnalyzerWidget::OnAnalyzeClicked)
+                        SNew(SButton).Text_Lambda([this]() { return bAnalysisRunning
+                            ? FText::Format(TMLoc::Text(TEXT("Cancel analysis ({0}/{1})"), TEXT("분석 취소 ({0}/{1})")), FText::AsNumber(Scan.PairIndex), FText::AsNumber(Scan.ComponentsA.Num()*Scan.ComponentsB.Num()))
+                            : TMLoc::Text(TEXT("Analyze"), TEXT("분석")); }).OnClicked_Lambda([this]() { if (bAnalysisRunning) { bAnalysisRunning = false; bHasResult = false; StatusMessage = TMLoc::String(TEXT("Analysis cancelled. Run again to obtain a complete diagnosis."), TEXT("분석을 취소했습니다. 전체 진단을 보려면 다시 실행하세요.")); RefreshResults(); return FReply::Handled(); } return OnAnalyzeClicked(); })
 
                     ]
 
@@ -2209,17 +2230,44 @@ namespace
 
 
         void RunAnalysis()
-
         {
-
-            LastResult = AnalyzeActors(ActorA.Get(), ActorB.Get());
-
-            bHasResult = true;
-
-            StatusMessage.Empty();
-
+            Scan = FCollisionScan();
+            ScanActorA = ActorA;
+            ScanActorB = ActorB;
+            bAnalysisRunning = true;
+            bHasResult = false;
+            StatusMessage = TMLoc::String(TEXT("Analyzing component pairs..."), TEXT("컴포넌트 쌍 분석 중..."));
             RefreshResults();
+        }
 
+        void Tick(const FGeometry& Geometry, double CurrentTime, float DeltaTime) override
+        {
+            SCompoundWidget::Tick(Geometry, CurrentTime, DeltaTime);
+            if (!bAnalysisRunning) return;
+            if (ActorA != ScanActorA || ActorB != ScanActorB || !ScanActorA.IsValid() || !ScanActorB.IsValid())
+            {
+                bAnalysisRunning = false;
+                StatusMessage = TMLoc::String(TEXT("Targets changed or expired. Capture two actors and analyze again."), TEXT("대상이 변경되거나 소멸했습니다. 두 액터를 지정하고 다시 분석하세요."));
+                RefreshResults();
+                return;
+            }
+            AnalyzeActors(ScanActorA.Get(), ScanActorB.Get(), Scan);
+            if (Scan.bComplete)
+            {
+                if (Scan.bInvalidated)
+                {
+                    bAnalysisRunning = false;
+                    bHasResult = false;
+                    StatusMessage = TMLoc::String(TEXT("World or components changed during analysis. Capture targets and retry."), TEXT("분석 중 월드 또는 컴포넌트가 변경되었습니다. 대상을 지정하고 다시 실행하세요."));
+                    RefreshResults();
+                    return;
+                }
+                LastResult = MoveTemp(Scan.Result);
+                bAnalysisRunning = false;
+                bHasResult = true;
+                StatusMessage.Empty();
+                RefreshResults();
+            }
         }
 
 
@@ -4016,6 +4064,9 @@ namespace
 
         TWeakObjectPtr<AActor> ActorB;
 
+        FCollisionScan Scan;
+        TWeakObjectPtr<AActor> ScanActorA, ScanActorB;
+        bool bAnalysisRunning = false;
         FCollisionAnalysisResult LastResult;
 
         TSharedPtr<SScrollBox> ResultScrollBox;
@@ -4095,6 +4146,46 @@ namespace
 }
 
 
+
+#if WITH_DEV_AUTOMATION_TESTS
+#include "Misc/AutomationTest.h"
+#include "Components/BoxComponent.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTMCollisionCoreTest, "TraceMotive.Collision.SettingsAndResume", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FTMCollisionCoreTest::RunTest(const FString&)
+{
+    UWorld* World = UWorld::CreateWorld(EWorldType::Game, false);
+    if (!TestNotNull(TEXT("Test world"), World)) return false;
+    AActor* A = World->SpawnActor<AActor>();
+    AActor* B = World->SpawnActor<AActor>();
+    if (!A || !B) { World->DestroyWorld(false); AddError(TEXT("Could not create test actors")); return false; }
+    UBoxComponent* BoxA = NewObject<UBoxComponent>(A);
+    UBoxComponent* BoxB = NewObject<UBoxComponent>(B);
+    A->AddInstanceComponent(BoxA); B->AddInstanceComponent(BoxB);
+    A->SetRootComponent(BoxA); B->SetRootComponent(BoxB);
+    for (UBoxComponent* Box : { BoxA, BoxB })
+    {
+        Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        Box->SetCollisionObjectType(ECC_WorldDynamic);
+        Box->SetCollisionResponseToAllChannels(ECR_Block);
+        Box->RegisterComponent();
+    }
+    BoxB->SetWorldLocation(FVector(10000, 0, 0));
+    FCollisionScan Scan;
+    AnalyzeActors(A, B, Scan, 0.0);
+    TestFalse(TEXT("Expired budget leaves scan incomplete"), Scan.bComplete);
+    TestEqual(TEXT("Pair is not skipped"), Scan.PairIndex, 0);
+    AnalyzeActors(A, B, Scan, 1.0);
+    TestTrue(TEXT("Next slice completes"), Scan.bComplete);
+    TestEqual(TEXT("Both Block responses produce block-capable settings"), Scan.Result.BlockConfiguredPairCount, 1);
+    TestEqual(TEXT("Distant pair does not invent a sweep hit"), Scan.Result.SweepBlockingPairCount, 0);
+    BoxB->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+    TestFalse(TEXT("Ignore removes block capability"), AnalyzeComponentPair(A, B, BoxA, BoxB).bBlockConfigured);
+    BoxB->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+    TestFalse(TEXT("Overlap is not Block"), AnalyzeComponentPair(A, B, BoxA, BoxB).bBlockConfigured);
+    World->DestroyWorld(false);
+    return true;
+}
+#endif
 
 namespace TMCollisionPairAnalyzer
 
@@ -4257,10 +4348,3 @@ namespace TMCollisionPairAnalyzer
 
 
 #undef LOCTEXT_NAMESPACE
-
-
-
-
-
-
-

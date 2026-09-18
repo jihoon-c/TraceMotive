@@ -11,6 +11,7 @@
 #include "TMCollisionPairAnalyzer.h"
 #include "TMContextShortcutHelper.h"
 #include "TMEnhancedOutlinerSearch.h"
+#include "TMFeatureVisibility.h"
 #include "TMGlobalSpeedControl.h"
 #include "TMInvestigationSession.h"
 #include "TMPackageProgress.h"
@@ -121,20 +122,24 @@ void FTraceMotiveModule::RegisterMenus()
     // Feature registration owns tab spawners and context menus. The launcher runs last
     // so it can consolidate the main Window/Tools entries into one product menu.
     TMAssetUsageLocator::RegisterMenus();
-    TMAudioPlaybackTrace::RegisterMenus();
-    TMBlueprintRuntimeErrorTrace::RegisterMenus();
-    TMClassFavorites::RegisterMenus();
-    TMClickDiagnostics::RegisterMenus();
     TMCollisionPairAnalyzer::RegisterMenus();
-    TMContextShortcutHelper::RegisterMenus();
-    TMEnhancedOutlinerSearch::RegisterMenus();
-    TMGlobalSpeedControl::RegisterMenus();
-    TMInvestigationSession::RegisterTab();
-    TMPackageProgress::RegisterMenus();
-    TMPluginGuide::RegisterMenus();
     TMVariableValueTrace::RegisterMenus();
-    TMWidgetClickFlowTrace::RegisterMenus();
-    TMWidgetLifecycleTrace::RegisterMenus();
+
+    if (!TMFeatureVisibility::IsCoreOnlyRelease())
+    {
+        TMAudioPlaybackTrace::RegisterMenus();
+        TMBlueprintRuntimeErrorTrace::RegisterMenus();
+        TMClassFavorites::RegisterMenus();
+        TMClickDiagnostics::RegisterMenus();
+        TMContextShortcutHelper::RegisterMenus();
+        TMEnhancedOutlinerSearch::RegisterMenus();
+        TMGlobalSpeedControl::RegisterMenus();
+        TMInvestigationSession::RegisterTab();
+        TMPackageProgress::RegisterMenus();
+        TMPluginGuide::RegisterMenus();
+        TMWidgetClickFlowTrace::RegisterMenus();
+        TMWidgetLifecycleTrace::RegisterMenus();
+    }
     TMToolLauncher::RegisterMenus();
 
 
@@ -917,7 +922,10 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     const float RefNodeY = 0.0f;
 
 
-                    bool bIsDefinitionAsset = (AssetName == Ctx->RootAssetName);
+                    const FString AssetKey = FoundGraphNode->GetOutermost()->GetName();
+                    UBlueprint* DefinitionBP = Ctx->TargetOwnerClass ? Cast<UBlueprint>(Ctx->TargetOwnerClass->ClassGeneratedBy) : nullptr;
+                    if (!DefinitionBP) DefinitionBP = Ctx->Blueprint;
+                    const bool bIsDefinitionAsset = DefinitionBP && FoundGraphNode->GetOutermost() == DefinitionBP->GetOutermost();
 
                     if (bIsDefinitionAsset)
                     {
@@ -926,9 +934,9 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     else
                     {
 
-                        if (Ctx->AssetNodeMap.Contains(AssetName))
+                        if (Ctx->AssetNodeMap.Contains(AssetKey))
                         {
-                            TargetNode = Ctx->AssetNodeMap[AssetName];
+                            TargetNode = Ctx->AssetNodeMap[AssetKey];
                         }
                         else
                         {
@@ -956,7 +964,7 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                             TargetNode->CreateVisualPin(EGPD_Output, FName(TEXT("Uses")));
 
                             Ctx->Graph->AddNode(TargetNode);
-                            Ctx->AssetNodeMap.Add(AssetName, TargetNode);
+                            Ctx->AssetNodeMap.Add(AssetKey, TargetNode);
                             Ctx->ColumnCount++;
                         }
 

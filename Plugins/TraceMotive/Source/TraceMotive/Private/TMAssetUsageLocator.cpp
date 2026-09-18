@@ -1,4 +1,5 @@
 #include "TMAssetUsageLocator.h"
+#include "UObject/StrongObjectPtr.h"
 #include "TMEngineCompatibility.h"
 #include "TMStyle.h"
 
@@ -29,6 +30,8 @@
 
 #include "Engine/BlueprintGeneratedClass.h"
 
+#include "Engine/StreamableManager.h"
+
 #include "Engine/InheritableComponentHandler.h"
 
 #include "Engine/SCS_Node.h"
@@ -36,6 +39,7 @@
 #include "Engine/SimpleConstructionScript.h"
 
 #include "HAL/PlatformTime.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
 
 #include "IContentBrowserSingleton.h"
 
@@ -130,6 +134,8 @@ namespace
 
         FString Reason;
 
+        bool IsCandidate() const { return LocationKind == TEXT("Reference Viewer Candidate") || Reason.Contains(TEXT("contains target")) || Detail.StartsWith(TEXT("[Text candidate]")); }
+
 
 
         FString BuildSearchText() const
@@ -190,11 +196,11 @@ namespace
 
         }
 
-        if (!ObjectPath.IsEmpty() && Object->GetPathName() == ObjectPath)
+        if (!ObjectPath.IsEmpty())
 
         {
 
-            return true;
+            return Object->GetPathName() == ObjectPath;
 
         }
 
@@ -398,7 +404,25 @@ namespace
 
         bool bFound = false;
 
-        if (const FObjectPropertyBase* ObjectProperty = CastField<FObjectPropertyBase>(Property))
+        if (const FSoftObjectProperty* SoftObjectProperty = CastField<FSoftObjectProperty>(Property))
+
+        {
+
+            const FString SoftPath = SoftObjectProperty->GetPropertyValue(ValuePtr).ToSoftObjectPath().ToString();
+
+            if ((!ObjectPath.IsEmpty() ? SoftPath == ObjectPath : FSoftObjectPath(SoftPath).GetLongPackageName() == PackageName))
+
+            {
+
+                OutMatches.Add(FString::Printf(TEXT("%s = %s"), *Path, *SoftPath));
+
+                return true;
+
+            }
+
+        }
+
+        else if (const FObjectPropertyBase* ObjectProperty = CastField<FObjectPropertyBase>(Property))
 
         {
 
@@ -416,24 +440,6 @@ namespace
 
         }
 
-        else if (const FSoftObjectProperty* SoftObjectProperty = CastField<FSoftObjectProperty>(Property))
-
-        {
-
-            const FString SoftPath = SoftObjectProperty->GetPropertyValue(ValuePtr).ToSoftObjectPath().ToString();
-
-            if (PathMatchesTarget(SoftPath, ObjectPath, PackageName, FString()))
-
-            {
-
-                OutMatches.Add(FString::Printf(TEXT("%s = %s"), *Path, *SoftPath));
-
-                return true;
-
-            }
-
-        }
-
         else if (const FStrProperty* StrProperty = CastField<FStrProperty>(Property))
 
         {
@@ -444,7 +450,7 @@ namespace
 
             {
 
-                OutMatches.Add(FString::Printf(TEXT("%s = %s"), *Path, *Value));
+                OutMatches.Add(FString::Printf(TEXT("[Text candidate] %s = %s"), *Path, *Value));
 
                 return true;
 
@@ -462,7 +468,7 @@ namespace
 
             {
 
-                OutMatches.Add(FString::Printf(TEXT("%s = %s"), *Path, *Value));
+                OutMatches.Add(FString::Printf(TEXT("[Text candidate] %s = %s"), *Path, *Value));
 
                 return true;
 
@@ -480,7 +486,7 @@ namespace
 
             {
 
-                OutMatches.Add(FString::Printf(TEXT("%s = %s"), *Path, *Value));
+                OutMatches.Add(FString::Printf(TEXT("[Text candidate] %s = %s"), *Path, *Value));
 
                 return true;
 
@@ -772,7 +778,7 @@ namespace
 
     }
 
-    void ScanBlueprint(UBlueprint* Blueprint, UObject* TargetObject, const FString& ObjectPath, const FString& PackageName, const FString& AssetName, TArray<FFindingPtr>& OutFindings)
+    bool ScanBlueprint(UBlueprint* Blueprint, UObject* TargetObject, const FString& ObjectPath, const FString& PackageName, const FString& AssetName, TArray<FFindingPtr>& OutFindings, int32& ResumeOffset, double Deadline)
 
     {
 
@@ -780,12 +786,13 @@ namespace
 
         {
 
-            return;
+            return true;
 
         }
 
 
 
+        int32 NodeOffset = 0;
         TArray<UEdGraph*> Graphs;
 
         Blueprint->GetAllGraphs(Graphs);
@@ -806,6 +813,9 @@ namespace
 
             {
 
+                const int32 CurrentOffset = NodeOffset++;
+                if (CurrentOffset < ResumeOffset) continue;
+                if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = CurrentOffset; return false; }
                 if (!Node)
 
                 {
@@ -917,6 +927,9 @@ namespace
 
 
 
+if (NodeOffset++ >= ResumeOffset)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = NodeOffset - 1; return false; }
         ScanTemplateObjectUsage(
 
             Blueprint,
@@ -934,6 +947,7 @@ namespace
             PackageName,
 
             OutFindings);
+        }
 
 
 
@@ -941,6 +955,9 @@ namespace
 
         {
 
+if (NodeOffset++ >= ResumeOffset)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = NodeOffset - 1; return false; }
             ScanTemplateObjectUsage(
 
                 Blueprint,
@@ -958,6 +975,7 @@ namespace
                 PackageName,
 
                 OutFindings);
+        }
 
         }
 
@@ -971,6 +989,9 @@ namespace
 
             {
 
+if (NodeOffset++ >= ResumeOffset)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = NodeOffset - 1; return false; }
                 ScanTemplateObjectUsage(
 
                     Blueprint,
@@ -988,6 +1009,7 @@ namespace
                     PackageName,
 
                     OutFindings);
+        }
 
             }
 
@@ -1005,6 +1027,9 @@ namespace
 
                 {
 
+if (NodeOffset++ >= ResumeOffset)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = NodeOffset - 1; return false; }
                     ScanTemplateObjectUsage(
 
                         Blueprint,
@@ -1022,6 +1047,7 @@ namespace
                         PackageName,
 
                         OutFindings);
+        }
 
                 }
 
@@ -1063,6 +1089,9 @@ namespace
 
 
 
+if (NodeOffset++ >= ResumeOffset)
+        {
+            if (FPlatformTime::Seconds() >= Deadline) { ResumeOffset = NodeOffset - 1; return false; }
                 ScanTemplateObjectUsage(
 
                     Blueprint,
@@ -1080,11 +1109,14 @@ namespace
                     PackageName,
 
                     OutFindings);
+        }
 
             }
 
         }
 
+        ResumeOffset = 0;
+        return true;
     }
 
     TArray<FAssetData> GetAssetUsageSelectedContentBrowserAssets(const FToolMenuContext& Context)
@@ -1285,7 +1317,9 @@ namespace
 
                 ]
 
-                + SVerticalBox::Slot().AutoHeight().Padding(8.0f, 0.0f)[SNew(STextBlock).Text(this, &STMAssetUsageLocator::GetStatusText).ColorAndOpacity(FLinearColor(0.75f, 0.85f, 1.0f))]
+                + SVerticalBox::Slot().AutoHeight().Padding(8.0f, 4.0f)[SNew(SButton).Text(TMLoc::Text(TEXT("Cancel search (keep results)"), TEXT("검색 취소 (결과 유지)"))).IsEnabled_Lambda([this]() { return !bScanFinished; }).OnClicked_Lambda([this]() { bScanCancelled = true; return FReply::Handled(); })]
+                + SVerticalBox::Slot().AutoHeight().Padding(8.0f, 4.0f)[SNew(STextBlock).AutoWrapText(true).Text(TMLoc::Text(TEXT("Scope: Asset Registry Blueprint candidates. Property inspection is bounded (depth 5, first 256 array entries). Text matches require confirmation."), TEXT("범위: Asset Registry의 BP 참조 후보. 속성 검사는 깊이 5, 배열 앞 256개로 제한됩니다. 텍스트 일치는 실제 참조 확인이 필요합니다.")))]
+                + SVerticalBox::Slot().AutoHeight().Padding(8.0f, 0.0f)[SNew(STextBlock).AutoWrapText(true).Text(this, &STMAssetUsageLocator::GetStatusText).ColorAndOpacity(FLinearColor(0.75f, 0.85f, 1.0f))]
 
                 + SVerticalBox::Slot().AutoHeight().Padding(8.0f, 6.0f)[SNew(SSearchBox).HintText(TMLoc::Text(TEXT("Filter by Blueprint, graph, node, property, reason"), TEXT("Filter by Blueprint, graph, node, property, reason"))).OnTextChanged(this, &STMAssetUsageLocator::OnFilterTextChanged)]
 
@@ -1327,6 +1361,8 @@ namespace
 
             }
 
+            if (ActiveLoadHandle.IsValid()) ActiveLoadHandle->CancelHandle();
+
         }
 
 
@@ -1359,8 +1395,16 @@ namespace
             TotalCandidates = CandidateQueue.Num();
 
             ScannedCandidates = 0;
+            FailedCandidates = 0;
+            bScanCancelled = false;
+            ActiveBlueprint.Reset();
+            ActiveNodeOffset = 0;
 
             bScanFinished = false;
+
+            if (ActiveLoadHandle.IsValid()) ActiveLoadHandle->CancelHandle();
+            ActiveLoadHandle.Reset();
+            PendingCandidate = FAssetData();
 
             TargetObject = TargetAsset.FastGetAsset(false);
 
@@ -1371,125 +1415,84 @@ namespace
 
 
         bool TickScan(float)
-
         {
-
-            if (CancellationGeneration != TMPerf::GetCancellationGeneration())
-
+            TRACE_CPUPROFILER_EVENT_SCOPE(TraceMotive_AssetUsageTick);
+            if (CancellationGeneration != TMPerf::GetCancellationGeneration()) bScanCancelled = true;
+            if (bScanCancelled)
             {
-
+                if (ActiveLoadHandle.IsValid()) ActiveLoadHandle->CancelHandle();
+                ActiveLoadHandle.Reset();
+                ActiveBlueprint.Reset();
                 bScanFinished = true;
-
                 TraceSession.Cancel();
-
+                RebuildFilter();
                 TickerHandle.Reset();
-
                 return false;
-
             }
-
-            const double StartSeconds = FPlatformTime::Seconds();
-
-            bool bChanged = false;
-
-            while (CandidateQueue.Num() > 0 && FPlatformTime::Seconds() - StartSeconds < TMPerf::AssetUsageTickBudgetSeconds())
-
+            const double Deadline = FPlatformTime::Seconds() + TMPerf::AssetUsageTickBudgetSeconds();
+            const int32 InitialFindings = Findings.Num();
+            while (FPlatformTime::Seconds() < Deadline)
             {
-
-                FAssetData Candidate = CandidateQueue.Last();
-
-                TMEngineCompatibility::RemoveAtNoShrink(CandidateQueue, CandidateQueue.Num() - 1);
-
-                ++ScannedCandidates;
-
-                UObject* AssetObject = Candidate.FastGetAsset(false);
-
-                if (!AssetObject)
-
+                if (ActiveLoadHandle.IsValid())
                 {
-
-                    AssetObject = Candidate.GetAsset();
-
+                    if (!ActiveLoadHandle->HasLoadCompleted()) break;
+                    ActiveBlueprint.Reset(Cast<UBlueprint>(PendingCandidate.FastGetAsset(false)));
+                    ActiveLoadHandle.Reset();
+                    PendingCandidate = FAssetData();
+                    if (!ActiveBlueprint.IsValid()) { ++FailedCandidates; ++ScannedCandidates; }
                 }
-
-                UBlueprint* Blueprint = Cast<UBlueprint>(AssetObject);
-
-                if (Blueprint)
-
+                if (ActiveBlueprint.IsValid())
                 {
-
-                    const int32 BeforeCount = Findings.Num();
-
                     FScopedAssetUsageFindingStore FindingStore(FindingKeys, bFindingsTruncated);
-                    ScanBlueprint(Blueprint, TargetObject.Get(), TargetObjectPath, TargetPackageName, TargetAssetName, Findings);
-
-                    if (Findings.Num() == BeforeCount)
-
-                    {
-
-                        AddFinding(Findings, Blueprint, nullptr, TEXT("Reference Viewer Candidate"), TEXT("Reference Viewer reports this Blueprint as a referencer, but no exact graph node/pin/default property was resolved."), TEXT("Asset Registry referencer"));
-
-                    }
-
-                    bChanged |= Findings.Num() != BeforeCount;
-
+                    if (!ScanBlueprint(ActiveBlueprint.Get(), TargetObject.Get(), TargetObjectPath, TargetPackageName, TargetAssetName, Findings, ActiveNodeOffset, Deadline)) break;
+                    if (Findings.Num() == CandidateFindingStart && !bFindingsTruncated)
+                        AddFinding(Findings, ActiveBlueprint.Get(), nullptr, TEXT("Reference Viewer Candidate"), TEXT("Reference exists; exact location was not resolved."), TEXT("Asset Registry referencer"));
+                    ActiveBlueprint.Reset();
+                    ++ScannedCandidates;
                 }
-
+                if (CandidateQueue.IsEmpty()) break;
+                const FAssetData Candidate = CandidateQueue.Pop();
+                CandidateFindingStart = Findings.Num();
+                ActiveNodeOffset = 0;
+                ActiveBlueprint.Reset(Cast<UBlueprint>(Candidate.FastGetAsset(false)));
+                if (!ActiveBlueprint.IsValid())
+                {
+                    PendingCandidate = Candidate;
+                    ActiveLoadHandle = StreamableManager.RequestAsyncLoad(Candidate.ToSoftObjectPath());
+                    if (!ActiveLoadHandle.IsValid()) { ++FailedCandidates; ++ScannedCandidates; PendingCandidate = FAssetData(); }
+                }
             }
-
-            if (bChanged)
-
-            {
-
-                bResultsDirty = true;
-
-            }
-
-            const double NowSeconds = FPlatformTime::Seconds();
-            if (bResultsDirty && TraceSession.ShouldRefreshUi(NowSeconds, AssetUsageUiRefreshIntervalSeconds))
+            bResultsDirty |= InitialFindings != Findings.Num();
+            if (bResultsDirty && TraceSession.ShouldRefreshUi(FPlatformTime::Seconds(), AssetUsageUiRefreshIntervalSeconds))
             {
                 RebuildFilter();
                 bResultsDirty = false;
             }
-
-            if (CandidateQueue.Num() == 0)
-
+            if (CandidateQueue.IsEmpty() && !ActiveLoadHandle.IsValid() && !ActiveBlueprint.IsValid())
             {
-
                 bScanFinished = true;
                 TraceSession.Complete();
-
                 RebuildFilter();
-                bResultsDirty = false;
-
                 TickerHandle.Reset();
-
                 return false;
-
             }
-
             return true;
-
         }
-
-
 
         FText GetStatusText() const
-
         {
-
-            const FString ResultSuffix = bFindingsTruncated
-                ? FString::Printf(TEXT(" Showing the first %d results."), TMPerf::MaxAssetUsageFindings())
-                : FString();
-            return bScanFinished
-
-                ? FText::FromString(FString::Printf(TEXT("Found %d exact usage locations in %d Blueprint candidates.%s"), Findings.Num(), TotalCandidates, *ResultSuffix))
-
-                : FText::FromString(FString::Printf(TEXT("Scanning Blueprint candidates... %d / %d | Found %d%s"), ScannedCandidates, TotalCandidates, Findings.Num(), *ResultSuffix));
-
+            int32 Candidates = 0;
+            for (const FFindingPtr& Finding : Findings)
+                if (Finding->IsCandidate()) ++Candidates;
+            const FText State = bScanCancelled ? TMLoc::Text(TEXT("Cancelled - partial results"), TEXT("취소됨 - 일부 결과"))
+                : !bScanFinished ? TMLoc::Text(TEXT("Scanning"), TEXT("검색 중"))
+                : (bFindingsTruncated || FailedCandidates > 0) ? TMLoc::Text(TEXT("Completed with gaps"), TEXT("일부 누락 상태로 완료"))
+                : TMLoc::Text(TEXT("Completed"), TEXT("완료"));
+            return FText::Format(TMLoc::Text(TEXT("{0} | BP {1}/{2} | Verified {3} | Candidates {4} | Load failures {5} | Result limit reached: {6}"), TEXT("{0} | BP {1}/{2} | 확인됨 {3} | 후보 {4} | 로딩 실패 {5} | 결과 제한 도달: {6}")),
+                State, FText::AsNumber(ScannedCandidates), FText::AsNumber(TotalCandidates),
+                FText::AsNumber(Findings.Num()-Candidates), FText::AsNumber(Candidates), FText::AsNumber(FailedCandidates),
+                bFindingsTruncated ? TMLoc::Text(TEXT("Yes"), TEXT("예")) : TMLoc::Text(TEXT("No"), TEXT("아니요")));
         }
-
-
 
         void OnFilterTextChanged(const FText& InText)
 
@@ -1549,6 +1552,7 @@ namespace
 
                     SNew(SVerticalBox)
 
+                    + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Text(Finding->IsCandidate() ? TMLoc::Text(TEXT("Candidate - confirm this reference"), TEXT("후보 - 실제 참조를 확인하세요")) : TMLoc::Text(TEXT("Verified reference"), TEXT("확인된 참조"))).ColorAndOpacity(Finding->IsCandidate() ? FLinearColor(1.f, .65f, .2f) : FLinearColor(.3f, .85f, .55f))]
                     + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Text(FText::FromString(Finding.IsValid() ? FString::Printf(TEXT("%s / %s    [%s]"), *Finding->BlueprintName, *Finding->FunctionName, *Finding->LocationKind) : TEXT("Invalid"))).Font(FCoreStyle::GetDefaultFontStyle("Bold", 11))]
 
                     + SVerticalBox::Slot().AutoHeight().Padding(0.0f, 4.0f)[SNew(STextBlock).Text(FText::FromString(Finding.IsValid() ? FString::Printf(TEXT("Graph: %s   Node: %s"), *Finding->GraphName, *Finding->NodeTitle) : FString())).Font(FCoreStyle::GetDefaultFontStyle("Regular", 9))]
@@ -1633,12 +1637,20 @@ namespace
         TSharedPtr<SListView<FFindingPtr>> ResultListView;
 
         FTSTicker::FDelegateHandle TickerHandle;
+        FStreamableManager StreamableManager;
+        TSharedPtr<FStreamableHandle> ActiveLoadHandle;
+        FAssetData PendingCandidate;
         uint64 CancellationGeneration = 0;
 
         FString FilterText;
 
         int32 TotalCandidates = 0;
 
+        TStrongObjectPtr<UBlueprint> ActiveBlueprint;
+        int32 ActiveNodeOffset = 0;
+        int32 CandidateFindingStart = 0;
+        int32 FailedCandidates = 0;
+        bool bScanCancelled = false;
         int32 ScannedCandidates = 0;
 
         bool bScanFinished = false;
@@ -1651,6 +1663,43 @@ namespace
 }
 
 
+
+#if WITH_DEV_AUTOMATION_TESTS
+#include "Misc/AutomationTest.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTMAssetUsageEvidenceTest, "TraceMotive.Search.AssetUsageEvidenceAndResume", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FTMAssetUsageEvidenceTest::RunTest(const FString&)
+{
+    UObject* Target = NewObject<UBlueprint>();
+    UObject* Other = NewObject<UBlueprint>();
+    TestTrue(TEXT("Exact object is matched"), ObjectMatchesTarget(Target, Target, Target->GetPathName(), Target->GetOutermost()->GetName()));
+    TestFalse(TEXT("Other object in same package is excluded"), ObjectMatchesTarget(Other, Target, Target->GetPathName(), Target->GetOutermost()->GetName()));
+    UBlueprint* BP = NewObject<UBlueprint>();
+    UEdGraph* Graph = NewObject<UEdGraph>(BP);
+    BP->UbergraphPages.Add(Graph);
+    UEdGraphNode* Node = NewObject<UEdGraphNode>(Graph);
+    Graph->AddNode(Node);
+    UEdGraphPin* Pin = Node->CreatePin(EGPD_Input, TEXT("object"), TEXT("Asset"));
+    Pin->DefaultObject = Target;
+    TArray<FFindingPtr> Findings;
+    int32 Offset = 0;
+    TestFalse(TEXT("Expired budget pauses scan"), ScanBlueprint(BP, Target, Target->GetPathName(), Target->GetOutermost()->GetName(), Target->GetName(), Findings, Offset, 0.0));
+    TestTrue(TEXT("Later slice completes"), ScanBlueprint(BP, Target, Target->GetPathName(), Target->GetOutermost()->GetName(), Target->GetName(), Findings, Offset, TNumericLimits<double>::Max()));
+    bool bFoundExactPin = false;
+    for (const FFindingPtr& Finding : Findings)
+        if (!Finding->IsCandidate() && Finding->Node.Get() == Node && Finding->Reason == TEXT("Exact asset object stored on node pin")) bFoundExactPin = true;
+    TestTrue(TEXT("Result points to the actual pin owner node"), bFoundExactPin);
+    FTMAssetUsageFinding Candidate;
+    Candidate.Reason = TEXT("Node metadata contains target");
+    TestTrue(TEXT("Text-only match remains a candidate"), Candidate.IsCandidate());
+    TUniquePtr<FSoftObjectProperty> SoftProperty = MakeUnique<FSoftObjectProperty>(FFieldVariant(), FName(TEXT("Asset")));
+    FSoftObjectPtr SoftValue(FSoftObjectPath(TEXT("/Game/TMFixture.Target")));
+    TArray<FString> SoftMatches;
+    TestTrue(TEXT("Unloaded soft object path resolves without loading"), ScanPropertyValue(SoftProperty.Get(), &SoftValue, TEXT("Asset"), nullptr, TEXT("/Game/TMFixture.Target"), TEXT("/Game/TMFixture"), SoftMatches, 0));
+    SoftMatches.Reset();
+    TestFalse(TEXT("Soft reference in same package with different object is excluded"), ScanPropertyValue(SoftProperty.Get(), &SoftValue, TEXT("Asset"), nullptr, TEXT("/Game/TMFixture.Other"), TEXT("/Game/TMFixture"), SoftMatches, 0));
+    return true;
+}
+#endif
 
 namespace TMAssetUsageLocator
 
@@ -1699,19 +1748,6 @@ namespace TMAssetUsageLocator
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

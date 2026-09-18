@@ -4,6 +4,8 @@
 #include "TMPerformanceGuard.h"
 #include "TMSettings.h"
 #include "TMSupportBundle.h"
+#include "VisualRefSearcher.h"
+#include "FunctionCallChainTracer.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -13,6 +15,11 @@
 #include "Misc/Paths.h"
 #include "ToolMenu.h"
 #include "ToolMenus.h"
+#include "EdGraph/EdGraph.h"
+#include "EdGraph/EdGraphNode.h"
+#include "Engine/Blueprint.h"
+#include "K2Node_VariableGet.h"
+#include "K2Node_VariableSet.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FTMTraceSessionLifecycleTest,
@@ -39,6 +46,83 @@ bool FTMTraceSessionLifecycleTest::RunTest(const FString&)
     return true;
 }
 
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMVisualRefResumeTest,
+    "TraceMotive.Search.VisualReferenceResumesAfterBudget",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMVisualRefResumeTest::RunTest(const FString&)
+{
+    UBlueprint* Blueprint = NewObject<UBlueprint>(GetTransientPackage());
+    UEdGraph* Graph = NewObject<UEdGraph>(Blueprint);
+    Blueprint->UbergraphPages.Add(Graph);
+    for (int32 Index = 0; Index < 8; ++Index) Graph->AddNode(NewObject<UEdGraphNode>(Graph));
+
+    TSharedRef<VisualRefSearcher> Searcher = MakeShared<VisualRefSearcher>(Blueprint, TEXT("MissingVariable"));
+    bool bYielded = false;
+    Searcher->SearchBlueprintForReferences(Blueprint, nullptr, nullptr, 0.0, bYielded);
+    TestTrue(TEXT("Expired budget yields the Blueprint"), bYielded);
+    TestTrue(TEXT("Yielded Blueprint stores a resume position"), Searcher->BlueprintResumeNodeOffsets.Contains(Blueprint));
+
+    bYielded = false;
+    Searcher->SearchBlueprintForReferences(Blueprint, nullptr, nullptr, TNumericLimits<double>::Max(), bYielded);
+    TestFalse(TEXT("A later slice completes the Blueprint"), bYielded);
+    TestFalse(TEXT("Completed Blueprint clears its resume position"), Searcher->BlueprintResumeNodeOffsets.Contains(Blueprint));
+    UEdGraph* Nested = NewObject<UEdGraph>(Graph);
+    Graph->SubGraphs.Add(Nested);
+    UK2Node_VariableGet* Read = NewObject<UK2Node_VariableGet>(Nested);
+    Read->VariableReference.SetSelfMember(TEXT("Health"));
+    Nested->AddNode(Read);
+    UK2Node_VariableSet* Write = NewObject<UK2Node_VariableSet>(Graph);
+    Write->VariableReference.SetSelfMember(TEXT("Health"));
+    Graph->AddNode(Write);
+    TSharedRef<VisualRefSearcher> Actual = MakeShared<VisualRefSearcher>(Blueprint, TEXT("Health"));
+    TArray<UEdGraphNode*> Matches;
+    Actual->OnRefFound.BindLambda([&Matches](UEdGraphNode* Node) { Matches.Add(Node); });
+    Actual->SearchBlueprintForReferences(Blueprint, nullptr, nullptr, TNumericLimits<double>::Max(), bYielded);
+    TestEqual(TEXT("Finds both actual read and write references including a nested graph"), Matches.Num(), 2);
+    TestTrue(TEXT("Read result retains its navigation target"), Matches.Contains(Read));
+    TestTrue(TEXT("Write result retains its navigation target"), Matches.Contains(Write));
+    UBlueprint* Other = NewObject<UBlueprint>(GetTransientPackage());
+    UEdGraph* OtherGraph = NewObject<UEdGraph>(Other);
+    Other->UbergraphPages.Add(OtherGraph);
+    UK2Node_VariableGet* Unrelated = NewObject<UK2Node_VariableGet>(OtherGraph);
+    Unrelated->VariableReference.SetSelfMember(TEXT("Health"));
+    OtherGraph->AddNode(Unrelated);
+    Actual->SearchBlueprintForReferences(Other, nullptr, nullptr, TNumericLimits<double>::Max(), bYielded);
+    TestEqual(TEXT("Same variable name in unrelated Blueprint is excluded"), Matches.Num(), 2);
+    Actual->SearchBlueprintForReferences(Blueprint, nullptr, nullptr, TNumericLimits<double>::Max(), bYielded);
+    TestEqual(TEXT("Rescanning does not duplicate results"), Matches.Num(), 2);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMCallChainResumeTest,
+    "TraceMotive.Search.CallChainPackageResumesAfterBudget",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMCallChainResumeTest::RunTest(const FString&)
+{
+    UBlueprint* Blueprint = NewObject<UBlueprint>(GetTransientPackage());
+    UEdGraph* Graph = NewObject<UEdGraph>(Blueprint);
+    Blueprint->UbergraphPages.Add(Graph);
+    for (int32 Index = 0; Index < 8; ++Index) Graph->AddNode(NewObject<UEdGraphNode>(Graph));
+
+    TSharedRef<FunctionCallChainTracer> Tracer = MakeShared<FunctionCallChainTracer>(Blueprint, TEXT("MissingFunction"));
+    Tracer->PackagesToScan.Add(GetTransientPackage()->GetFName());
+    Tracer->TotalCount = 1;
+    Tracer->ActiveScanPackage.Reset(GetTransientPackage());
+    Tracer->ActivePackageBlueprints.Add(Blueprint);
+
+    Tracer->TickState_ScanningPackages(FPlatformTime::Seconds(), 0.0);
+    TestEqual(TEXT("Expired budget keeps the current package"), Tracer->LoadedPackageIndex, 0);
+
+    Tracer->TickState_ScanningPackages(FPlatformTime::Seconds(), 1.0);
+    TestEqual(TEXT("A later slice completes the package"), Tracer->LoadedPackageIndex, 1);
+    TestTrue(TEXT("Completed package advances to caller-cache state"), Tracer->CurrentState == ETraceState::BuildingCallerCache);
+    return true;
+}
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FTMSettingsSafetyDefaultsTest,

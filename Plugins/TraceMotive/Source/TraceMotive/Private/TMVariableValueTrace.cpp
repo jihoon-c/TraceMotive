@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "Framework/Docking/TabManager.h"
 #include "HAL/PlatformTime.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
 #include "Styling/AppStyle.h"
 #include "TMEngineCompatibility.h"
 #include "TMLocalization.h"
@@ -188,6 +189,37 @@ FString ExportTraceRaw(const FProperty* Property, UObject* Container)
     }
     return FString::Join(Parts, TEXT("|"));
 }
+// Bound recursive export work before constructing potentially very large strings.
+bool FitsTraceBudget(const FProperty* Property, const void* Value, int32& Remaining, int32 Depth = 0)
+{
+    if (!Property || !Value || --Remaining < 0 || Depth > 16) return false;
+    if (const FArrayProperty* Array = CastField<FArrayProperty>(Property))
+    {
+        FScriptArrayHelper Items(Array, Value);
+        if (Items.Num() > Remaining) return false;
+        for (int32 I=0; I<Items.Num(); ++I) if (!FitsTraceBudget(Array->Inner, Items.GetRawPtr(I), Remaining, Depth+1)) return false;
+    }
+    else if (const FSetProperty* Set = CastField<FSetProperty>(Property))
+    {
+        FScriptSetHelper Items(Set, Value);
+        if (Items.GetMaxIndex() > Remaining) return false;
+        for (int32 I=0; I<Items.GetMaxIndex(); ++I) if (Items.IsValidIndex(I) && !FitsTraceBudget(Set->ElementProp, Items.GetElementPtr(I), Remaining, Depth+1)) return false;
+    }
+    else if (const FMapProperty* Map = CastField<FMapProperty>(Property))
+    {
+        FScriptMapHelper Items(Map, Value);
+        if (Items.GetMaxIndex() > Remaining/2) return false;
+        for (int32 I=0; I<Items.GetMaxIndex(); ++I) if (Items.IsValidIndex(I) && (!FitsTraceBudget(Map->KeyProp, Items.GetKeyPtr(I), Remaining, Depth+1) || !FitsTraceBudget(Map->ValueProp, Items.GetValuePtr(I), Remaining, Depth+1))) return false;
+    }
+    else if (const FStructProperty* Struct = CastField<FStructProperty>(Property))
+    {
+        for (TFieldIterator<FProperty> It(Struct->Struct); It; ++It)
+            for (int32 I=0; I<It->ArrayDim; ++I)
+                if (!FitsTraceBudget(*It, It->ContainerPtrToValuePtr<void>(Value, I), Remaining, Depth+1)) return false;
+    }
+    else if (const FStrProperty* String = CastField<FStrProperty>(Property)) Remaining -= String->GetPropertyValue(Value).Len();
+    return Remaining >= 0;
+}
 FString DescribeRootTraceValue(const FProperty* Property, const UObject* Container, bool bDetailed)
 {
     if (Property->ArrayDim <= 1)
@@ -244,7 +276,7 @@ class SVariableValueTrace : public SCompoundWidget
     {
         SCompoundWidget::Tick(Geometry, CurrentTime, DeltaTime);
         const double Now = FPlatformTime::Seconds();
-        if (bIsTracing && bPIEActive && !bPaused && TargetClass && Now - LastSample >= 0.10)
+        if (bIsTracing && bPIEActive && !bPaused && TargetClass && Now - LastSample >= SampleInterval)
         {
             LastSample = Now;
             Sample(Now);
@@ -292,8 +324,8 @@ class SVariableValueTrace : public SCompoundWidget
         if (PostPIEStartedHandle.IsValid()) FEditorDelegates::PostPIEStarted.Remove(PostPIEStartedHandle);
         if (EndPIEHandle.IsValid()) FEditorDelegates::EndPIE.Remove(EndPIEHandle);
     }
-    void HandlePostPIEStarted(bool) { bPIEActive = true; Values.Reset(); DisplayValues.Reset(); DetailValues.Reset(); if (Status.IsValid()) Status->SetText(TMLoc::Text(TEXT("PIE started. Trace is active."), TEXT("PIE started. Trace is active."))); }
-    void HandleEndPIE(bool) { bPIEActive = false; bPaused = false; Values.Reset(); DisplayValues.Reset(); DetailValues.Reset(); if (Status.IsValid()) Status->SetText(TMLoc::Text(TEXT("PIE ended. Trace is armed for the next session."), TEXT("PIE ended. Trace is armed for the next session."))); }
+    void HandlePostPIEStarted(bool) { bPIEActive = true; Values.Reset(); DisplayValues.Reset(); DetailValues.Reset(); TrackedInstances.Reset(); LastInstanceDiscovery = 0.0; if (Status.IsValid()) Status->SetText(TMLoc::Text(TEXT("PIE started. Trace is active."), TEXT("PIE started. Trace is active."))); }
+    void HandleEndPIE(bool) { bPIEActive = false; bPaused = false; Values.Reset(); DisplayValues.Reset(); DetailValues.Reset(); TrackedInstances.Reset(); if (Status.IsValid()) Status->SetText(TMLoc::Text(TEXT("PIE ended. Trace is armed for the next session."), TEXT("PIE ended. Trace is armed for the next session."))); }
     TSharedRef<SWidget> BuildDetailsPanel()
     {
         return SNew(SBorder).Padding(5).BorderImage(FAppStyle::GetBrush(TEXT("Brushes.Recessed")))
@@ -423,6 +455,9 @@ class SVariableValueTrace : public SCompoundWidget
         TargetClass = NewTargetClass;
         SelectedVariables.Reset();
         ActiveLanes.Reset();
+        ActiveProperties.Reset();
+        TrackedInstances.Reset();
+        LastInstanceDiscovery = 0.0;
         Lanes.Reset();
         RefreshPropertyOptions();
         Values.Reset();
@@ -562,6 +597,9 @@ class SVariableValueTrace : public SCompoundWidget
         return SNew(SBorder).Padding(8).BorderImage(FAppStyle::GetBrush(TEXT("ToolPanel.GroupBorder")))
             [SNew(SVerticalBox)
                 + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Text(TMLoc::Text(TEXT("Trace setup"), TEXT("Trace setup"))).Font(VariableTraceFont(TEXT("Bold"), 10))]
+                + SVerticalBox::Slot().AutoHeight().Padding(0,4)[SNew(STextBlock).AutoWrapText(true).Text(TMLoc::Text(TEXT("Sampled values: changes between samples may be missed. Filter by PIE world or full instance path below."), TEXT("샘플링 관찰: 샘플 사이의 변경은 누락될 수 있습니다. 아래에서 PIE 월드 또는 인스턴스 전체 경로로 필터링하세요.")))]
+                + SVerticalBox::Slot().AutoHeight()[SNew(SSearchBox).HintText(TMLoc::Text(TEXT("World / instance path filter (empty = all PIE instances)"), TEXT("월드 / 인스턴스 경로 필터 (비우면 모든 PIE 인스턴스)"))).OnTextChanged_Lambda([this](const FText& Text) { InstanceFilter = Text.ToString(); TrackedInstances.Reset(); Values.Reset(); DisplayValues.Reset(); DetailValues.Reset(); LastInstanceDiscovery = 0; })]
+                + SVerticalBox::Slot().AutoHeight().Padding(0,4)[SNew(SButton).Text_Lambda([this]() { return FText::Format(TMLoc::Text(TEXT("Sample interval: {0} seconds (click to change)"), TEXT("샘플 간격: {0}초 (클릭하여 변경)")), FText::AsNumber(SampleInterval)); }).OnClicked_Lambda([this]() { SampleInterval = SampleInterval < 0.1 ? 0.1 : (SampleInterval < 0.5 ? 0.5 : 0.05); return FReply::Handled(); })]
                 + SVerticalBox::Slot().AutoHeight().Padding(0,5)[SNew(SHorizontalBox)
                     + SHorizontalBox::Slot().FillWidth(.52f).Padding(0,0,6,0)[SAssignNew(ClassPicker, SComboButton).ButtonContent()[SNew(STextBlock).Text(this, &SVariableValueTrace::SelectedClassLabel).Font(VariableTraceFont(TEXT("Regular"), 9))].OnGetMenuContent(this, &SVariableValueTrace::BuildClassMenu).OnComboBoxOpened_Lambda([this](){ ClassSearchText.Reset(); RefreshClassMenu(); })]
                     + SHorizontalBox::Slot().FillWidth(.48f)[SAssignNew(VariablePicker, SComboButton).ButtonContent()[SNew(STextBlock).Text(this, &SVariableValueTrace::SelectedVariablesLabel).Font(VariableTraceFont(TEXT("Regular"), 9))].OnGetMenuContent(this, &SVariableValueTrace::BuildVariableMenu).OnComboBoxOpened_Lambda([this](){ VariableSearchText.Reset(); RefreshVariableMenu(); })]]
@@ -577,9 +615,11 @@ class SVariableValueTrace : public SCompoundWidget
         const bool bStartingNewTrace = !bIsTracing;
         const bool bActiveFilterChanged = ActiveLanes != SelectedVariables;
         ActiveLanes = SelectedVariables;
+        ActiveProperties.Reset();
         for (const FString& Lane : ActiveLanes)
         {
             if (!Lanes.Contains(Lane)) Lanes.Add(Lane);
+            if (FProperty* Property = FindFProperty<FProperty>(TargetClass, *Lane)) ActiveProperties.Add(Lane, Property);
         }
         if (bStartingNewTrace)
         {
@@ -621,28 +661,51 @@ class SVariableValueTrace : public SCompoundWidget
     }
     void Sample(double Now)
     {
+        TRACE_CPUPROFILER_EVENT_SCOPE(TraceMotive_VariableValueSample);
         ++SampleFrame;
         int32 InstanceCount = 0;
-        for (TObjectIterator<UObject> It; It; ++It)
+        int32 SkippedValues = 0;
+        if (LastInstanceDiscovery == 0.0 || Now - LastInstanceDiscovery >= 0.5)
         {
-            UObject *Object = *It;
-            if (!Object || Object->IsTemplate() || !Object->IsA(TargetClass))
-                continue;
-            const UWorld *World = Object->GetWorld();
-            if (!World || World->WorldType != EWorldType::PIE)
-                continue;
+            TrackedInstances.Reset();
+            for (TObjectIterator<UObject> It; It; ++It)
+            {
+                UObject* Object = *It;
+                const UWorld* World = Object ? Object->GetWorld() : nullptr;
+                if (Object && !Object->IsTemplate() && Object->IsA(TargetClass) && World && World->WorldType == EWorldType::PIE
+                    && (InstanceFilter.IsEmpty() || Object->GetPathName().Contains(InstanceFilter))) TrackedInstances.Add(Object);
+            }
+            LastInstanceDiscovery = Now;
+        }
+
+        TSet<FString> LiveKeys;
+        for (const TWeakObjectPtr<UObject>& WeakObject : TrackedInstances)
+        {
+            UObject* Object = WeakObject.Get();
+            if (!Object) continue;
             ++InstanceCount;
             for (const FString &Lane : ActiveLanes)
             {
-                FProperty *Property = FindFProperty<FProperty>(Object->GetClass(), *Lane);
+                FProperty* Property = ActiveProperties.FindRef(Lane).Get();
+                if (!Property)
+                {
+                    Property = FindFProperty<FProperty>(Object->GetClass(), *Lane);
+                    if (Property) ActiveProperties.Add(Lane, Property);
+                }
                 if (!Property || Property->HasAnyPropertyFlags(CPF_Parm))
                     continue;
+                int32 Remaining = 4096;
+                bool bFits = true;
+                for (int32 I=0; I<Property->ArrayDim && bFits; ++I)
+                    bFits = FitsTraceBudget(Property, Property->ContainerPtrToValuePtr<void>(Object, I), Remaining);
+                if (!bFits) { ++SkippedValues; continue; }
                 const FString CurrentRaw = ExportTraceRaw(Property, Object);
-                const FString CurrentDisplay = SummarizeTraceText(DescribeRootTraceValue(Property, Object, false));
                 const FString Key = FString::Printf(TEXT("%p|%u|%s"), Object, Object->GetUniqueID(), *Lane);
+                LiveKeys.Add(Key);
                 FString *PreviousRaw = Values.Find(Key);
                 if (!PreviousRaw)
                 {
+                    const FString CurrentDisplay = SummarizeTraceText(DescribeRootTraceValue(Property, Object, false));
                     Values.Add(Key, CurrentRaw);
                     DisplayValues.Add(Key, CurrentDisplay);
                     DetailValues.Add(Key, DescribeRootTraceValue(Property, Object, true));
@@ -652,21 +715,33 @@ class SVariableValueTrace : public SCompoundWidget
                 {
                     const FString PreviousDisplay = DisplayValues.FindRef(Key);
                     const FString PreviousDetails = DetailValues.FindRef(Key);
+                    const FString CurrentDisplay = SummarizeTraceText(DescribeRootTraceValue(Property, Object, false));
                     const FString CurrentDetails = DescribeRootTraceValue(Property, Object, true);
                     const FString TypeName = Property->ArrayDim > 1 ? FString::Printf(TEXT("%s[%d]"), *TraceTypeName(Property), Property->ArrayDim) : TraceTypeName(Property);
-                    AddChange(Lane, Object->GetName(), PreviousDisplay, CurrentDisplay, Now, TypeName, PreviousDetails, CurrentDetails);
+                    AddChange(Lane, FString::Printf(TEXT("%s [id=%u]"), *Object->GetPathName(), Object->GetUniqueID()), PreviousDisplay, CurrentDisplay, Now, TypeName, PreviousDetails, CurrentDetails);
                     *PreviousRaw = CurrentRaw;
                     DisplayValues.Add(Key, CurrentDisplay);
                     DetailValues.Add(Key, CurrentDetails);
                 }
             }
         }
+        for (auto It = Values.CreateIterator(); It; ++It)
+        {
+            if (!LiveKeys.Contains(It.Key()))
+            {
+                DisplayValues.Remove(It.Key());
+                DetailValues.Remove(It.Key());
+                It.RemoveCurrent();
+            }
+        }
         const FText StateText =
             bPaused ? TMLoc::Text(TEXT("Paused"), TEXT("Paused")) : TMLoc::Text(TEXT("Live"), TEXT("Live"));
+        Status->SetToolTipText(FText::Format(TMLoc::Text(TEXT("Sampling every {0} seconds. New instances are discovered every 0.5 seconds. Instance labels include the PIE world path."), TEXT("{0}초마다 관찰합니다. 새 인스턴스는 0.5초마다 검색합니다. 인스턴스 표시에 PIE 월드 경로가 포함됩니다.")), FText::AsNumber(SampleInterval)));
         Status->SetText(
             FText::Format(TMLoc::Text(TEXT("{0} | {1} event groups | {2} live instance(s) | visible: last 45 sec"),
                                       TEXT("{0} | {1} event groups | {2} live instance(s) | visible: last 45 sec")),
                           StateText, FText::AsNumber(Changes.Num()), FText::AsNumber(InstanceCount)));
+        if (SkippedValues > 0) Status->SetText(FText::Format(TMLoc::Text(TEXT("{0} | {1} values skipped: export budget exceeded; narrow the trace."), TEXT("{0} | 값 {1}개 생략: 내보내기 예산 초과. 관찰 범위를 줄이세요.")), Status->GetText(), FText::AsNumber(SkippedValues)));
     }
     void AddChange(const FString &Lane, const FString &ObjectName, const FString &OldValue, const FString &NewValue,
                    double Now, const FString& TypeName, const FString& OldDetails, const FString& NewDetails)
@@ -796,8 +871,12 @@ class SVariableValueTrace : public SCompoundWidget
     TArray<FString> PropertyCategories, SelectedVariables, ActiveLanes, Lanes;
     TMap<FString, TArray<FString>> PropertiesByCategory;
     TMap<FString, FString> Values, DisplayValues, DetailValues;
+    TMap<FString, TWeakFieldPtr<FProperty>> ActiveProperties;
+    TArray<TWeakObjectPtr<UObject>> TrackedInstances;
     TArray<FVariableChange> Changes;
-    double StartTime = 0, LastSample = 0, LastBuild = 0;
+    FString InstanceFilter;
+    double SampleInterval = 0.1;
+    double StartTime = 0, LastSample = 0, LastBuild = 0, LastInstanceDiscovery = 0;
     int32 SampleFrame = 0;
     bool bPaused = false, bDirty = false, bShowConfiguration = true, bIsTracing = false, bPIEActive = false;
     int32 SelectedChangeIndex = INDEX_NONE;

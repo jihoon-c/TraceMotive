@@ -2519,7 +2519,10 @@ namespace
 
 
 
-            const bool bClickActivationOK = PCDO && PCDO->bEnableClickEvents && PCDO->bShowMouseCursor;
+            // Unreal dispatches actor/component click events from bEnableClickEvents and
+            // ClickEventKeys. A hidden software cursor is useful evidence, but is not an
+            // engine-level blocker for hardware-position click tracing.
+            const bool bClickActivationOK = PCDO && PCDO->bEnableClickEvents;
 
             const bool bTouchActivationOK = PCDO && PCDO->bEnableTouchEvents;
 

@@ -10,6 +10,7 @@
 #include "TMContextShortcutHelper.h"
 #include "TMDockTabHelper.h"
 #include "TMEnhancedOutlinerSearch.h"
+#include "TMFeatureVisibility.h"
 #include "TMGlobalSpeedControl.h"
 #include "TMInvestigationSession.h"
 #include "TMPerformanceGuard.h"
@@ -42,6 +43,7 @@
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Layout/SSeparator.h"
+#include "Widgets/Layout/SExpandableArea.h"
 #include "Widgets/Layout/SWrapBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/SCompoundWidget.h"
@@ -425,13 +427,13 @@ namespace
                 { TEXT("TraceMotive.VariableValueTrace"), LauncherText(TEXT("Unexpected value change"), TEXT("예상치 못한 값 변경")), LauncherText(TEXT("Trace the value, instance, and related runtime evidence."), TEXT("값, 인스턴스와 관련 런타임 근거를 추적합니다.")), RuntimeColor, [](){ TMInvestigationSession::StartScenario(TEXT("Variable")); } },
                 { TEXT("TraceMotive.PackageProgress"), LauncherText(TEXT("Packaging failed or stalled"), TEXT("패키징 실패 또는 정체")), LauncherText(TEXT("Monitor the job and preserve failure investigation notes."), TEXT("작업을 모니터링하고 실패 조사 기록을 보존합니다.")), WorkflowColor, [](){ TMInvestigationSession::StartScenario(TEXT("Packaging")); } }
             };
-            const TArray<FLauncherTile> SearchTiles = {
+            TArray<FLauncherTile> SearchTiles = {
                 { TEXT("TraceMotive.VisualReferenceSearch"), LauncherText(TEXT("Visual Reference Search"), TEXT("시각 참조 검색")), LauncherText(TEXT("Find variable/function references from Blueprint context."), TEXT("Blueprint 컨텍스트에서 변수와 함수 참조를 찾습니다.")), SearchColor, [](){ OpenVisualReferenceHelp(); } },
                 { TEXT("TraceMotive.EnhancedOutlinerSearch"), LauncherText(TEXT("Enhanced Outliner Search"), TEXT("향상된 아웃라이너 검색")), LauncherText(TEXT("Search actors by name, tag, variable, value, and actor arrays."), TEXT("이름, 태그, 변수, 값, 액터 배열로 액터를 검색합니다.")), SearchColor, [](){ TMEnhancedOutlinerSearch::OpenWindow(); } },
                 { TEXT("TraceMotive.AssetUsageLocator"), LauncherText(TEXT("Asset Usage Locator"), TEXT("에셋 사용 위치")), LauncherText(TEXT("Analyze the currently selected Content Browser asset."), TEXT("콘텐츠 브라우저에서 현재 선택한 에셋을 분석합니다.")), SearchColor, [](){ OpenAssetUsageForCurrentSelection(); } }
             };
 
-            const TArray<FLauncherTile> RuntimeTiles = {
+            TArray<FLauncherTile> RuntimeTiles = {
                 { TEXT("TraceMotive.CollisionPairAnalyzer"), LauncherText(TEXT("Collision Pair Analyzer"), TEXT("충돌 쌍 분석")), LauncherText(TEXT("Analyze why two selected actors do or do not block."), TEXT("선택한 두 액터의 충돌 여부를 분석합니다.")), RuntimeColor, [](){ TMInvestigationSession::OpenTool(TEXT("Collision")); } },
                 { TEXT("TraceMotive.ClickEventDiagnostics"), LauncherText(TEXT("Click Event Diagnostics"), TEXT("클릭 이벤트 진단")), LauncherText(TEXT("Trace UI, input, collision, and click delivery."), TEXT("UI, 입력, 충돌, 클릭 전달 과정을 추적합니다.")), RuntimeColor, [](){ TMInvestigationSession::OpenTool(TEXT("Click")); } },
                 { TEXT("TraceMotive.AudioPlaybackTrace"), LauncherText(TEXT("Audio Playback Trace"), TEXT("오디오 재생 추적")), LauncherText(TEXT("Detect audio playback and likely source."), TEXT("오디오 재생과 추정 출처를 감지합니다.")), RuntimeColor, [](){ TMInvestigationSession::OpenTool(TEXT("Audio")); } },
@@ -442,6 +444,11 @@ namespace
                 { TEXT("TraceMotive.RuntimeErrorTrace"), LauncherText(TEXT("Runtime Error Investigation"), TEXT("런타임 오류 분석")), LauncherText(TEXT("Live Blueprint errors and completed PIE log analysis in one tool."), TEXT("실시간 Blueprint 오류와 완료된 PIE 로그를 한 도구에서 분석합니다.")), RuntimeColor, [](){ TMInvestigationSession::OpenTool(TEXT("RuntimeError")); } }
             };
 
+            const TArray<FLauncherTile> CoreTiles = { SearchTiles[0], SearchTiles[2], RuntimeTiles[3], RuntimeTiles[0] };
+            SearchTiles.RemoveAt(2);
+            SearchTiles.RemoveAt(0);
+            RuntimeTiles.RemoveAt(3);
+            RuntimeTiles.RemoveAt(0);
             const TArray<FLauncherTile> WorkflowTiles = {
                 { TEXT("TraceMotive.PackageProgress"), LauncherText(TEXT("Package Progress"), TEXT("패키징 진행")), LauncherText(TEXT("Readable packaging progress and failure hints."), TEXT("읽기 쉬운 패키징 진행 상황과 실패 힌트를 제공합니다.")), WorkflowColor, [](){ TMInvestigationSession::OpenTool(TEXT("Packaging")); } },
                 { TEXT("TraceMotive.ToolLauncher"), LauncherText(TEXT("Investigation Sessions"), TEXT("조사 세션")), LauncherText(TEXT("Save investigations, continue across tools, and compare Before/After."), TEXT("조사를 저장하고 도구 간 연결 및 전후 비교를 수행합니다.")), WorkflowColor, [](){ TMInvestigationSession::OpenWindow(); } },
@@ -481,10 +488,32 @@ namespace
                     + SVerticalBox::Slot().FillHeight(1.0f)
                     [
                         SNew(SScrollBox)
-                        + SScrollBox::Slot().Padding(0, 0, 0, 14)[BuildCategory(LauncherText(TEXT("Quick Diagnosis"), TEXT("빠른 진단")), ScenarioTiles)]
-                        + SScrollBox::Slot().Padding(0, 0, 0, 14)[BuildCategory(LauncherText(TEXT("Search / Reference"), TEXT("검색 / 참조")), SearchTiles)]
-                        + SScrollBox::Slot().Padding(0, 0, 0, 14)[BuildCategory(LauncherText(TEXT("Runtime Diagnostics"), TEXT("런타임 진단")), RuntimeTiles)]
-                        + SScrollBox::Slot().Padding(0, 0, 0, 14)[BuildCategory(LauncherText(TEXT("Workflow / Utilities"), TEXT("워크플로 / 유틸리티")), WorkflowTiles)]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 8)[SNew(STextBlock).AutoWrapText(true).Text(LauncherText(TEXT("Select a target, run a core tool, review its evidence, then open the source location. Runtime tools require PIE."), TEXT("대상 선택 → 핵심 도구 실행 → 근거 확인 → 원래 위치 이동 순서로 사용하세요. 런타임 도구는 PIE가 필요합니다.")))]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 14)[BuildCategory(LauncherText(TEXT("Core tools / Start here"), TEXT("핵심 도구 / 여기서 시작")), CoreTiles)]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 14)
+                        [
+                            SNew(SBox)
+                            .Visibility(TMFeatureVisibility::IsCoreOnlyRelease() ? EVisibility::Collapsed : EVisibility::Visible)
+                            [SNew(SExpandableArea).InitiallyCollapsed(true).AreaTitle(LauncherText(TEXT("Advanced / scenario investigations"), TEXT("고급 / 시나리오 조사"))).BodyContent()[BuildCategory(LauncherText(TEXT("Quick Diagnosis"), TEXT("빠른 진단")), ScenarioTiles)]]
+                        ]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 14)
+                        [
+                            SNew(SBox)
+                            .Visibility(TMFeatureVisibility::IsCoreOnlyRelease() ? EVisibility::Collapsed : EVisibility::Visible)
+                            [BuildCategory(LauncherText(TEXT("Search / Reference"), TEXT("검색 / 참조")), SearchTiles)]
+                        ]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 14)
+                        [
+                            SNew(SBox)
+                            .Visibility(TMFeatureVisibility::IsCoreOnlyRelease() ? EVisibility::Collapsed : EVisibility::Visible)
+                            [SNew(SExpandableArea).InitiallyCollapsed(true).AreaTitle(LauncherText(TEXT("Advanced runtime tools"), TEXT("고급 런타임 도구"))).BodyContent()[BuildCategory(LauncherText(TEXT("Runtime Diagnostics"), TEXT("런타임 진단")), RuntimeTiles)]]
+                        ]
+                        + SScrollBox::Slot().Padding(0, 0, 0, 14)
+                        [
+                            SNew(SBox)
+                            .Visibility(TMFeatureVisibility::IsCoreOnlyRelease() ? EVisibility::Collapsed : EVisibility::Visible)
+                            [BuildCategory(LauncherText(TEXT("Workflow / Utilities"), TEXT("워크플로 / 유틸리티")), WorkflowTiles)]
+                        ]
                     ]
                 ];
         }
@@ -535,6 +564,16 @@ namespace
         };
 
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsOpenLauncher"), LauncherText(TEXT("Open TraceMotiveTools"), TEXT("TraceMotiveTools 열기")), LauncherText(TEXT("Open the categorized TraceMotive tool launcher."), TEXT("카테고리별 TraceMotive 도구 런처를 엽니다.")), TEXT("TraceMotive.ToolLauncher"), [](){ TMToolLauncher::OpenWindow(); });
+
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenVisualReferenceHelp"), LauncherText(TEXT("Visual Reference Search"), TEXT("시각 참조 검색")), LauncherText(TEXT("Show how to start a Blueprint visual-reference search."), TEXT("Blueprint 시각 참조 검색을 시작하는 방법을 표시합니다.")), TEXT("TraceMotive.VisualReferenceSearch"), [](){ OpenVisualReferenceHelp(); });
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenAssetUsageLocator"), LauncherText(TEXT("Asset Usage Locator"), TEXT("에셋 사용 위치")), LauncherText(TEXT("Analyze the selected Content Browser asset."), TEXT("콘텐츠 브라우저에서 선택한 에셋을 분석합니다.")), TEXT("TraceMotive.AssetUsageLocator"), [](){ OpenAssetUsageForCurrentSelection(); });
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenVariableValueTrace"), LauncherText(TEXT("Variable Value Trace"), TEXT("변수 값 추적")), LauncherText(TEXT("Trace property changes during PIE."), TEXT("PIE 중 프로퍼티 변화를 추적합니다.")), TEXT("TraceMotive.VariableValueTrace"), [](){ TMInvestigationSession::OpenTool(TEXT("Variable")); });
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenCollisionAnalyzer"), LauncherText(TEXT("Collision Pair Analyzer"), TEXT("충돌 쌍 분석")), LauncherText(TEXT("Analyze the two selected actors."), TEXT("선택한 두 액터를 분석합니다.")), TEXT("TraceMotive.CollisionPairAnalyzer"), [](){ TMInvestigationSession::OpenTool(TEXT("Collision")); });
+            return;
+        }
+
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsOpenInvestigations"), LauncherText(TEXT("Investigation Sessions"), TEXT("조사 세션")), LauncherText(TEXT("Save investigations, route between tools, and compare snapshots."), TEXT("조사를 저장하고 도구 간 이동 및 스냅샷 비교를 수행합니다.")), TEXT("TraceMotive.ToolLauncher"), [](){ TMInvestigationSession::OpenWindow(); });
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsOpenSettings"), LauncherText(TEXT("TraceMotive Settings"), TEXT("TraceMotive 설정")), LauncherText(TEXT("Configure performance and diagnostic defaults."), TEXT("성능 및 진단 기본값을 설정합니다.")), TEXT("TraceMotive.PluginGuide"), [](){ OpenTraceMotiveSettings(); });
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsStopAll"), LauncherText(TEXT("Stop All Active Work"), TEXT("모든 작업 중지")), LauncherText(TEXT("Cancel active TraceMotive searches and traces."), TEXT("실행 중인 TraceMotive 검색과 추적을 중지합니다.")), TEXT("TraceMotive.RuntimeErrorTrace"), [](){ StopAllActiveWork(); });

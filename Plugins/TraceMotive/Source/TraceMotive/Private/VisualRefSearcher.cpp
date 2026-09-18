@@ -18,6 +18,7 @@
 #include "Engine/Blueprint.h"
 
 #include "HAL/PlatformTime.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
 
 #include "K2Node.h"
 
@@ -299,6 +300,7 @@ void VisualRefSearcher::CancelSearch()
     ActiveLoadHandles.Empty();
 
     ProcessedNodes.Empty();
+    BlueprintResumeNodeOffsets.Empty();
 
     ProcessedPackages.Empty();
 
@@ -994,36 +996,19 @@ bool VisualRefSearcher::SearchBlueprintForReferences(UBlueprint* BP, UClass* Tar
     bool bFoundAny = false;
 
     int32 ScannedNodeCount = 0;
+    int32 TraversedNodeCount = 0;
+    const int32 ResumeNodeOffset = BlueprintResumeNodeOffsets.FindRef(BP);
 
 
 
     TArray<UEdGraph*> GraphsToCheck;
 
-    GraphsToCheck.Append(BP->UbergraphPages);
-
-    GraphsToCheck.Append(BP->FunctionGraphs);
-
-    GraphsToCheck.Append(BP->MacroGraphs);
+    BP->GetAllGraphs(GraphsToCheck);
 
 
 
-    for (UEdGraph* Graph : BP->FunctionGraphs)
 
-    {
 
-        if (Graph)
-
-        {
-
-            TArray<UEdGraph*> SubGraphs;
-
-            Graph->GetAllChildrenGraphs(SubGraphs);
-
-            GraphsToCheck.Append(SubGraphs);
-
-        }
-
-    }
 
 
 
@@ -1039,21 +1024,22 @@ bool VisualRefSearcher::SearchBlueprintForReferences(UBlueprint* BP, UClass* Tar
 
         {
 
+            const int32 CurrentNodeOffset = TraversedNodeCount++;
+            if (CurrentNodeOffset < ResumeNodeOffset) continue;
+            if (!Node || ProcessedNodes.Contains(Node)) continue;
+
             if (++ScannedNodeCount > TMPerf::MaxGraphNodesPerBlueprint() || FPlatformTime::Seconds() >= DeadlineSeconds)
 
             {
 
                 bOutYielded = true;
+                BlueprintResumeNodeOffsets.Add(BP, CurrentNodeOffset);
 
-                UE_LOG(LogRefSearcher, Warning, TEXT("Reference scan yielded while scanning %s after %d graph node(s). Narrow the scope or target for exhaustive results."), *GetNameSafe(BP), ScannedNodeCount);
+                UE_LOG(LogRefSearcher, Verbose, TEXT("Reference scan paused at %s after %d graph node(s); it will resume on the next search tick."), *GetNameSafe(BP), ScannedNodeCount);
 
                 return bFoundAny;
 
             }
-
-
-
-            if (!Node || ProcessedNodes.Contains(Node)) continue;
 
 
 
@@ -1094,7 +1080,6 @@ bool VisualRefSearcher::SearchBlueprintForReferences(UBlueprint* BP, UClass* Tar
             {
 
                 ProcessedNodes.Add(Node);
-
                 StoreMatchReason(Node, MatchReason);
 
                 OnRefFound.ExecuteIfBound(Node);
@@ -1119,6 +1104,7 @@ bool VisualRefSearcher::SearchBlueprintForReferences(UBlueprint* BP, UClass* Tar
 
 
 
+    BlueprintResumeNodeOffsets.Remove(BP);
     return bFoundAny;
 
 }
@@ -1304,6 +1290,7 @@ void VisualRefSearcher::StartSearch()
 
 
     ProcessedNodes.Empty();
+    BlueprintResumeNodeOffsets.Empty();
 
     ProcessedPackages.Empty();
 
@@ -1357,7 +1344,9 @@ void VisualRefSearcher::SearchTargetBlueprint()
 
     {
 
-        UE_LOG(LogRefSearcher, Warning, TEXT("Target Blueprint scan was time-sliced for editor responsiveness: %s"), *GetNameSafe(BP));
+        UE_LOG(LogRefSearcher, Verbose, TEXT("Target Blueprint scan was time-sliced and queued to resume: %s"), *GetNameSafe(BP));
+
+        LoadedBlueprintQueue.Emplace(BP);
 
     }
 
@@ -1382,6 +1371,7 @@ void VisualRefSearcher::SearchTargetBlueprint()
 bool VisualRefSearcher::Tick(float DeltaTime)
 
 {
+    TRACE_CPUPROFILER_EVENT_SCOPE(TraceMotive_VisualReferenceSearchTick);
 
     if (CancellationGeneration != TMPerf::GetCancellationGeneration())
 
@@ -1489,7 +1479,13 @@ bool VisualRefSearcher::Tick(float DeltaTime)
 
         ProcessedCount++;
 
-        CurrentScannedCount++;
+        if (bYieldedBlueprintScan)
+        {
+            LoadedBlueprintQueue.Add(MoveTemp(LoadedBlueprint));
+            break;
+        }
+
+        if (BP != TargetBP.Get()) CurrentScannedCount++;
 
 
 
@@ -1561,8 +1557,6 @@ bool VisualRefSearcher::Tick(float DeltaTime)
 
 
 
-        ProcessedPackages.Add(CurrentAsset.PackageName);
-
         UBlueprint* BP = Cast<UBlueprint>(AssetObj);
 
         if (!BP)
@@ -1585,6 +1579,13 @@ bool VisualRefSearcher::Tick(float DeltaTime)
 
         ProcessedCount++;
 
+        if (bYieldedBlueprintScan)
+        {
+            LoadedBlueprintQueue.Emplace(BP);
+            break;
+        }
+
+        ProcessedPackages.Add(CurrentAsset.PackageName);
         CurrentScannedCount++;
 
 
@@ -2590,9 +2591,3 @@ bool VisualRefSearcher::CheckClassMatch(UClass* TestClass, UClass* TargetGenClas
     return false;
 
 }
-
-
-
-
-
-

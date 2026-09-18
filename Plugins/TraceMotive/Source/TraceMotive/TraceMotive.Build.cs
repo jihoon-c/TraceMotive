@@ -7,6 +7,11 @@ public class TraceMotive : ModuleRules
 	public TraceMotive(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+
+		// Fab v1 release surface: compile every feature, but register only the
+		// four tools listed in TMToolLauncher::CoreTiles. Change to 0 when a
+		// later release is ready to expose the hidden tools again.
+		PublicDefinitions.Add("TRACEMOTIVE_CORE_ONLY_RELEASE=1");
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
