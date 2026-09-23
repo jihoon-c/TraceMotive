@@ -1,5 +1,7 @@
 # TraceMotive — Debug Pathfinder for Unreal
 
+[English](README.md) | [한국어](README_KO.md)
+
 TraceMotive — Debug Pathfinder for Unreal is an editor-only Unreal Engine plugin for inspecting
 Blueprint and level-instance relationships. It does not add runtime code to a
 packaged game.
