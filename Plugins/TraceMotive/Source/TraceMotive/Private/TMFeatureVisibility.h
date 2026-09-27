@@ -1,6 +1,6 @@
 #pragma once
 
-// Fab release builds expose only the tools listed in TMToolLauncher::CoreTiles.
+// Fab release builds expose only the reviewed tools listed in TMToolLauncher::CoreTiles.
 // Set TRACEMOTIVE_CORE_ONLY_RELEASE to 0 in TraceMotive.Build.cs when the
 // hidden tools are ready to be exposed in a later product update.
 #ifndef TRACEMOTIVE_CORE_ONLY_RELEASE

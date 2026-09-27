@@ -16,8 +16,10 @@
 #include "Framework/Docking/TabManager.h"
 #include "Rendering/DrawElements.h"
 #include "Misc/OutputDevice.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/ScopeLock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet2/DebuggerCommands.h"
 #include "Styling/AppStyle.h"
 #include "ToolMenus.h"
 #include "Runtime/Launch/Resources/Version.h"
@@ -49,6 +51,8 @@ namespace
 {
     const FName GlobalSpeedControlTabId(TEXT("TraceMotive.GlobalSpeedControl"));
     bool bGlobalSpeedControlTabRegistered = false;
+    FDelegateHandle EndPIEHandle;
+    constexpr const TCHAR* SpeedControlConfigSection = TEXT("TraceMotive.GlobalSpeedControl");
 
     constexpr float GlobalMinSpeed = 0.1f;
     constexpr float GlobalMaxSpeed = 20.0f;
@@ -201,6 +205,37 @@ namespace
             RemoveBlueprintEventHook();
         }
 
+        void SetResetOnPIEEnd(const bool bEnabled)
+        {
+            bResetOnPIEEnd = bEnabled;
+            if (GConfig)
+            {
+                GConfig->SetBool(SpeedControlConfigSection, TEXT("bResetOnPIEEnd"), bEnabled, GEditorPerProjectIni);
+                GConfig->Flush(false, GEditorPerProjectIni);
+            }
+        }
+
+        void LoadResetOnPIEEnd()
+        {
+            if (GConfig)
+            {
+                GConfig->GetBool(SpeedControlConfigSection, TEXT("bResetOnPIEEnd"), bResetOnPIEEnd, GEditorPerProjectIni);
+            }
+        }
+
+        bool GetResetOnPIEEnd() const
+        {
+            return bResetOnPIEEnd;
+        }
+
+        void HandleEndPIE(bool)
+        {
+            if (bResetOnPIEEnd)
+            {
+                Stop();
+            }
+        }
+
         void SetSkipToTargetEnabled(const bool bEnabled)
         {
             const bool bShouldArm = bEnabled && HasValidSkipTarget() && IsCurrentSkipTargetSupported();
@@ -343,7 +378,7 @@ namespace
             }
 
             const FString TargetName = FString::Printf(TEXT("%s.%s"), *GetNameSafe(BlueprintTargetClass.Get()), *BlueprintTargetFunction.ToString());
-            const TCHAR* ActionText = SkipTargetAction == ETMSkipTargetAction::PauseGame ? TEXT("pause PIE/Game") : TEXT("restore 1x");
+            const TCHAR* ActionText = SkipTargetAction == ETMSkipTargetAction::PauseGame ? TEXT("pause PIE editor/Game") : TEXT("restore 1x");
             return FString::Printf(TEXT("Blueprint function: %s -> %s%s"), *TargetName, ActionText, bSkipToTargetEnabled ? TEXT(" (armed)") : TEXT(" (not armed)"));
         }
 
@@ -559,9 +594,17 @@ namespace
             PendingTriggerReason.Empty();
             bSkipPauseRequested = false;
 
+            const ETMSkipTargetAction TriggerAction = SkipTargetAction;
+            SetSkipToTargetEnabled(false);
             Reset();
-            if (SkipTargetAction == ETMSkipTargetAction::ResetToNormal)
+            if (TriggerAction == ETMSkipTargetAction::ResetToNormal)
             {
+                return;
+            }
+
+            if (FPlayWorldCommandCallbacks::HasPlayWorld())
+            {
+                FPlayWorldCommandCallbacks::PausePlaySession_Clicked();
                 return;
             }
 
@@ -689,6 +732,7 @@ namespace
         ETMSkipTargetAction SkipTargetAction = ETMSkipTargetAction::PauseGame;
         bool bSkipToTargetEnabled = false;
         bool bSkipPauseRequested = false;
+        bool bResetOnPIEEnd = true;
     };
 
     void FTMSkipLogOutputDevice::Serialize(const TCHAR* V, ELogVerbosity::Type Verbosity, const FName& Category)
@@ -903,6 +947,13 @@ namespace
                     + SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 10)
                     [
                         BuildSpeedSlider()
+                    ]
+                    + SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 8)
+                    [
+                        SNew(SCheckBox)
+                        .IsChecked_Lambda([]() { return GGlobalSpeedController.GetResetOnPIEEnd() ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+                        .OnCheckStateChanged_Lambda([](ECheckBoxState State) { GGlobalSpeedController.SetResetOnPIEEnd(State == ECheckBoxState::Checked); })
+                        [SNew(STextBlock).Text(TMLoc::Text(TEXT("Reset speed and Skip to Target when PIE ends"), TEXT("Reset speed and Skip to Target when PIE ends")))]
                     ]
                     + SVerticalBox::Slot().AutoHeight().Padding(0, 4, 0, 8)
                     [
@@ -1410,7 +1461,7 @@ namespace
                                     GGlobalSpeedController.SetSkipTargetAction(ETMSkipTargetAction::PauseGame);
                                 }
                             })
-                            [SNew(STextBlock).Text(TMLoc::Text(TEXT("Pause PIE/Game (restore 1x)"), TEXT("Pause PIE/Game (restore 1x)")))]
+                            [SNew(STextBlock).Text(TMLoc::Text(TEXT("Pause PIE editor/Game (restore 1x)"), TEXT("Pause PIE editor/Game (restore 1x)")))]
                         ]
                     ]
                     + SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 5)
@@ -1489,7 +1540,12 @@ namespace TMGlobalSpeedControl
 {
     void RegisterMenus()
     {
+        GGlobalSpeedController.LoadResetOnPIEEnd();
         RegisterGlobalSpeedControlTab();
+        if (!EndPIEHandle.IsValid())
+        {
+            EndPIEHandle = FEditorDelegates::EndPIE.AddRaw(&GGlobalSpeedController, &FTMGlobalSpeedController::HandleEndPIE);
+        }
 
         auto AddEntry = [](UToolMenu* Menu, const FName EntryName)
         {
@@ -1513,6 +1569,11 @@ namespace TMGlobalSpeedControl
 
     void UnregisterMenus()
     {
+        if (EndPIEHandle.IsValid())
+        {
+            FEditorDelegates::EndPIE.Remove(EndPIEHandle);
+            EndPIEHandle.Reset();
+        }
         GGlobalSpeedController.Stop();
         if (bGlobalSpeedControlTabRegistered)
         {
@@ -1525,5 +1586,10 @@ namespace TMGlobalSpeedControl
     {
         RegisterGlobalSpeedControlTab();
         FGlobalTabmanager::Get()->TryInvokeTab(GlobalSpeedControlTabId);
+    }
+
+    void StopActiveWork()
+    {
+        GGlobalSpeedController.Stop();
     }
 }

@@ -420,6 +420,8 @@ Details variable name and value pair matched.,Details 변수명과 변수값 페
 "Open a window that speeds up gameplay time dilation and audio playback together.","게임 시간 배율과 오디오 재생을 함께 빠르게 하는 창을 엽니다.",""
 "Output Log text","Output Log 텍스트",""
 "Pause PIE/Game (restore 1x)","PIE/게임 일시정지(1배속 복구)",""
+"Pause PIE editor/Game (restore 1x)","PIE 에디터/게임 일시정지(1배속 복구)",""
+"Reset speed and Skip to Target when PIE ends","PIE 종료 시 배속과 대상까지 건너뛰기 초기화",""
 "Restore 1x","1배속 복구",""
 "Search and select Blueprint class...","블루프린트 클래스 검색 및 선택...",""
 "Select function...","함수 선택...",""

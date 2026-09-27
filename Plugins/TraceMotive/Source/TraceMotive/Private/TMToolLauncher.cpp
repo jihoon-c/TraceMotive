@@ -194,6 +194,7 @@ namespace
     {
         TMPerf::RequestCancelAll();
         TMPerf::SetSearchBoostEnabled(false);
+        TMGlobalSpeedControl::StopActiveWork();
         TMDockTab::CloseAll();
 
         static const TArray<FName> WorkTabIds = {
@@ -213,7 +214,7 @@ namespace
             if (TSharedPtr<SDockTab> Tab = FGlobalTabmanager::Get()->FindExistingLiveTab(TabId)) Tab->RequestCloseTab();
         }
 
-        FNotificationInfo Info(LauncherText(TEXT("TraceMotive stopped active searches and traces."), TEXT("TraceMotive의 실행 중인 검색과 추적을 중지했습니다.")));
+        FNotificationInfo Info(LauncherText(TEXT("TraceMotive stopped active searches, traces, and Global Speed Control."), TEXT("TraceMotive의 실행 중인 검색, 추적과 전역 배속 제어를 중지했습니다.")));
         Info.ExpireDuration = 4.0f;
         FSlateNotificationManager::Get().AddNotification(Info);
     }
@@ -444,7 +445,11 @@ namespace
                 { TEXT("TraceMotive.RuntimeErrorTrace"), LauncherText(TEXT("Runtime Error Investigation"), TEXT("런타임 오류 분석")), LauncherText(TEXT("Live Blueprint errors and completed PIE log analysis in one tool."), TEXT("실시간 Blueprint 오류와 완료된 PIE 로그를 한 도구에서 분석합니다.")), RuntimeColor, [](){ TMInvestigationSession::OpenTool(TEXT("RuntimeError")); } }
             };
 
-            const TArray<FLauncherTile> CoreTiles = { SearchTiles[0], SearchTiles[2], RuntimeTiles[3], RuntimeTiles[0] };
+            const TArray<FLauncherTile> CoreTiles = {
+                SearchTiles[0], SearchTiles[2], RuntimeTiles[3], RuntimeTiles[0],
+                { TEXT("TraceMotive.GlobalSpeedControl"), LauncherText(TEXT("Global Speed Control"), TEXT("전역 배속 제어")), LauncherText(TEXT("Control PIE speed and pause at a target."), TEXT("PIE 배속을 제어하고 대상에서 일시정지합니다.")), WorkflowColor, [](){ TMGlobalSpeedControl::OpenWindow(); } },
+                { TEXT("TraceMotive.StopAll"), LauncherText(TEXT("Stop All Active Work"), TEXT("모든 작업 중지")), LauncherText(TEXT("Stop searches, traces, and Global Speed Control."), TEXT("검색, 추적과 전역 배속 제어를 중지합니다.")), FLinearColor(0.95f, 0.30f, 0.24f), [](){ StopAllActiveWork(); } }
+            };
             SearchTiles.RemoveAt(2);
             SearchTiles.RemoveAt(0);
             RuntimeTiles.RemoveAt(3);
@@ -571,12 +576,14 @@ namespace
             AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenAssetUsageLocator"), LauncherText(TEXT("Asset Usage Locator"), TEXT("에셋 사용 위치")), LauncherText(TEXT("Analyze the selected Content Browser asset."), TEXT("콘텐츠 브라우저에서 선택한 에셋을 분석합니다.")), TEXT("TraceMotive.AssetUsageLocator"), [](){ OpenAssetUsageForCurrentSelection(); });
             AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenVariableValueTrace"), LauncherText(TEXT("Variable Value Trace"), TEXT("변수 값 추적")), LauncherText(TEXT("Trace property changes during PIE."), TEXT("PIE 중 프로퍼티 변화를 추적합니다.")), TEXT("TraceMotive.VariableValueTrace"), [](){ TMInvestigationSession::OpenTool(TEXT("Variable")); });
             AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenCollisionAnalyzer"), LauncherText(TEXT("Collision Pair Analyzer"), TEXT("충돌 쌍 분석")), LauncherText(TEXT("Analyze the two selected actors."), TEXT("선택한 두 액터를 분석합니다.")), TEXT("TraceMotive.CollisionPairAnalyzer"), [](){ TMInvestigationSession::OpenTool(TEXT("Collision")); });
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsOpenGlobalSpeedControl"), LauncherText(TEXT("Global Speed Control"), TEXT("전역 배속 제어")), LauncherText(TEXT("Control PIE speed and pause at a target."), TEXT("PIE 배속을 제어하고 대상에서 일시정지합니다.")), TEXT("TraceMotive.GlobalSpeedControl"), [](){ TMGlobalSpeedControl::OpenWindow(); });
+            AddEntry(TEXT("TraceMotiveCore"), TEXT("TMToolsStopAll"), LauncherText(TEXT("Stop All Active Work"), TEXT("모든 작업 중지")), LauncherText(TEXT("Stop searches, traces, and Global Speed Control."), TEXT("검색, 추적과 전역 배속 제어를 중지합니다.")), TEXT("TraceMotive.RuntimeErrorTrace"), [](){ StopAllActiveWork(); });
             return;
         }
 
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsOpenInvestigations"), LauncherText(TEXT("Investigation Sessions"), TEXT("조사 세션")), LauncherText(TEXT("Save investigations, route between tools, and compare snapshots."), TEXT("조사를 저장하고 도구 간 이동 및 스냅샷 비교를 수행합니다.")), TEXT("TraceMotive.ToolLauncher"), [](){ TMInvestigationSession::OpenWindow(); });
         AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsOpenSettings"), LauncherText(TEXT("TraceMotive Settings"), TEXT("TraceMotive 설정")), LauncherText(TEXT("Configure performance and diagnostic defaults."), TEXT("성능 및 진단 기본값을 설정합니다.")), TEXT("TraceMotive.PluginGuide"), [](){ OpenTraceMotiveSettings(); });
-        AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsStopAll"), LauncherText(TEXT("Stop All Active Work"), TEXT("모든 작업 중지")), LauncherText(TEXT("Cancel active TraceMotive searches and traces."), TEXT("실행 중인 TraceMotive 검색과 추적을 중지합니다.")), TEXT("TraceMotive.RuntimeErrorTrace"), [](){ StopAllActiveWork(); });
+        AddEntry(TEXT("TraceMotiveMain"), TEXT("TMToolsStopAll"), LauncherText(TEXT("Stop All Active Work"), TEXT("모든 작업 중지")), LauncherText(TEXT("Stop searches, traces, and Global Speed Control."), TEXT("검색, 추적과 전역 배속 제어를 중지합니다.")), TEXT("TraceMotive.RuntimeErrorTrace"), [](){ StopAllActiveWork(); });
         AddEntry(TEXT("TraceMotiveQuickDiagnosis"), TEXT("TMQuickClick"), LauncherText(TEXT("Diagnose: Click does not work"), TEXT("진단: 클릭이 동작하지 않음")), LauncherText(TEXT("Start a persisted click investigation."), TEXT("클릭 조사 세션을 시작합니다.")), TEXT("TraceMotive.ClickEventDiagnostics"), [](){ TMInvestigationSession::StartScenario(TEXT("Click")); });
         AddEntry(TEXT("TraceMotiveQuickDiagnosis"), TEXT("TMQuickCollision"), LauncherText(TEXT("Diagnose: Actors pass through"), TEXT("진단: 액터가 서로 통과함")), LauncherText(TEXT("Start a persisted collision investigation."), TEXT("충돌 조사 세션을 시작합니다.")), TEXT("TraceMotive.CollisionPairAnalyzer"), [](){ TMInvestigationSession::StartScenario(TEXT("Collision")); });
         AddEntry(TEXT("TraceMotiveQuickDiagnosis"), TEXT("TMQuickAudio"), LauncherText(TEXT("Diagnose: Unknown audio source"), TEXT("진단: 알 수 없는 오디오 출처")), LauncherText(TEXT("Start a persisted audio investigation."), TEXT("오디오 조사 세션을 시작합니다.")), TEXT("TraceMotive.AudioPlaybackTrace"), [](){ TMInvestigationSession::StartScenario(TEXT("Audio")); });

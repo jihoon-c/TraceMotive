@@ -124,6 +124,7 @@ void FTraceMotiveModule::RegisterMenus()
     TMAssetUsageLocator::RegisterMenus();
     TMCollisionPairAnalyzer::RegisterMenus();
     TMVariableValueTrace::RegisterMenus();
+    TMGlobalSpeedControl::RegisterMenus();
 
     if (!TMFeatureVisibility::IsCoreOnlyRelease())
     {
@@ -133,7 +134,6 @@ void FTraceMotiveModule::RegisterMenus()
         TMClickDiagnostics::RegisterMenus();
         TMContextShortcutHelper::RegisterMenus();
         TMEnhancedOutlinerSearch::RegisterMenus();
-        TMGlobalSpeedControl::RegisterMenus();
         TMInvestigationSession::RegisterTab();
         TMPackageProgress::RegisterMenus();
         TMPluginGuide::RegisterMenus();
