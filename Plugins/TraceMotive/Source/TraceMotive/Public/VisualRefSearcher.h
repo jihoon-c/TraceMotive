@@ -38,6 +38,17 @@ DECLARE_DELEGATE(FOnSearchFinishedDelegate);
 
 DECLARE_DELEGATE_OneParam(FOnRefFoundDelegate, UEdGraphNode*);
 
+struct FCppVariableReference
+{
+    FString SourceFilePath;
+    FString SourceLineText;
+    int32 SourceLine = 0;
+    int32 SourceColumn = 0;
+    bool bIsWrite = false;
+};
+
+DECLARE_DELEGATE_OneParam(FOnCppVariableRefFoundDelegate, const FCppVariableReference&);
+
 DECLARE_DELEGATE_TwoParams(FOnSearchProgress, int32 /*Current*/, int32 /*Total*/);
 
 
@@ -76,11 +87,20 @@ public:
 
     void SetExhaustiveSearchEnabled(bool bInEnabled);
 
+    void SetLocalVariableScope(const FString& InScopeName, const FGuid& InVariableGuid);
+
+    void SetCppSourceSearchEnabled(bool bInEnabled) { bCppSourceSearchEnabled = bInEnabled; }
+
     FString GetMatchReason(UEdGraphNode* Node) const;
+
+    static void FindCppVariableReferencesInText(const FString& SourceText, const FString& InVariableName, TArray<FCppVariableReference>& OutReferences, int32 MaxReferences = MAX_int32);
+    bool WasCppSourceScanTruncated() const { return bCppSourceScanTruncated; }
 
 
 
     FOnRefFoundDelegate OnRefFound;
+
+    FOnCppVariableRefFoundDelegate OnCppVariableRefFound;
 
     FOnBatchCompleteDelegate OnBatchComplete;
 
@@ -95,6 +115,12 @@ public:
 private:
 
     friend class FTMVisualRefResumeTest;
+    friend class FTMVisualRefPerformanceTest;
+    friend class FTMPersistedBlueprintReferenceTest;
+    friend class FTMCrossBlueprintReferenceTest;
+    friend class FTMVisualRefSymbolIdentityTest;
+    friend class FTMVisualRefCurrentBlueprintCompletionTest;
+    friend class FTMAsyncBlueprintReferenceTest;
 
     bool Tick(float DeltaTime);
 
@@ -152,6 +178,12 @@ private:
 
     void NotifyBatchCompleteThrottled(bool bForce = false);
 
+    void BuildCppSourceFileQueue();
+
+    bool ScanNextCppSourceFile(double DeadlineSeconds);
+
+    bool HasPendingCppSourceScan() const;
+
 
 
     TWeakObjectPtr<UBlueprint> TargetBP;
@@ -169,6 +201,9 @@ private:
     bool bSearchingDispatcher;
 
     FGuid TargetVarGuid;
+
+    FString LocalVariableScope;
+    FGuid LocalVariableGuid;
 
     FGuid TargetFuncGuid;
 
@@ -190,9 +225,16 @@ private:
 
     TMap<FGuid, FString> NodeMatchReasons;
 
+    TArray<FString> CppSourceFilesToScan;
+
+    int32 CppSourceFileIndex = 0;
+    int32 CppCandidateCount = 0;
+    bool bCppSourceScanTruncated = false;
+    bool bCppSourceSearchEnabled = false;
+
     EVisualRefSearchScope SearchScope = EVisualRefSearchScope::ProjectContent;
 
-    bool bExhaustiveSearchEnabled = false;
+    bool bExhaustiveSearchEnabled = true;
 
     bool bAssetQueuePrepared = false;
 

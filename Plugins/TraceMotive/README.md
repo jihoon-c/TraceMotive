@@ -10,12 +10,13 @@ packaged game.
 
 TraceMotive shortens the path from a debugging question to the editor object,
 Blueprint node, runtime instance, or collision setting that can answer it. The
-Fab v1 release deliberately keeps the customer surface focused on four tools:
+Fab v1 release keeps the customer surface focused on five tools:
 
 - follow a Blueprint symbol to the nodes that reference it;
 - identify where a selected asset is actually used;
-- observe selected property values on PIE instances; and
-- explain why two actors can or cannot block each other.
+- observe selected property values on PIE instances;
+- explain why two actors can or cannot block each other; and
+- control PIE speed and pause at a selected target.
 
 Each tool presents its evidence and its limits separately. A verified object
 reference is not mixed with a text-only candidate, sampled values are not
@@ -24,7 +25,7 @@ presented as proof of the real gameplay movement path.
 
 ## Active features in Fab v1
 
-Start with the four core tools in **TraceMotiveTools → Core tools / Start here**:
+Start with the five core tools in **TraceMotiveTools → Core tools / Start here**:
 
 ### Visual Reference Search
 
@@ -32,6 +33,18 @@ Open a Blueprint graph and right-click a variable, function, event, or dispatche
 to start a contextual search. Results retain their Blueprint, graph, and node
 identity so you can navigate back to the exact source node. The search includes
 nested graphs and keeps same-named assets from different packages separate.
+Local variable searches stay within the selected variable's owning Blueprint and
+function scope, and exclude same-named member variables and other functions' locals.
+Full scan is enabled by default so Project Content checks every Blueprint in
+`/Game` and the target Blueprint's content mount. Turning Full scan off uses a
+faster metadata candidate scan that can miss references.
+Blueprint searches do not scan C++ source by default. For variable searches,
+enable **Include C++ candidates** in **Project Content** to scan project `Source`
+and `Plugins` for C++ identifier text candidates. **Current Blueprint** and
+**Same Folder** search only Blueprint graphs; there is no matching C++ folder
+for those Blueprint scopes. C++ candidates require manual owner/type checks.
+The C++ scan stops at the configured search-result limit and shows a warning
+when that limit is reached; the displayed candidates may then be incomplete.
 
 Use this tool when you need to answer questions such as “where is this value read
 or written?” or “which Blueprint path reaches this function?” Results are static
@@ -72,6 +85,13 @@ The analysis is incremental and cancellable. “Block-capable” means the inspe
 settings can block; the final gameplay result still depends on the movement API,
 ignore lists, physics state, and the component that actually moves.
 
+### Global Speed Control
+
+Control PIE time dilation and audio pitch, or use Skip to Target to restore 1x
+and pause when the selected target is reached. Stop All Active Work also resets
+speed and disarms Skip. The reset-on-PIE-end option controls whether settings
+are reset or retained for the next PIE session.
+
 ## Performance and large-project design
 
 TraceMotive is designed to keep editor diagnostics responsive without claiming a
@@ -87,8 +107,8 @@ hard frame-time guarantee. The current implementation uses these safeguards:
   one unbounded batch.
 - **Large-project safe mode:** enabled by default, it uses conservative scan budgets
   and prevents optional search boosts from increasing work unexpectedly.
-- **Explicit data limits:** reference and asset-usage result sets have clamped
-  limits, while recursively exported runtime values use a fixed traversal budget.
+- **Explicit data limits:** C++ reference candidate and asset-usage finding sets
+  have clamped limits, while recursively exported runtime values use a fixed traversal budget.
   Hitting a limit is surfaced as a partial, truncated, or skipped result.
 - **Throttled UI refresh:** progress and result widgets update at controlled
   intervals so the interface is not rebuilt for every discovered item.
@@ -101,19 +121,21 @@ These techniques reduce long uninterrupted editor work, but individual engine
 operations such as loading one package, inspecting one large property, or running
 one physics query may still exceed a nominal tick budget. Measure cold and warm
 runs on a representative project before making performance claims.
+Blueprint graph references are not capped by the C++ candidate limit. Dense
+Blueprint result graphs therefore still need project-specific UI performance checks.
 
 ## User guide
 
-For detailed Korean instructions covering installation, all four active core tools,
-result interpretation, limitations, troubleshooting, and combined workflows, see
-the [TraceMotive v1 active core features guide](https://app.notion.com/p/3dd69d0f1bf281288b09f5272c997b7b?pvs=204).
+For Korean instructions covering installation, all five active core tools,
+result interpretation, limitations, and troubleshooting, see the bundled
+[TraceMotive v1 user guide](USER_GUIDE.md).
 
 Experimental and future-update tools that remain in the source tree are not
 registered in the Fab v1 editor UI.
 
 ## Release surface
 
-The Fab v1 build exposes only the four core tools above. Other experimental and
+The Fab v1 build exposes the five core tools above and Stop All Active Work. Other experimental and
 future-update tools remain compiled in the source tree but do not register editor
 menus, context actions, or tabs. This keeps unfinished features out of the customer
 workflow without discarding their implementation.
@@ -129,7 +151,7 @@ The plugin module type is `Editor`; it is not loaded by game or server targets.
 
 ## Engine compatibility
 
-- Unreal Engine 5.8.2 on Win64: source compilation and `BuildPlugin` packaging verified
+- Unreal Engine 5.8.3 on Win64: source compilation and `BuildPlugin` packaging verified
 - Packaged binary build ID: `55116800`
 
 Binary packages are engine-build-specific. Rebuild the plugin from source when

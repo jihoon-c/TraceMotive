@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CoreMinimal.h"
 
 
 namespace TMPluginGuide
@@ -11,6 +12,8 @@ namespace TMPluginGuide
     void UnregisterMenus();
 
     void OpenWindow();
+
+    void OpenFeature(const FName& FeatureId);
 
 }
 

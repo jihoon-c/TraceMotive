@@ -3,7 +3,7 @@
     "Version": 1,
     "VersionName": "1.0.0",
     "FriendlyName": "TraceMotive — Debug Pathfinder for Unreal",
-    "Description": "TraceMotive is an editor-only Debug Pathfinder for Unreal: investigate Blueprint and C++ references, runtime state changes, input and collision failures, packaging progress, and development workflows.",
+    "Description": "Editor-only Blueprint reference search with optional C++ text candidates, asset usage, sampled PIE values, collision-pair analysis, and PIE speed control.",
     "Category": "Editor",
     "CreatedBy": "CJH",
     "CanContainContent": false,

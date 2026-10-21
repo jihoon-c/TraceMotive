@@ -10,6 +10,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "HAL/FileManager.h"
+#include "HAL/PlatformTime.h"
 #include "Misc/AutomationTest.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -18,6 +19,14 @@
 #include "EdGraph/EdGraph.h"
 #include "EdGraph/EdGraphNode.h"
 #include "Engine/Blueprint.h"
+#include "Engine/BlueprintGeneratedClass.h"
+#include "GameFramework/Actor.h"
+#include "AssetRegistry/AssetRegistryModule.h"
+#include "EdGraphSchema_K2.h"
+#include "K2Node_CallFunction.h"
+#include "K2Node_CallDelegate.h"
+#include "K2Node_CustomEvent.h"
+#include "K2Node_MacroInstance.h"
 #include "K2Node_VariableGet.h"
 #include "K2Node_VariableSet.h"
 
@@ -94,6 +103,409 @@ bool FTMVisualRefResumeTest::RunTest(const FString&)
     TestEqual(TEXT("Same variable name in unrelated Blueprint is excluded"), Matches.Num(), 2);
     Actual->SearchBlueprintForReferences(Blueprint, nullptr, nullptr, TNumericLimits<double>::Max(), bYielded);
     TestEqual(TEXT("Rescanning does not duplicate results"), Matches.Num(), 2);
+
+    const FString CppFixture = TEXT(
+        "int32 Health = 100;\n"
+        "Health -= Damage;\n"
+        "const int32 Snapshot = Health;\n"
+        "int32 HealthBonus = 5;\n"
+        "// Health = 0;\n"
+        "const TCHAR* Label = TEXT(\"Health\");\n"
+        "++Health;\n");
+    TArray<FCppVariableReference> CppReferences;
+    VisualRefSearcher::FindCppVariableReferencesInText(CppFixture, TEXT("Health"), CppReferences);
+    TestEqual(TEXT("C++ variable scan finds exact identifiers and ignores comments, strings, and longer names"), CppReferences.Num(), 4);
+    TestTrue(TEXT("C++ declaration assignment is classified as a write"), CppReferences.IsValidIndex(0) && CppReferences[0].bIsWrite);
+    TestTrue(TEXT("C++ compound assignment is classified as a write"), CppReferences.IsValidIndex(1) && CppReferences[1].bIsWrite);
+    TestTrue(TEXT("C++ read is classified as a read"), CppReferences.IsValidIndex(2) && !CppReferences[2].bIsWrite);
+    TestTrue(TEXT("C++ prefix increment is classified as a write"), CppReferences.IsValidIndex(3) && CppReferences[3].bIsWrite);
+    VisualRefSearcher::FindCppVariableReferencesInText(CppFixture, TEXT("Health"), CppReferences, 2);
+    TestEqual(TEXT("C++ parser respects the result limit within a source file"), CppReferences.Num(), 2);
+
+    // StartSearch resolves the variable through the Blueprint parent chain.
+    Blueprint->ParentClass = UObject::StaticClass();
+    TSharedRef<VisualRefSearcher> CurrentScope = MakeShared<VisualRefSearcher>(Blueprint, TEXT("Health"));
+    CurrentScope->SetSearchScope(EVisualRefSearchScope::CurrentBlueprint);
+    CurrentScope->SetCppSourceSearchEnabled(true);
+    CurrentScope->StartSearch();
+    TestEqual(TEXT("Current Blueprint does not queue project C++ source"), CurrentScope->CppSourceFilesToScan.Num(), 0);
+    CurrentScope->CancelSearch();
+
+    TSharedRef<VisualRefSearcher> FolderScope = MakeShared<VisualRefSearcher>(Blueprint, TEXT("Health"));
+    FolderScope->SetSearchScope(EVisualRefSearchScope::SameFolder);
+    FolderScope->SetCppSourceSearchEnabled(true);
+    FolderScope->StartSearch();
+    TestEqual(TEXT("Same Folder does not queue project C++ source"), FolderScope->CppSourceFilesToScan.Num(), 0);
+    FolderScope->CancelSearch();
+    TSharedRef<VisualRefSearcher> BlueprintOnly = MakeShared<VisualRefSearcher>(Blueprint, TEXT("Health"));
+    BlueprintOnly->StartSearch();
+    TestEqual(TEXT("Default Project Content search does not queue C++ candidates"), BlueprintOnly->CppSourceFilesToScan.Num(), 0);
+    BlueprintOnly->CancelSearch();
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMVisualRefCurrentBlueprintCompletionTest,
+    "TraceMotive.Search.CurrentBlueprintCompletesAllSlices",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMVisualRefCurrentBlueprintCompletionTest::RunTest(const FString&)
+{
+    UBlueprint* Blueprint = NewObject<UBlueprint>();
+    Blueprint->ParentClass = UObject::StaticClass();
+    UEdGraph* Graph = NewObject<UEdGraph>(Blueprint);
+    Blueprint->UbergraphPages.Add(Graph);
+    const int32 FillerCount = TMPerf::MaxGraphNodesPerBlueprint() + 1;
+    for (int32 Index = 0; Index < FillerCount; ++Index) Graph->AddNode(NewObject<UEdGraphNode>(Graph));
+    UK2Node_VariableGet* Tail = NewObject<UK2Node_VariableGet>(Graph);
+    Tail->VariableReference.SetSelfMember(TEXT("TailValue"));
+    Graph->AddNode(Tail);
+
+    TSharedRef<VisualRefSearcher> Searcher = MakeShared<VisualRefSearcher>(Blueprint, TEXT("TailValue"));
+    Searcher->SetSearchScope(EVisualRefSearchScope::CurrentBlueprint);
+    int32 MatchCount = 0;
+    bool bFinished = false;
+    Searcher->OnRefFound.BindLambda([&](UEdGraphNode* Node) { if (Node == Tail) ++MatchCount; });
+    Searcher->OnSearchFinished.BindLambda([&]() { bFinished = true; });
+    Searcher->StartSearch();
+    const double Started = FPlatformTime::Seconds();
+    Searcher->Tick(0.0f);
+    double MaxTickMs = (FPlatformTime::Seconds() - Started) * 1000.0;
+    TestTrue(TEXT("Current Blueprint remains active after its first bounded slice"), Searcher->bIsSearching);
+    TestFalse(TEXT("A partial Blueprint scan does not emit completion"), bFinished);
+    int32 TickCount = 1;
+    while (Searcher->bIsSearching && TickCount++ < 10000)
+    {
+        const double TickStarted = FPlatformTime::Seconds();
+        Searcher->Tick(0.0f);
+        MaxTickMs = FMath::Max(MaxTickMs, (FPlatformTime::Seconds() - TickStarted) * 1000.0);
+    }
+    TestFalse(TEXT("All Blueprint slices complete"), Searcher->bIsSearching);
+    TestTrue(TEXT("Completion is emitted after all slices"), bFinished);
+    TestEqual(TEXT("The final graph node is found exactly once"), MatchCount, 1);
+    AddInfo(FString::Printf(TEXT("Blueprint fixture: %d nodes, %d ticks, %.3f ms scan loop, %.3f ms max continuation tick (no Slate rendering)."),
+        FillerCount + 1, TickCount, (FPlatformTime::Seconds() - Started) * 1000.0, MaxTickMs));
+    if (Searcher->bIsSearching) Searcher->CancelSearch();
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMVisualRefSymbolIdentityTest,
+    "TraceMotive.Search.BlueprintSymbolIdentity",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMVisualRefSymbolIdentityTest::RunTest(const FString&)
+{
+    const FString Root = TEXT("/Temp/TraceMotiveIdentity_") + FGuid::NewGuid().ToString(EGuidFormats::Digits);
+    auto MakeBlueprint = [&Root](const TCHAR* Folder)
+    {
+        UPackage* Package = CreatePackage(*(Root / Folder));
+        UBlueprint* BP = NewObject<UBlueprint>(Package, TEXT("BP_SameName"));
+        BP->ParentClass = UObject::StaticClass();
+        UBlueprintGeneratedClass* Class = NewObject<UBlueprintGeneratedClass>(Package, TEXT("BP_SameName_C"));
+        Class->SetSuperStruct(UObject::StaticClass());
+        Class->ClassGeneratedBy = BP;
+        BP->GeneratedClass = Class;
+        UEdGraph* Graph = NewObject<UEdGraph>(BP);
+        Graph->Schema = UEdGraphSchema_K2::StaticClass();
+        BP->UbergraphPages.Add(Graph);
+        return BP;
+    };
+    UBlueprint* Target = MakeBlueprint(TEXT("A"));
+    UBlueprint* Other = MakeBlueprint(TEXT("B"));
+    UClass* Owner = Target->GeneratedClass;
+    UClass* OtherOwner = Other->GeneratedClass;
+    UEdGraph* Graph = Target->UbergraphPages[0];
+    TSharedRef<VisualRefSearcher> Functions = MakeShared<VisualRefSearcher>(Target, TEXT("DoWork"), true, Owner);
+    TestTrue(TEXT("Searches are exhaustive by default"), Functions->bExhaustiveSearchEnabled);
+    UK2Node_CallFunction* Call = NewObject<UK2Node_CallFunction>(Graph);
+    Call->FunctionReference.SetExternalMember(TEXT("DoWork"), Owner);
+    TestTrue(TEXT("A function reference to its owner matches"), Functions->CheckFunctionMatch(Call, Target, Owner, nullptr));
+    Call->FunctionReference.SetExternalMember(TEXT("DoWork"), OtherOwner);
+    TestFalse(TEXT("A same-named class in another package does not match"), Functions->CheckFunctionMatch(Call, Target, Owner, nullptr));
+    Functions->TargetFuncGuid = FGuid::NewGuid();
+    Call->FunctionReference.SetExternalMember(TEXT("DoWork"), OtherOwner, Functions->TargetFuncGuid);
+    TestFalse(TEXT("A copied function GUID does not override owner identity"), Functions->CheckFunctionMatch(Call, Other, Owner, nullptr));
+    UBlueprintGeneratedClass* Skeleton = NewObject<UBlueprintGeneratedClass>(Target->GetOutermost(), TEXT("SKEL_BP_SameName_C"));
+    Skeleton->SetSuperStruct(UObject::StaticClass());
+    Skeleton->ClassGeneratedBy = Target;
+    TestTrue(TEXT("Skeleton class identity is preserved"), Functions->CheckClassMatch(Skeleton, Owner, nullptr, Target));
+    UBlueprintGeneratedClass* Child = NewObject<UBlueprintGeneratedClass>();
+    Child->SetSuperStruct(Owner);
+    TestTrue(TEXT("Inherited function owner relationships are preserved"), Functions->CheckClassMatch(Child, Owner, nullptr, Target));
+
+    UEdGraph* MacroGraph = NewObject<UEdGraph>(Target);
+    MacroGraph->Schema = UEdGraphSchema_K2::StaticClass();
+    Call = NewObject<UK2Node_CallFunction>(MacroGraph);
+    Call->FunctionReference.SetExternalMember(TEXT("DoWork"), Owner);
+    MacroGraph->AddNode(Call);
+    UK2Node_MacroInstance* Macro = NewObject<UK2Node_MacroInstance>(Graph);
+    Macro->SetMacroGraph(MacroGraph);
+    TestTrue(TEXT("A macro containing the function reference matches"), Functions->CheckFunctionMatch(Macro, Target, Owner, nullptr));
+
+    UK2Node_CustomEvent* Event = NewObject<UK2Node_CustomEvent>(Graph);
+    Event->CustomFunctionName = TEXT("DoWork");
+    Graph->AddNode(Event);
+    TestTrue(TEXT("A custom event definition matches with an explicit owner"), Functions->CheckFunctionMatch(Event, Target, Owner, nullptr));
+    TestFalse(TEXT("An unrelated Blueprint's custom event is excluded"), Functions->CheckFunctionMatch(Event, Other, Owner, nullptr));
+
+    TSharedRef<VisualRefSearcher> Dispatchers = MakeShared<VisualRefSearcher>(Target, TEXT("Changed"), false, Owner, true);
+    UK2Node_CallDelegate* Dispatch = NewObject<UK2Node_CallDelegate>(Graph);
+    Dispatch->DelegateReference.SetExternalMember(TEXT("Changed"), Owner);
+    TestTrue(TEXT("Dispatcher call uses its owner's identity"), Dispatchers->CheckDispatcherMatch(Dispatch, Target, Owner, nullptr));
+    Dispatch->DelegateReference.SetExternalMember(TEXT("Changed"), OtherOwner);
+    TestFalse(TEXT("Same-named dispatcher on an unrelated class is excluded"), Dispatchers->CheckDispatcherMatch(Dispatch, Target, Owner, nullptr));
+    Dispatchers->TargetDispatcherGuid = FGuid::NewGuid();
+    Dispatch->DelegateReference.SetExternalMember(TEXT("Changed"), OtherOwner, Dispatchers->TargetDispatcherGuid);
+    TestFalse(TEXT("A copied dispatcher GUID does not override owner identity"), Dispatchers->CheckDispatcherMatch(Dispatch, Other, Owner, nullptr));
+    Event->CustomFunctionName = TEXT("ChangedExtra");
+    TestFalse(TEXT("An unbound event title is not dispatcher evidence"), Dispatchers->CheckDispatcherMatch(Event, Target, Owner, nullptr));
+
+    const FGuid LocalGuid = FGuid::NewGuid();
+    UK2Node_VariableGet* Local = NewObject<UK2Node_VariableGet>(Graph);
+    Local->VariableReference.SetLocalMember(TEXT("Value"), FString(TEXT("FunctionA")), LocalGuid);
+    TSharedRef<VisualRefSearcher> Variables = MakeShared<VisualRefSearcher>(Target, TEXT("Value"));
+    Variables->TargetVarGuid = FGuid::NewGuid();
+    UK2Node_VariableGet* Copied = NewObject<UK2Node_VariableGet>(Other->UbergraphPages[0]);
+    Copied->VariableReference.SetSelfMember(TEXT("Value"), Variables->TargetVarGuid);
+    TestFalse(TEXT("A copied member GUID does not match an unrelated Blueprint"), Variables->CheckVariableMatch(Copied, Other, Owner, nullptr));
+    TestFalse(TEXT("A local variable does not match a same-named member"), Variables->CheckVariableMatch(Local, Target, Owner, nullptr));
+    Variables->SetLocalVariableScope(TEXT("FunctionA"), LocalGuid);
+    TestTrue(TEXT("A local variable matches its selected function scope"), Variables->CheckVariableMatch(Local, Target, Owner, nullptr));
+    TestFalse(TEXT("A local variable from another Blueprint is excluded"), Variables->CheckVariableMatch(Local, Other, Owner, nullptr));
+    Local->VariableReference.SetLocalMember(TEXT("Value"), FString(TEXT("FunctionB")), FGuid::NewGuid());
+    TestFalse(TEXT("A same-named local in another function is excluded"), Variables->CheckVariableMatch(Local, Target, Owner, nullptr));
+    Local->VariableReference.SetSelfMember(TEXT("Value"));
+    TestFalse(TEXT("A member does not match the selected local variable"), Variables->CheckVariableMatch(Local, Target, Owner, nullptr));
+
+    // Native properties may be referenced as self members in sibling Blueprint classes.
+    Owner->SetSuperStruct(AActor::StaticClass());
+    OtherOwner->SetSuperStruct(AActor::StaticClass());
+    UK2Node_VariableGet* Native = NewObject<UK2Node_VariableGet>(Other->UbergraphPages[0]);
+    Native->VariableReference.SetSelfMember(TEXT("Tags"));
+    TSharedRef<VisualRefSearcher> NativeVariables = MakeShared<VisualRefSearcher>(Target, TEXT("Tags"), false, AActor::StaticClass());
+    TestTrue(TEXT("Native property references in sibling Blueprints share the declaring owner"),
+        NativeVariables->CheckVariableMatch(Native, Other, Owner, nullptr));
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMVisualRefPerformanceTest,
+    "TraceMotive.Performance.VisualReferenceCpp",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMVisualRefPerformanceTest::RunTest(const FString&)
+{
+    FString FixtureRoot = FPaths::Combine(FPaths::ProjectDir(), TEXT("Source/TraceMotivePerfFixture"));
+    FPaths::NormalizeFilename(FixtureRoot);
+    TArray<FString> FixtureFiles;
+    IFileManager::Get().FindFilesRecursive(FixtureFiles, *FixtureRoot, TEXT("*.cpp"), true, false, false);
+    if (!TestTrue(TEXT("Generate the C++ source fixture before running this opt-in performance test"), FixtureFiles.Num() > 0))
+    {
+        return false;
+    }
+
+    UBlueprint* Blueprint = NewObject<UBlueprint>(GetTransientPackage());
+    Blueprint->ParentClass = UObject::StaticClass();
+    TSharedRef<VisualRefSearcher> Searcher = MakeShared<VisualRefSearcher>(Blueprint, TEXT("TMPerfValue"));
+    Searcher->SetSearchScope(EVisualRefSearchScope::ProjectContent);
+    int32 FixtureMatches = 0;
+    Searcher->OnCppVariableRefFound.BindLambda([&FixtureMatches, FixtureRoot](const FCppVariableReference& Reference)
+    {
+        if (Reference.SourceFilePath.StartsWith(FixtureRoot)) ++FixtureMatches;
+    });
+
+    Searcher->SetCppSourceSearchEnabled(true);
+    const double StartSeconds = FPlatformTime::Seconds();
+    Searcher->StartSearch();
+    const double QueueMilliseconds = (FPlatformTime::Seconds() - StartSeconds) * 1000.0;
+    const int32 QueuedSourceFiles = Searcher->CppSourceFilesToScan.Num();
+    // Measure the source phase in isolation; asset-registry and async Blueprint loading
+    // have separate performance paths and would make this fixture nondeterministic.
+    Searcher->bAssetQueuePrepared = true;
+    Searcher->TotalAssetsToScan = QueuedSourceFiles;
+    Searcher->CurrentScannedCount = 0;
+
+    double MaxTickMilliseconds = 0.0;
+    int32 TickCount = 0;
+    while (Searcher->bIsSearching && TickCount < 10000)
+    {
+        const double TickStartSeconds = FPlatformTime::Seconds();
+        Searcher->Tick(0.0f);
+        MaxTickMilliseconds = FMath::Max(MaxTickMilliseconds, (FPlatformTime::Seconds() - TickStartSeconds) * 1000.0);
+        ++TickCount;
+    }
+    const double TotalMilliseconds = (FPlatformTime::Seconds() - StartSeconds) * 1000.0;
+    UE_LOG(LogTemp, Display,
+        TEXT("TraceMotive VisualRef C++ perf: fixtureFiles=%d queuedFiles=%d matches=%d queueMs=%.3f maxTickMs=%.3f totalMs=%.3f ticks=%d"),
+        FixtureFiles.Num(), QueuedSourceFiles, FixtureMatches, QueueMilliseconds, MaxTickMilliseconds, TotalMilliseconds, TickCount);
+    TestFalse(TEXT("C++ source scan completes"), Searcher->bIsSearching);
+    const int32 ExpectedMatches = FMath::Min(FixtureFiles.Num(), TMPerf::MaxSearchResults());
+    TestEqual(TEXT("C++ scan respects the configured result limit"), FixtureMatches, ExpectedMatches);
+    TestEqual(TEXT("Result-limit status reflects an early stop"), Searcher->WasCppSourceScanTruncated(), FixtureFiles.Num() >= TMPerf::MaxSearchResults());
+    TestTrue(TEXT("All generated source files are queued"), QueuedSourceFiles >= FixtureFiles.Num());
+    if (Searcher->bIsSearching) Searcher->CancelSearch();
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMPersistedBlueprintReferenceTest,
+    "TraceMotive.ProjectFixture.BlueprintVariableReferences",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMPersistedBlueprintReferenceTest::RunTest(const FString&)
+{
+    UBlueprint* Blueprint = LoadObject<UBlueprint>(nullptr,
+        TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample.BP_TM_VariableReferenceSample"));
+    if (!TestNotNull(TEXT("Saved Blueprint fixture loads from project Content"), Blueprint)) return false;
+    if (!TestNotNull(TEXT("Fixture has a generated class"), Blueprint->GeneratedClass.Get())) return false;
+    if (!TestNotNull(TEXT("Fixture has a native parent class"), Blueprint->ParentClass.Get())) return false;
+    TestEqual(TEXT("Fixture parent class"), Blueprint->ParentClass->GetName(), FString(TEXT("TraceMotiveFeatureLabActor")));
+
+    auto VerifyVariable = [this, Blueprint](FName VariableName, UClass* OwnerClass)
+    {
+        TSharedRef<VisualRefSearcher> Searcher = MakeShared<VisualRefSearcher>(Blueprint, VariableName, false, OwnerClass);
+        Searcher->SetSearchScope(EVisualRefSearchScope::CurrentBlueprint);
+        TArray<UEdGraphNode*> Matches;
+        Searcher->OnRefFound.BindLambda([&Matches](UEdGraphNode* Node) { Matches.Add(Node); });
+        Searcher->StartSearch();
+        for (int32 TickIndex = 0; Searcher->bIsSearching && TickIndex < 100; ++TickIndex)
+        {
+            Searcher->Tick(0.0f);
+        }
+        TestFalse(FString::Printf(TEXT("%s search completes"), *VariableName.ToString()), Searcher->bIsSearching);
+        TestEqual(FString::Printf(TEXT("%s finds one GET and one SET"), *VariableName.ToString()), Matches.Num(), 2);
+        int32 Reads = 0;
+        int32 Writes = 0;
+        for (UEdGraphNode* Node : Matches)
+        {
+            Reads += Node->IsA<UK2Node_VariableGet>() ? 1 : 0;
+            Writes += Node->IsA<UK2Node_VariableSet>() ? 1 : 0;
+        }
+        TestEqual(FString::Printf(TEXT("%s GET count"), *VariableName.ToString()), Reads, 1);
+        TestEqual(FString::Printf(TEXT("%s SET count"), *VariableName.ToString()), Writes, 1);
+        if (Searcher->bIsSearching) Searcher->CancelSearch();
+    };
+
+    VerifyVariable(TEXT("TMBlueprintSampleValue"), nullptr);
+    VerifyVariable(TEXT("TMReferenceSampleValue"), Blueprint->ParentClass.Get());
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMCrossBlueprintReferenceTest,
+    "TraceMotive.ProjectFixture.CrossBlueprintVariableReferences",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMCrossBlueprintReferenceTest::RunTest(const FString&)
+{
+    constexpr const TCHAR* SourcePath = TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample");
+    constexpr const TCHAR* ConsumerPath = TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceConsumer");
+    UBlueprint* Blueprint = LoadObject<UBlueprint>(nullptr,
+        TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample.BP_TM_VariableReferenceSample"));
+    if (!TestNotNull(TEXT("Source Blueprint fixture loads"), Blueprint)) return false;
+    FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get().SearchAllAssets(true);
+
+    auto VerifyProjectReferences = [this, Blueprint, SourcePath, ConsumerPath](FName VariableName, UClass* OwnerClass)
+    {
+        TSharedRef<VisualRefSearcher> Searcher = MakeShared<VisualRefSearcher>(Blueprint, VariableName, false, OwnerClass);
+        Searcher->SetSearchScope(EVisualRefSearchScope::ProjectContent);
+        Searcher->SetExhaustiveSearchEnabled(true);
+        TMap<FString, int32> MatchesByPackage;
+        Searcher->OnRefFound.BindLambda([&MatchesByPackage](UEdGraphNode* Node)
+        {
+            if (Node) ++MatchesByPackage.FindOrAdd(Node->GetOutermost()->GetName());
+        });
+        Searcher->StartSearch();
+        Searcher->Tick(0.0f);
+        TestTrue(FString::Printf(TEXT("%s consumer BP is queued by full scan"), *VariableName.ToString()),
+            Searcher->AssetQueue.ContainsByPredicate([ConsumerPath](const FAssetData& AssetData)
+            {
+                return AssetData.PackageName.ToString() == ConsumerPath;
+            }));
+        // The synchronous fixture keeps asset loading out of the result-matching assertion.
+        for (const FAssetData& AssetData : Searcher->AssetQueue) AssetData.GetAsset();
+        for (int32 TickIndex = 0; Searcher->bIsSearching && TickIndex < 10000; ++TickIndex)
+        {
+            Searcher->Tick(0.0f);
+        }
+        TestFalse(FString::Printf(TEXT("%s project search completes"), *VariableName.ToString()), Searcher->bIsSearching);
+        TestEqual(FString::Printf(TEXT("%s source BP refs"), *VariableName.ToString()), MatchesByPackage.FindRef(SourcePath), 2);
+        TestEqual(FString::Printf(TEXT("%s consumer BP refs"), *VariableName.ToString()), MatchesByPackage.FindRef(ConsumerPath), 2);
+        if (Searcher->bIsSearching) Searcher->CancelSearch();
+    };
+
+    VerifyProjectReferences(TEXT("TMBlueprintSampleValue"), nullptr);
+    VerifyProjectReferences(TEXT("TMReferenceSampleValue"), Blueprint->ParentClass.Get());
+    return true;
+}
+
+struct FTMAsyncBlueprintReferenceState
+{
+    TStrongObjectPtr<UBlueprint> Blueprint;
+    TSharedPtr<VisualRefSearcher> Searcher;
+    TMap<FString, int32> MatchesByPackage;
+    double Started = 0.0;
+    bool bFinished = false;
+};
+
+class FTMWaitForAsyncBlueprintReferences : public IAutomationLatentCommand
+{
+public:
+    FTMWaitForAsyncBlueprintReferences(FAutomationTestBase* InTest, TSharedRef<FTMAsyncBlueprintReferenceState> InState)
+        : Test(InTest), State(InState) {}
+
+    virtual bool Update() override
+    {
+        if (!State->bFinished && FPlatformTime::Seconds() - State->Started < 30.0) return false;
+        Test->TestTrue(TEXT("Project search finishes through editor ticks and asynchronous loading"), State->bFinished);
+        Test->TestEqual(TEXT("Async search finds the source Blueprint GET and SET"),
+            State->MatchesByPackage.FindRef(TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample")), 2);
+        Test->TestEqual(TEXT("Async search finds the consumer Blueprint GET and SET"),
+            State->MatchesByPackage.FindRef(TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceConsumer")), 2);
+        Test->AddInfo(FString::Printf(TEXT("Async Blueprint project search: %.3f ms (includes editor tick intervals and source candidate scan)."),
+            (FPlatformTime::Seconds() - State->Started) * 1000.0));
+        State->Searcher->CancelSearch();
+        return true;
+    }
+private:
+    FAutomationTestBase* Test;
+    TSharedRef<FTMAsyncBlueprintReferenceState> State;
+};
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTMAsyncBlueprintReferenceTest,
+    "TraceMotive.ProjectFixture.AsyncBlueprintVariableReferences",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTMAsyncBlueprintReferenceTest::RunTest(const FString&)
+{
+    UBlueprint* Blueprint = LoadObject<UBlueprint>(nullptr,
+        TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample.BP_TM_VariableReferenceSample"));
+    if (!TestNotNull(TEXT("Saved source Blueprint loads"), Blueprint)) return false;
+    FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get().SearchAllAssets(true);
+    AddInfo(FString::Printf(TEXT("Consumer Blueprint is unloaded at search start: %s"),
+        FindObject<UBlueprint>(nullptr, TEXT("/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceConsumer.BP_TM_VariableReferenceConsumer"))
+            ? TEXT("false (warm run)") : TEXT("true (cold run)")));
+    TSharedRef<FTMAsyncBlueprintReferenceState> State = MakeShared<FTMAsyncBlueprintReferenceState>();
+    State->Blueprint.Reset(Blueprint);
+    State->Searcher = MakeShared<VisualRefSearcher>(Blueprint, TEXT("TMBlueprintSampleValue"));
+    State->Searcher->SetSearchScope(EVisualRefSearchScope::ProjectContent);
+    TWeakPtr<FTMAsyncBlueprintReferenceState> WeakState = State;
+    State->Searcher->OnRefFound.BindLambda([WeakState](UEdGraphNode* Node)
+    {
+        if (TSharedPtr<FTMAsyncBlueprintReferenceState> Pinned = WeakState.Pin())
+        {
+            if (Node) ++Pinned->MatchesByPackage.FindOrAdd(Node->GetOutermost()->GetName());
+        }
+    });
+    State->Searcher->OnSearchFinished.BindLambda([WeakState]()
+    {
+        if (TSharedPtr<FTMAsyncBlueprintReferenceState> Pinned = WeakState.Pin()) Pinned->bFinished = true;
+    });
+    State->Started = FPlatformTime::Seconds();
+    State->Searcher->StartSearch();
+    ADD_LATENT_AUTOMATION_COMMAND(FTMWaitForAsyncBlueprintReferences(this, State));
     return true;
 }
 
@@ -250,6 +662,14 @@ bool FTMWindowMenuRegistrationTest::RunTest(const FString&)
     TestTrue(
         TEXT("Tools menu exposes the TraceMotive submenu"),
         ToolsMenu->ContainsEntry(TEXT("TraceMotive")));
+
+    UToolMenu* EntryMenu = UToolMenus::Get()->FindMenu(TEXT("GraphEditor.GraphNodeContextMenu.K2Node_FunctionEntry"));
+    TestNotNull(TEXT("Function entry context menu exists"), EntryMenu);
+    if (EntryMenu)
+    {
+        TestTrue(TEXT("Function entries dispatch through function reference search"), EntryMenu->ContainsEntry(TEXT("VisualFindFunctionReferences")));
+        TestFalse(TEXT("Function entries do not expose the variable-only action"), EntryMenu->ContainsEntry(TEXT("VisualFindReferences")));
+    }
 
     return true;
 }

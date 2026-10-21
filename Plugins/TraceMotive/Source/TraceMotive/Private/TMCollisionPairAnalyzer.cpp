@@ -1,5 +1,6 @@
 #include "TMCollisionPairAnalyzer.h"
 #include "TMInvestigationSession.h"
+#include "TMPluginGuide.h"
 #include "TMStyle.h"
 
 
@@ -1810,6 +1811,32 @@ namespace
                         .ColorAndOpacity(FLinearColor(0.65f, 0.69f, 0.75f))
 
                     ]
+
+                ]
+
+                + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Top).Padding(8, 0, 0, 0)
+
+                [
+
+                    SNew(SButton)
+
+                    .ButtonStyle(FAppStyle::Get(), TEXT("SimpleButton"))
+
+                    .ContentPadding(FMargin(9, 3))
+
+                    .ToolTipText(TMLoc::Text(TEXT("Open the annotated tutorial for Collision Pair Analyzer."), TEXT("충돌 쌍 분석기 번호 안내를 엽니다.")))
+
+                    .OnClicked_Lambda([]()
+
+                    {
+
+                        TMPluginGuide::OpenFeature(TEXT("TraceMotive.CollisionPairAnalyzer"));
+
+                        return FReply::Handled();
+
+                    })
+
+                    [SNew(STextBlock).Text(TMLoc::Text(TEXT("?"), TEXT("?"))).Font(FCoreStyle::GetDefaultFontStyle(TEXT("Bold"), 10))]
 
                 ]
 

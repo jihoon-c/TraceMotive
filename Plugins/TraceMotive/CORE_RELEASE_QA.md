@@ -16,6 +16,24 @@
 
 ## 자동 검증과 수동 검수의 구분
 
+아래 변수 참조 BP fixture는 기존 로컬 QA 프로젝트의 자료이며 이 저장소에는
+포함되지 않는다. `TraceMotive.ProjectFixture.*` 실행에는 해당 fixture가 필요하다.
+프로젝트 독립적인 검색 회귀는 `TraceMotive.Search`로 실행한다.
+
+프로젝트에서 직접 열어볼 변수 참조 fixture는
+`/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceSample`이다.
+부모 클래스는 `ATraceMotiveFeatureLabActor`이며, BP 자체 변수
+`TMBlueprintSampleValue`와 부모 C++ 변수 `TMReferenceSampleValue`의
+GET/SET 노드가 Event Graph에 있다. 자식 BP
+`/Game/TraceMotiveTests/Blueprints/BP_TM_VariableReferenceConsumer`도
+두 변수를 상속해 GET/SET 노드가 각각 있다. 기본 `Full scan`에서
+`Project Content`를 선택하면 두 BP의 각 변수에 대해 총 4개 참조를
+찾아야 한다. `Full scan`을 끄면 빠른 후보 검색이 되어 참조가 누락될
+수 있다. 성능 fixture `TMPerfValue`는 별도
+격리 호스트의 C++ 소스에만 있으며 이 BP의 변수는 아니다.
+기본 검색은 BP만 검사한다. C++ 성능 fixture는 Project Content에서
+`Include C++ candidates`를 켜거나 테스트에서 해당 옵션을 명시한 경우에만 검색한다.
+
 자동 테스트 성공은 아래 실제 에디터 검수를 대체하지 않는다.
 특히 실제 UI 클릭, 멀티 PIE, 대규모 프로젝트 프레임 시간은 직접 확인해야 한다.
 

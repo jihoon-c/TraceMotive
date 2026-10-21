@@ -93,7 +93,9 @@ public:
 
 private:
 
-    // Definition input pins are distributed across this port strip to keep incoming UML arrows distinct.
+    // Reference outputs and definition inputs use opposing port strips so links travel
+    // vertically between nodes instead of bending back through their own node bodies.
+    TSharedPtr<SHorizontalBox> TopNodeBox;
     TSharedPtr<SHorizontalBox> BottomNodeBox;
 
     int32 SelectedReferenceIndex = -1;

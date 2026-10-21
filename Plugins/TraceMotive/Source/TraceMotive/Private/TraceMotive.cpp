@@ -147,9 +147,7 @@ void FTraceMotiveModule::RegisterMenus()
     {
         "GraphEditor.GraphNodeContextMenu.K2Node_Variable",
         "GraphEditor.GraphNodeContextMenu.K2Node_VariableSet",
-        "GraphEditor.GraphNodeContextMenu.K2Node_FunctionEntry",
-        "BlueprintEditor.MyBlueprint.Function",
-        "BlueprintEditor.MyBlueprint.Variable"
+        "GraphEditor.GraphNodeContextMenu.K2Node_VariableGet"
     };
 
     for (const FName& MenuName : VariableMenus)
@@ -172,7 +170,7 @@ void FTraceMotiveModule::RegisterMenus()
         "GraphEditor.GraphNodeContextMenu.K2Node_CallFunction",
         "GraphEditor.GraphNodeContextMenu.K2Node_Event",
         "GraphEditor.GraphNodeContextMenu.K2Node_CustomEvent",
-        "BlueprintEditor.MyBlueprint.Function"
+        "GraphEditor.GraphNodeContextMenu.K2Node_FunctionEntry"
     };
 
     for (const FName& MenuName : FunctionMenus)
@@ -244,13 +242,15 @@ void FTraceMotiveModule::OnVisualFindReferences(const FToolMenuContext& Context)
     {
         const FName CandidateName = VariableNode->GetVarName();
         UClass* CandidateOwner = VariableNode->VariableReference.GetMemberParentClass();
-        if (CandidateOwner)
+        const FMulticastDelegateProperty* DelegateProperty = CastField<FMulticastDelegateProperty>(VariableNode->GetPropertyForVariable());
+        if (!DelegateProperty && CandidateOwner && !VariableNode->VariableReference.IsLocalScope())
         {
-            if (const FMulticastDelegateProperty* DelegateProperty = FindFProperty<FMulticastDelegateProperty>(CandidateOwner, CandidateName))
-            {
-                DispatcherName = CandidateName;
-                DispatcherOwnerClass = DelegateProperty->GetOwnerClass();
-            }
+            DelegateProperty = FindFProperty<FMulticastDelegateProperty>(CandidateOwner, CandidateName);
+        }
+        if (DelegateProperty)
+        {
+            DispatcherName = CandidateName;
+            DispatcherOwnerClass = DelegateProperty->GetOwnerClass();
         }
     }
 
@@ -273,6 +273,7 @@ void FTraceMotiveModule::OnVisualFindReferences(const FToolMenuContext& Context)
         const FName VariableName = VariableNode->GetVarName();
         UBlueprint* TargetBlueprint = nullptr;
         UClass* VariableOwnerClass = VariableNode->VariableReference.GetMemberParentClass();
+        if (const FProperty* Property = VariableNode->GetPropertyForVariable()) VariableOwnerClass = Property->GetOwnerClass();
         if (VariableOwnerClass)
         {
             TargetBlueprint = Cast<UBlueprint>(VariableOwnerClass->ClassGeneratedBy);
@@ -590,7 +591,7 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
     RootNode->NodePosY = 0;
 
     FString RootAssetName = InBlueprint->GetName();
-    if ((bIsFunction || bIsDispatcher) && InTargetOwnerClass)
+    if (InTargetOwnerClass)
     {
         if (UBlueprint* OwnerBlueprint = Cast<UBlueprint>(InTargetOwnerClass->ClassGeneratedBy))
         {
@@ -675,13 +676,18 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
         EVisualRefLayoutMode LayoutMode = EVisualRefLayoutMode::FrameGrid;
         EVisualRefSearchScope SearchScope = EVisualRefSearchScope::ProjectContent;
         EVisualRefExportFormat ExportFormat = EVisualRefExportFormat::Markdown;
-        bool bFullScan = false;
+        bool bFullScan = true;
+        bool bIncludeCppCandidates = false;
         bool bShowReferenceLines = true;
         TWeakPtr<SWidget> WeakGraphEditorWidget;
         TWeakPtr<SWidget> WeakCallChainWidget;
         bool bShowingCallChain = false;
         TWeakPtr<SProgressBar> WeakProgressBar;
         TWeakPtr<STextBlock> WeakProgressText;
+        TWeakPtr<VisualRefSearcher> ActiveSearcher;
+        bool bCppResultsTruncated = false;
+        FString LocalVariableScope;
+        FGuid LocalVariableGuid;
 
         FGroupContext(UEdGraph* InGraph, TSharedRef<SGraphEditor> InEditor, FString InRootName,
             UVisualRefNode* InRootNode, const UEdGraphNode* InSource,
@@ -689,6 +695,14 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
             : Graph(InGraph), WeakEditor(InEditor), RootAssetName(InRootName), RootNode(InRootNode),
             SourceNode(InSource), Blueprint(InBlueprint), Name(InName), bIsFunction(bInIsFunction), bIsDispatcher(bInIsDispatcher), TargetOwnerClass(InTargetOwnerClass)
         {
+            if (const UK2Node_Variable* Variable = Cast<UK2Node_Variable>(InSource))
+            {
+                if (Variable->VariableReference.IsLocalScope())
+                {
+                    LocalVariableScope = Variable->VariableReference.GetMemberScopeName();
+                    LocalVariableGuid = Variable->VariableReference.GetMemberGuid();
+                }
+            }
         }
     };
 
@@ -821,7 +835,10 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
             }
             ReferenceNodes.Sort([](const UVisualRefNode& A, const UVisualRefNode& B) { return A.AssetName.ToString() < B.AssetName.ToString(); });
 
-            constexpr float HorizontalSpacing = 340.0f;
+            // Keep a full node-width gap in both views. The old fixed 340 value made
+            // 360-wide List View nodes overlap before connectors were even drawn.
+            const float HorizontalSpacing =
+                (SVisualRefNode::CurrentViewMode == EVisualRefViewMode::List) ? 450.0f : 340.0f;
             constexpr float VerticalSpacing = 310.0f;
             constexpr float StartX = 80.0f;
             if (Ctx->LayoutMode == EVisualRefLayoutMode::FrameGrid && ReferenceNodes.Num() > 0)
@@ -849,6 +866,13 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
 
     auto PerformSearch = [this, Ctx, ArrangeVisualRefNodes, RebuildReferenceLinks]()
         {
+            if (TSharedPtr<VisualRefSearcher> PreviousSearch = Ctx->ActiveSearcher.Pin())
+            {
+                PreviousSearch->CancelSearch();
+            }
+            Ctx->ActiveSearcher.Reset();
+            Ctx->bCppResultsTruncated = false;
+
             TArray<UEdGraphNode*> NodesToRemove;
             for (UEdGraphNode* Node : Ctx->Graph->Nodes)
             {
@@ -889,6 +913,8 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
 
             TSharedPtr<VisualRefSearcher> Searcher = MakeShareable(
                 new VisualRefSearcher(Ctx->Blueprint, Ctx->Name, Ctx->bIsFunction, Ctx->TargetOwnerClass, Ctx->bIsDispatcher));
+            Searcher->SetLocalVariableScope(Ctx->LocalVariableScope, Ctx->LocalVariableGuid);
+            Ctx->ActiveSearcher = Searcher;
             Searcher->OnSearchProgress.BindLambda([Ctx](int32 Current, int32 Total)
                 {
                     float Percent = (Total > 0) ? (float)Current / (float)Total : 0.0f;
@@ -1005,6 +1031,45 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     TargetNode->References.Add(NewRef);
                 });
 
+            Searcher->OnCppVariableRefFound.BindLambda([Ctx](const FCppVariableReference& FoundReference)
+                {
+                    if (!Ctx->WeakEditor.IsValid() || !Ctx->Graph || FoundReference.SourceFilePath.IsEmpty()) return;
+
+                    const FString AssetKey = FString::Printf(TEXT("Cpp:%s"), *FoundReference.SourceFilePath);
+                    UVisualRefNode* TargetNode = Ctx->AssetNodeMap.FindRef(AssetKey);
+                    if (!TargetNode)
+                    {
+                        TargetNode = NewObject<UVisualRefNode>(Ctx->Graph);
+                        TargetNode->CreateNewGuid();
+                        TargetNode->NodePosX = 350.0f + (Ctx->ColumnCount * 320.0f);
+                        TargetNode->NodePosY = 0.0f;
+                        TargetNode->AssetName = FText::FromString(FPaths::GetCleanFilename(FoundReference.SourceFilePath));
+                        TargetNode->bIsDefinitionNode = false;
+                        TargetNode->RefType = EVisualRefType::Variable;
+                        TargetNode->CreateVisualPin(EGPD_Output, FName(TEXT("Uses")));
+                        Ctx->Graph->AddNode(TargetNode);
+                        Ctx->AssetNodeMap.Add(AssetKey, TargetNode);
+                        ++Ctx->ColumnCount;
+                    }
+
+                    FString RelativePath = FoundReference.SourceFilePath;
+                    FPaths::MakePathRelativeTo(RelativePath, *FPaths::ProjectDir());
+
+                    FVisualReferenceInfo NewRef;
+                    NewRef.GraphName = TEXT("[C++ Source]");
+                    NewRef.NodeName = FString::Printf(TEXT("Line %d: %s"), FoundReference.SourceLine, *FoundReference.SourceLineText);
+                    NewRef.bIsSetter = FoundReference.bIsWrite;
+                    NewRef.bIsCppSource = true;
+                    NewRef.SourceFilePath = FoundReference.SourceFilePath;
+                    NewRef.SourceLineText = FoundReference.SourceLineText;
+                    NewRef.SourceLine = FoundReference.SourceLine;
+                    NewRef.SourceColumn = FoundReference.SourceColumn;
+                    NewRef.TargetObjectName = RelativePath;
+                    NewRef.TargetClassName = Ctx->TargetOwnerClass ? Ctx->TargetOwnerClass->GetName() : FString();
+                    NewRef.MatchReason = TEXT("C++ exact identifier candidate; verify owner/type when names are shared");
+                    TargetNode->References.Add(MoveTemp(NewRef));
+                });
+
             Searcher->OnBatchComplete.BindLambda([Ctx, ArrangeVisualRefNodes, RebuildReferenceLinks]()
                 {
                     if (TSharedPtr<SGraphEditor> PinnedEditor = Ctx->WeakEditor.Pin())
@@ -1073,18 +1138,22 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
 
             Searcher->OnSearchFinished.BindLambda([Ctx, Searcher]()
                 {
+                    Ctx->bCppResultsTruncated = Searcher->WasCppSourceScanTruncated();
+                    Ctx->ActiveSearcher.Reset();
                     if (TSharedPtr<SWidget> LoadingWidget = Ctx->WeakLoadingWidget.Pin())
                     {
                         LoadingWidget->SetVisibility(EVisibility::Collapsed);
                     }
 
                     Searcher->OnRefFound.Unbind();
+                    Searcher->OnCppVariableRefFound.Unbind();
                     Searcher->OnBatchComplete.Unbind();
                     Searcher->OnSearchFinished.Unbind();
                 });
 
             Searcher->SetSearchScope(Ctx->SearchScope);
             Searcher->SetExhaustiveSearchEnabled(Ctx->bFullScan);
+            Searcher->SetCppSourceSearchEnabled(Ctx->bIncludeCppCandidates);
             Searcher->StartSearch();
         };
 
@@ -1106,6 +1175,26 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     .Text(LOCTEXT("ViewerHeader", "Visual Reference Viewer"))
                     .Font(FCoreStyle::GetDefaultFontStyle("Bold", 11))
                     .ColorAndOpacity(FLinearColor(0.92f, 0.95f, 1.0f))
+            ]
+            + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0.0f, 0.0f, 12.0f, 0.0f)
+            [
+                SNew(STextBlock)
+                    .Visibility_Lambda([Ctx]() { return Ctx->bCppResultsTruncated ? EVisibility::Visible : EVisibility::Collapsed; })
+                    .Text(LOCTEXT("CppResultsTruncated", "C++ candidates limited; source scan stopped early. Narrow the search or raise the result limit in settings."))
+                    .ColorAndOpacity(FLinearColor(1.0f, 0.68f, 0.25f))
+            ]
+            + SHorizontalBox::Slot().AutoWidth().Padding(0.0f, 0.0f, 6.0f, 0.0f).VAlign(VAlign_Center)
+            [
+                SNew(SButton)
+                    .ButtonStyle(FAppStyle::Get(), "SimpleButton")
+                    .ContentPadding(FMargin(9.0f, 4.0f))
+                    .ToolTipText(LOCTEXT("VisualReferenceTutorialTooltip", "Open the annotated tutorial for Visual Reference Search"))
+                    .OnClicked_Lambda([]()
+                    {
+                        TMPluginGuide::OpenFeature(TEXT("TraceMotive.VisualReferenceSearch"));
+                        return FReply::Handled();
+                    })
+                    [SNew(STextBlock).Text(LOCTEXT("VisualReferenceTutorialButton", "?")).Font(FCoreStyle::GetDefaultFontStyle("Bold", 10))]
             ]
             + SHorizontalBox::Slot().AutoWidth().Padding(0.0f, 0.0f, 6.0f, 0.0f)
             [
@@ -1153,6 +1242,7 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     [
                         SNew(SComboBox<TSharedPtr<FString>>)
                             .OptionsSource(&ScopeOptions)
+                            .ToolTipText(LOCTEXT("VisualRefScopeTooltip", "Search Blueprint graphs in the selected scope. Project Content can optionally include project C++ variable text candidates."))
                             .OnGenerateWidget_Lambda([](TSharedPtr<FString> Item) { return SNew(STextBlock).Text(FText::FromString(*Item)); })
                             .OnSelectionChanged_Lambda([Ctx](TSharedPtr<FString> Selection, ESelectInfo::Type)
                                 {
@@ -1167,9 +1257,20 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
                     + SVerticalBox::Slot().AutoHeight().Padding(0.0f, 3.0f)
                     [
                         SNew(SCheckBox)
+                            .ToolTipText(LOCTEXT("FullScanTooltip", "Full scan searches every Blueprint in the selected scope. Turn it off for a faster candidate scan that may miss references."))
                             .IsChecked_Lambda([Ctx]() { return Ctx->bFullScan ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
                             .OnCheckStateChanged_Lambda([Ctx](ECheckBoxState State) { Ctx->bFullScan = State == ECheckBoxState::Checked; })
                             [ SNew(STextBlock).Text(LOCTEXT("FullScanLabel", "Full scan")) ]
+                    ]
+                    + SVerticalBox::Slot().AutoHeight().Padding(0.0f, 3.0f)
+                    [
+                        SNew(SCheckBox)
+                            .Visibility_Lambda([Ctx]() { return !Ctx->bIsFunction && !Ctx->bIsDispatcher && Ctx->LocalVariableScope.IsEmpty() ? EVisibility::Visible : EVisibility::Collapsed; })
+                            .IsEnabled_Lambda([Ctx]() { return Ctx->SearchScope == EVisualRefSearchScope::ProjectContent; })
+                            .ToolTipText(LOCTEXT("IncludeCppCandidatesTooltip", "Optional project C++ identifier text scan. These are candidates, and enabling this can increase search time."))
+                            .IsChecked_Lambda([Ctx]() { return Ctx->bIncludeCppCandidates ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+                            .OnCheckStateChanged_Lambda([Ctx](ECheckBoxState State) { Ctx->bIncludeCppCandidates = State == ECheckBoxState::Checked; })
+                            [ SNew(STextBlock).Text(LOCTEXT("IncludeCppCandidatesLabel", "Include C++ candidates")) ]
                     ]
                 ]
                 + SVerticalBox::Slot().AutoHeight().Padding(0.0f, 0.0f, 0.0f, 12.0f)
@@ -1390,8 +1491,10 @@ void FTraceMotiveModule::OpenVisualReferenceViewer(UBlueprint* InBlueprint, FNam
         .ClientSize(FVector2D(1280, 800));
 
     Window->SetContent(MainOverlay);
-    Window->SetOnWindowClosed(FOnWindowClosed::CreateLambda([MyGraph](const TSharedRef<SWindow>&)
+    Window->SetOnWindowClosed(FOnWindowClosed::CreateLambda([MyGraph, Ctx](const TSharedRef<SWindow>&)
         {
+            if (TSharedPtr<VisualRefSearcher> Searcher = Ctx->ActiveSearcher.Pin()) Searcher->CancelSearch();
+            Ctx->ActiveSearcher.Reset();
             if (MyGraph) MyGraph->RemoveFromRoot();
         }));
 

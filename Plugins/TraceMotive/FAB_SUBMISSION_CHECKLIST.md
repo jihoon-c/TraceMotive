@@ -9,8 +9,9 @@ Epic Games and Fab terms before every submission because requirements can change
 - Use a product title and artwork that do not imply Epic Games affiliation,
   certification, sponsorship, or endorsement.
 - Provide valid public documentation and support contact URLs in the Fab listing.
-- Describe features and limitations accurately; do not promise complete caller
-  attribution where Unreal Engine runtime context can be unavailable.
+- Describe the five exposed v1 tools and Stop All Active Work. Present C++ variable matches as
+  optional source-text candidates enabled with Include C++ candidates in Project Content scope, and do not promise
+  complete caller attribution.
 - Declare generated or AI-assisted listing media when the current submission form
   requires it.
 - Confirm commercial rights for the icon, screenshots, videos, fonts, sample
@@ -26,12 +27,10 @@ Epic Games and Fab terms before every submission because requirements can change
   unless customer-facing content is intentionally added and audited.
 - Build from a clean project for every Unreal Engine version claimed on the
   listing. Test editor startup, enable/disable, PIE start/end, and shutdown.
-- Exercise all six Quick Diagnosis scenarios, cross-tool handoffs, session
-  restore, Before/After snapshots, Stop All Active Work, and Support Bundle ZIP
-  preview/export in the final UE 5.8 build.
-- Open the generated support ZIP with the operating-system archive viewer and
-  confirm that known local roots, email addresses, and secret assignments are
-  absent before using it as a listing demonstration.
+- Exercise the five exposed Fab v1 tools in the final UE 5.8 build: Visual
+  Reference Search, Asset Usage Locator, Variable Value Trace, and Collision
+  Pair Analyzer, and Global Speed Control. Cover scope selection, result navigation, cancellation,
+  PIE start/end, and the limits shown in each tool.
 - Verify that no absolute workstation path, private project name, customer asset,
   credential, token, or personal data is present in source, docs, logs, or media.
 - Update `PRIVACY.md` and the listing before adding telemetry, networking, cloud

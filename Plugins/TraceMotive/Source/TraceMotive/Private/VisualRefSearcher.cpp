@@ -18,6 +18,9 @@
 #include "Engine/Blueprint.h"
 
 #include "HAL/PlatformTime.h"
+#include "HAL/FileManager.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "ProfilingDebugging/CpuProfilerTrace.h"
 
 #include "K2Node.h"
@@ -108,6 +111,132 @@ namespace
 
         }
 
+    }
+
+    bool IsCppSourceFile(const FString& FilePath)
+    {
+        return FilePath.EndsWith(TEXT(".cpp"), ESearchCase::IgnoreCase)
+            || FilePath.EndsWith(TEXT(".cc"), ESearchCase::IgnoreCase)
+            || FilePath.EndsWith(TEXT(".cxx"), ESearchCase::IgnoreCase)
+            || FilePath.EndsWith(TEXT(".h"), ESearchCase::IgnoreCase)
+            || FilePath.EndsWith(TEXT(".hpp"), ESearchCase::IgnoreCase)
+            || FilePath.EndsWith(TEXT(".inl"), ESearchCase::IgnoreCase);
+    }
+
+    bool IsCppIdentifierCharacter(TCHAR Character)
+    {
+        return FChar::IsAlnum(Character) || Character == TEXT('_');
+    }
+
+    FString MaskCppCommentsAndStrings(const FString& SourceText)
+    {
+        FString Masked = SourceText;
+        bool bInBlockComment = false;
+        bool bInLineComment = false;
+        bool bInString = false;
+        bool bInCharacter = false;
+        bool bEscaped = false;
+
+        for (int32 Index = 0; Index < SourceText.Len(); ++Index)
+        {
+            const TCHAR Character = SourceText[Index];
+            const TCHAR Next = Index + 1 < SourceText.Len() ? SourceText[Index + 1] : TEXT('\0');
+
+            if (Character == TEXT('\n') || Character == TEXT('\r'))
+            {
+                bInLineComment = false;
+                bEscaped = false;
+                continue;
+            }
+
+            if (bInLineComment)
+            {
+                Masked[Index] = TEXT(' ');
+                continue;
+            }
+            if (bInBlockComment)
+            {
+                Masked[Index] = TEXT(' ');
+                if (Character == TEXT('*') && Next == TEXT('/'))
+                {
+                    Masked[Index + 1] = TEXT(' ');
+                    ++Index;
+                    bInBlockComment = false;
+                }
+                continue;
+            }
+            if (bInString || bInCharacter)
+            {
+                Masked[Index] = TEXT(' ');
+                if (bEscaped)
+                {
+                    bEscaped = false;
+                }
+                else if (Character == TEXT('\\'))
+                {
+                    bEscaped = true;
+                }
+                else if ((bInString && Character == TEXT('"')) || (bInCharacter && Character == TEXT('\'')))
+                {
+                    bInString = false;
+                    bInCharacter = false;
+                }
+                continue;
+            }
+
+            if (Character == TEXT('/') && Next == TEXT('/'))
+            {
+                Masked[Index] = TEXT(' ');
+                Masked[Index + 1] = TEXT(' ');
+                ++Index;
+                bInLineComment = true;
+            }
+            else if (Character == TEXT('/') && Next == TEXT('*'))
+            {
+                Masked[Index] = TEXT(' ');
+                Masked[Index + 1] = TEXT(' ');
+                ++Index;
+                bInBlockComment = true;
+            }
+            else if (Character == TEXT('"'))
+            {
+                Masked[Index] = TEXT(' ');
+                bInString = true;
+            }
+            else if (Character == TEXT('\''))
+            {
+                Masked[Index] = TEXT(' ');
+                bInCharacter = true;
+            }
+        }
+        return Masked;
+    }
+
+    bool LooksLikeCppVariableWrite(const FString& Line, int32 MatchIndex, int32 MatchLength)
+    {
+        int32 Before = MatchIndex - 1;
+        while (Before >= 0 && FChar::IsWhitespace(Line[Before])) --Before;
+        if (Before >= 1)
+        {
+            const FString Prefix = Line.Mid(Before - 1, 2);
+            if (Prefix == TEXT("++") || Prefix == TEXT("--")) return true;
+        }
+
+        int32 After = MatchIndex + MatchLength;
+        while (After < Line.Len() && FChar::IsWhitespace(Line[After])) ++After;
+        if (After + 1 < Line.Len())
+        {
+            const FString Operator = Line.Mid(After, 2);
+            if (Operator == TEXT("++") || Operator == TEXT("--") || Operator == TEXT("+=")
+                || Operator == TEXT("-=") || Operator == TEXT("*=") || Operator == TEXT("/=")
+                || Operator == TEXT("%=") || Operator == TEXT("&=") || Operator == TEXT("|=")
+                || Operator == TEXT("^="))
+            {
+                return true;
+            }
+        }
+        return After < Line.Len() && Line[After] == TEXT('=')
+            && (After + 1 >= Line.Len() || Line[After + 1] != TEXT('='));
     }
 
 
@@ -226,6 +355,44 @@ namespace
 
 }
 
+void VisualRefSearcher::FindCppVariableReferencesInText(const FString& SourceText, const FString& InVariableName, TArray<FCppVariableReference>& OutReferences, int32 MaxReferences)
+{
+    OutReferences.Reset();
+    if (InVariableName.IsEmpty() || MaxReferences <= 0) return;
+
+    const FString MaskedText = MaskCppCommentsAndStrings(SourceText);
+    TArray<FString> SourceLines;
+    TArray<FString> MaskedLines;
+    SourceText.ParseIntoArrayLines(SourceLines, false);
+    MaskedText.ParseIntoArrayLines(MaskedLines, false);
+    const int32 LineCount = FMath::Min(SourceLines.Num(), MaskedLines.Num());
+
+    for (int32 LineIndex = 0; LineIndex < LineCount; ++LineIndex)
+    {
+        const FString& SearchLine = MaskedLines[LineIndex];
+        int32 SearchFrom = 0;
+        while (SearchFrom < SearchLine.Len())
+        {
+            const int32 MatchIndex = SearchLine.Find(InVariableName, ESearchCase::CaseSensitive, ESearchDir::FromStart, SearchFrom);
+            if (MatchIndex == INDEX_NONE) break;
+
+            const int32 MatchEnd = MatchIndex + InVariableName.Len();
+            const bool bValidLeft = MatchIndex == 0 || !IsCppIdentifierCharacter(SearchLine[MatchIndex - 1]);
+            const bool bValidRight = MatchEnd >= SearchLine.Len() || !IsCppIdentifierCharacter(SearchLine[MatchEnd]);
+            if (bValidLeft && bValidRight)
+            {
+                FCppVariableReference& Reference = OutReferences.AddDefaulted_GetRef();
+                Reference.SourceLine = LineIndex + 1;
+                Reference.SourceColumn = MatchIndex + 1;
+                Reference.SourceLineText = SourceLines[LineIndex].TrimStartAndEnd();
+                Reference.bIsWrite = LooksLikeCppVariableWrite(SearchLine, MatchIndex, InVariableName.Len());
+                if (OutReferences.Num() >= MaxReferences) return;
+            }
+            SearchFrom = FMath::Max(MatchEnd, MatchIndex + 1);
+        }
+    }
+}
+
 
 
 VisualRefSearcher::VisualRefSearcher(UBlueprint* InTargetBP, FName InVarOrFuncName, bool bIsFunction, UClass* InTargetOwnerClass, bool bIsDispatcher)
@@ -306,9 +473,16 @@ void VisualRefSearcher::CancelSearch()
 
     NodeMatchReasons.Empty();
 
+    CppSourceFilesToScan.Empty();
+    CppSourceFileIndex = 0;
+    CppCandidateCount = 0;
+    bCppSourceScanTruncated = false;
+
 
 
     OnRefFound.Unbind();
+
+    OnCppVariableRefFound.Unbind();
 
     OnBatchComplete.Unbind();
 
@@ -340,6 +514,12 @@ void VisualRefSearcher::SetExhaustiveSearchEnabled(bool bInEnabled)
 
     bExhaustiveSearchEnabled = bInEnabled;
 
+}
+
+void VisualRefSearcher::SetLocalVariableScope(const FString& InScopeName, const FGuid& InVariableGuid)
+{
+    LocalVariableScope = InScopeName;
+    LocalVariableGuid = InVariableGuid;
 }
 
 
@@ -375,6 +555,8 @@ void VisualRefSearcher::FinishSearch()
 
     OnRefFound.Unbind();
 
+    OnCppVariableRefFound.Unbind();
+
     OnBatchComplete.Unbind();
 
     OnSearchProgress.Unbind();
@@ -390,6 +572,9 @@ void VisualRefSearcher::FinishSearch()
     PendingLoadPackages.Empty();
 
     ActiveLoadHandles.Empty();
+
+    CppSourceFilesToScan.Empty();
+    CppSourceFileIndex = 0;
 
     SelfReference.Reset();
 
@@ -595,7 +780,9 @@ void VisualRefSearcher::InitializeSearchKeys()
 
     {
 
-        TargetVarGuid = FBlueprintEditorUtils::FindMemberVariableGuidByName(TargetBP.Get(), VariableName);
+        TargetVarGuid = LocalVariableScope.IsEmpty()
+            ? FBlueprintEditorUtils::FindMemberVariableGuidByName(TargetBP.Get(), VariableName)
+            : LocalVariableGuid;
 
         UE_LOG(LogRefSearcher, Log, TEXT(">>> SEARCH START: Variable [%s] (GUID: %s) <<<"),
 
@@ -774,6 +961,15 @@ void VisualRefSearcher::QueueScopedBlueprintAssets(TArray<FAssetData>& PriorityA
     {
 
         Filter.bRecursivePaths = true;
+        // Project Content covers project assets and the target Blueprint's mount,
+        // rather than every enabled engine/plugin content mount.
+        Filter.PackagePaths.Add(FName(TEXT("/Game")));
+        const FString TargetPath = TargetPackagePath.ToString();
+        const int32 MountEnd = TargetPath.Find(TEXT("/"), ESearchCase::CaseSensitive, ESearchDir::FromStart, 1);
+        if (MountEnd > 0)
+        {
+            Filter.PackagePaths.Add(FName(*TargetPath.Left(MountEnd)));
+        }
 
     }
 
@@ -943,7 +1139,7 @@ void VisualRefSearcher::BuildAssetQueue()
 
 
 
-    TotalAssetsToScan = AssetQueue.Num();
+    TotalAssetsToScan = AssetQueue.Num() + CppSourceFilesToScan.Num();
 
     CurrentScannedCount = 0;
 
@@ -965,7 +1161,7 @@ void VisualRefSearcher::BuildAssetQueue()
 
 
 
-    if (TotalAssetsToScan == 0)
+    if (TotalAssetsToScan == 0 && !HasPendingAsyncLoads())
 
     {
 
@@ -1304,11 +1500,23 @@ void VisualRefSearcher::StartSearch()
 
     ActiveLoadHandles.Empty();
 
+    CppSourceFilesToScan.Empty();
+    CppSourceFileIndex = 0;
+    CppCandidateCount = 0;
+    bCppSourceScanTruncated = false;
+
     bAssetQueuePrepared = false;
 
 
 
     InitializeSearchKeys();
+
+    // Blueprint-local scopes have no corresponding C++ source directory.
+    if (bCppSourceSearchEnabled && !bSearchingFunction && !bSearchingDispatcher && LocalVariableScope.IsEmpty()
+        && SearchScope == EVisualRefSearchScope::ProjectContent)
+    {
+        BuildCppSourceFileQueue();
+    }
 
 
 
@@ -1318,6 +1526,84 @@ void VisualRefSearcher::StartSearch()
 
         TMPerf::VisualSearchTickerIntervalSeconds(!bExhaustiveSearchEnabled));
 
+}
+
+void VisualRefSearcher::BuildCppSourceFileQueue()
+{
+    CppSourceFilesToScan.Reset();
+    CppSourceFileIndex = 0;
+
+    TSet<FString> UniqueFiles;
+    const TArray<FString> Roots =
+    {
+        FPaths::Combine(FPaths::ProjectDir(), TEXT("Source")),
+        FPaths::Combine(FPaths::ProjectDir(), TEXT("Plugins"))
+    };
+
+    for (const FString& Root : Roots)
+    {
+        if (!IFileManager::Get().DirectoryExists(*Root)) continue;
+
+        TArray<FString> FoundFiles;
+        IFileManager::Get().FindFilesRecursive(FoundFiles, *Root, TEXT("*.*"), true, false, false);
+        for (FString& FilePath : FoundFiles)
+        {
+            FPaths::NormalizeFilename(FilePath);
+            FString ProjectRelativePath = FilePath;
+            FPaths::MakePathRelativeTo(ProjectRelativePath, *FPaths::ProjectDir());
+            if (!IsCppSourceFile(FilePath)
+                || ProjectRelativePath.Contains(TEXT("/Intermediate/"))
+                || ProjectRelativePath.Contains(TEXT("/Binaries/"))
+                || ProjectRelativePath.Contains(TEXT("/Saved/"))
+                || ProjectRelativePath.Contains(TEXT("/DerivedDataCache/"))
+                || FilePath.EndsWith(TEXT(".generated.h"), ESearchCase::IgnoreCase))
+            {
+                continue;
+            }
+            UniqueFiles.Add(FilePath);
+        }
+    }
+
+    CppSourceFilesToScan = UniqueFiles.Array();
+    CppSourceFilesToScan.Sort();
+    UE_LOG(LogRefSearcher, Display, TEXT("Queued %d C++ source file(s) for variable reference scan: %s"),
+        CppSourceFilesToScan.Num(), *VariableName.ToString());
+}
+
+bool VisualRefSearcher::HasPendingCppSourceScan() const
+{
+    return CppSourceFileIndex < CppSourceFilesToScan.Num();
+}
+
+bool VisualRefSearcher::ScanNextCppSourceFile(double DeadlineSeconds)
+{
+    if (!HasPendingCppSourceScan() || FPlatformTime::Seconds() >= DeadlineSeconds) return false;
+
+    const FString SourceFilePath = CppSourceFilesToScan[CppSourceFileIndex++];
+    FString SourceText;
+    if (FFileHelper::LoadFileToString(SourceText, *SourceFilePath)
+        && SourceText.Contains(VariableName.ToString(), ESearchCase::CaseSensitive))
+    {
+        TArray<FCppVariableReference> References;
+        FindCppVariableReferencesInText(SourceText, VariableName.ToString(), References,
+            TMPerf::MaxSearchResults() - CppCandidateCount);
+        for (FCppVariableReference& Reference : References)
+        {
+            Reference.SourceFilePath = SourceFilePath;
+            OnCppVariableRefFound.ExecuteIfBound(Reference);
+        }
+        CppCandidateCount += References.Num();
+        if (References.Num() > 0)
+        {
+            bPendingBatchNotify = true;
+        }
+        if (CppCandidateCount >= TMPerf::MaxSearchResults())
+        {
+            bCppSourceScanTruncated = true;
+            CppSourceFileIndex = CppSourceFilesToScan.Num();
+        }
+    }
+    return true;
 }
 
 void VisualRefSearcher::SearchTargetBlueprint()
@@ -1406,10 +1692,16 @@ bool VisualRefSearcher::Tick(float DeltaTime)
         if (SearchScope == EVisualRefSearchScope::CurrentBlueprint)
 
         {
-
-            FinishSearch();
-
-            return false;
+            // A large target Blueprint can yield too. Keep its continuation alive
+            // instead of reporting completion after only the first slice.
+            bAssetQueuePrepared = true;
+            TotalAssetsToScan = 1;
+            if (!HasPendingAsyncLoads())
+            {
+                FinishSearch();
+                return false;
+            }
+            return true;
 
         }
 
@@ -1485,7 +1777,7 @@ bool VisualRefSearcher::Tick(float DeltaTime)
             break;
         }
 
-        if (BP != TargetBP.Get()) CurrentScannedCount++;
+        if (BP != TargetBP.Get() || SearchScope == EVisualRefSearchScope::CurrentBlueprint) CurrentScannedCount++;
 
 
 
@@ -1610,9 +1902,27 @@ bool VisualRefSearcher::Tick(float DeltaTime)
 
     }
 
+    while (AssetQueue.Num() == 0
+        && !HasPendingAsyncLoads()
+        && HasPendingCppSourceScan()
+        && ProcessedCount < BatchSize
+        && (FPlatformTime::Seconds() - StartTime) < TickBudgetSeconds)
+    {
+        if (!ScanNextCppSourceFile(StartTime + TickBudgetSeconds)) break;
+        ++ProcessedCount;
+        ++CurrentScannedCount;
+
+        const double ProgressNowSeconds = FPlatformTime::Seconds();
+        if (ProgressNowSeconds - LastProgressNotifySeconds >= 0.05 || CurrentScannedCount >= TotalAssetsToScan)
+        {
+            LastProgressNotifySeconds = ProgressNowSeconds;
+            OnSearchProgress.ExecuteIfBound(CurrentScannedCount, TotalAssetsToScan);
+        }
+    }
 
 
-    if (bFoundAnyThisTick)
+
+    if (bFoundAnyThisTick || bPendingBatchNotify)
 
     {
 
@@ -1624,7 +1934,7 @@ bool VisualRefSearcher::Tick(float DeltaTime)
 
 
 
-    if (AssetQueue.Num() == 0 && !HasPendingAsyncLoads())
+    if (AssetQueue.Num() == 0 && !HasPendingAsyncLoads() && !HasPendingCppSourceScan())
 
     {
 
@@ -1648,6 +1958,17 @@ bool VisualRefSearcher::CheckVariableMatch(UK2Node_Variable* VarNode, UBlueprint
 
     if (!VarNode || VarNode->GetVarName() != VariableName) return false;
 
+    if (VarNode->VariableReference.IsLocalScope() || !LocalVariableScope.IsEmpty())
+    {
+        const FMemberReference& Reference = VarNode->VariableReference;
+        const bool bMatches = !LocalVariableScope.IsEmpty() && BP == TargetBP.Get()
+            && Reference.IsLocalScope() && Reference.GetMemberScopeName() == LocalVariableScope
+            && (!LocalVariableGuid.IsValid() || !Reference.GetMemberGuid().IsValid()
+                || Reference.GetMemberGuid() == LocalVariableGuid);
+        if (bMatches) SetMatchReason(OutMatchReason, TEXT("Local variable in owning function"));
+        return bMatches;
+    }
+
 
 
     FGuid NodeVarGuid = VarNode->VariableReference.GetMemberGuid();
@@ -1660,9 +1981,14 @@ bool VisualRefSearcher::CheckVariableMatch(UK2Node_Variable* VarNode, UBlueprint
 
         {
 
-            SetMatchReason(OutMatchReason, TEXT("Variable GUID"));
-
-            return true;
+            UClass* Owner = VarNode->VariableReference.GetMemberParentClass();
+            if (!Owner && BP) Owner = BP->GeneratedClass ? BP->GeneratedClass : BP->SkeletonGeneratedClass;
+            if ((VarNode->VariableReference.IsSelfContext() && BP == TargetBP.Get())
+                || CheckClassMatch(Owner, TargetGenClass, TargetSkelClass, BP))
+            {
+                SetMatchReason(OutMatchReason, TEXT("Variable GUID and owner"));
+                return true;
+            }
 
         }
 
@@ -1692,7 +2018,7 @@ bool VisualRefSearcher::CheckVariableMatch(UK2Node_Variable* VarNode, UBlueprint
 
             }
 
-            if (BPClass && TargetGenClass && BPClass->IsChildOf(TargetGenClass))
+            if (CheckClassMatch(BPClass, TargetGenClass, TargetSkelClass, BP))
 
             {
 
@@ -1718,11 +2044,7 @@ bool VisualRefSearcher::CheckVariableMatch(UK2Node_Variable* VarNode, UBlueprint
 
         {
 
-            const bool bIsGenMatch = TargetGenClass && (TargetGenClass->IsChildOf(SourceClass) || SourceClass->IsChildOf(TargetGenClass));
-
-            const bool bIsSkelMatch = TargetSkelClass && (TargetSkelClass->IsChildOf(SourceClass) || SourceClass->IsChildOf(TargetSkelClass));
-
-            if (bIsGenMatch || bIsSkelMatch)
+            if (CheckClassMatch(SourceClass, TargetGenClass, TargetSkelClass, BP))
 
             {
 
@@ -1778,7 +2100,9 @@ bool VisualRefSearcher::CheckDispatcherMatch(UEdGraphNode* Node, UBlueprint* BP,
 
         const FGuid NodeGuid = DelegateNode->DelegateReference.GetMemberGuid();
 
-        if (TargetDispatcherGuid.IsValid() && NodeGuid.IsValid() && TargetDispatcherGuid == NodeGuid)
+        if (TargetDispatcherGuid.IsValid() && NodeGuid.IsValid() && TargetDispatcherGuid == NodeGuid
+            && ((DelegateNode->DelegateReference.IsSelfContext() && BP == TargetBP.Get())
+                || CheckClassMatch(DelegateNode->DelegateReference.GetMemberParentClass(), TargetGenClass, TargetSkelClass, BP)))
 
         {
 
@@ -1990,6 +2314,10 @@ bool VisualRefSearcher::CheckDispatcherMatch(UEdGraphNode* Node, UBlueprint* BP,
 
 
 
+    // An unbound custom event is not a dispatcher reference just because its
+    // display title happens to contain the dispatcher's name.
+    if (Cast<UK2Node_CustomEvent>(Node)) return false;
+
     if (UK2Node_Event* EventNode = Cast<UK2Node_Event>(Node))
 
     {
@@ -2182,7 +2510,9 @@ bool VisualRefSearcher::CheckFunctionMatch(UEdGraphNode* Node, UBlueprint* BP, U
 
         const FGuid NodeGuid = CallNode->FunctionReference.GetMemberGuid();
 
-        if (TargetFuncGuid.IsValid() && NodeGuid.IsValid() && TargetFuncGuid == NodeGuid)
+        if (TargetFuncGuid.IsValid() && NodeGuid.IsValid() && TargetFuncGuid == NodeGuid
+            && ((CallNode->FunctionReference.IsSelfContext() && BP == TargetBP.Get())
+                || CheckClassMatch(RefClass, TargetGenClass, TargetSkelClass, BP)))
 
         {
 
@@ -2304,6 +2634,18 @@ bool VisualRefSearcher::CheckFunctionMatch(UEdGraphNode* Node, UBlueprint* BP, U
 
     }
 
+    else if (UK2Node_CustomEvent* CustomEvent = Cast<UK2Node_CustomEvent>(Node))
+    {
+        // Custom events derive from UK2Node_Event and must be handled first.
+        if (CustomEvent->GetFunctionName() == SearchFuncName
+            && (BP == TargetBP.Get()
+                || (TargetFuncGuid.IsValid() && CustomEvent->NodeGuid == TargetFuncGuid
+                    && CheckClassMatch(BP->GeneratedClass, TargetGenClass, TargetSkelClass, BP))))
+        {
+            SetMatchReason(OutMatchReason, TEXT("Custom event definition"));
+            return true;
+        }
+    }
     else if (UK2Node_Event* EventNode = Cast<UK2Node_Event>(Node))
 
     {
@@ -2337,38 +2679,6 @@ bool VisualRefSearcher::CheckFunctionMatch(UEdGraphNode* Node, UBlueprint* BP, U
             {
 
                 SetMatchReason(OutMatchReason, TEXT("Override event self context"));
-
-                return true;
-
-            }
-
-        }
-
-    }
-
-    else if (UK2Node_CustomEvent* CustomEvent = Cast<UK2Node_CustomEvent>(Node))
-
-    {
-
-        if (CustomEvent->GetFunctionName() == SearchFuncName)
-
-        {
-
-            if (!TargetOwnerClass.IsValid() && BP == TargetBP.Get())
-
-            {
-
-                SetMatchReason(OutMatchReason, TEXT("Custom event self context"));
-
-                return true;
-
-            }
-
-            if (TargetFuncGuid.IsValid() && CustomEvent->NodeGuid == TargetFuncGuid)
-
-            {
-
-                SetMatchReason(OutMatchReason, TEXT("Custom event GUID"));
 
                 return true;
 
@@ -2490,25 +2800,10 @@ bool VisualRefSearcher::CheckClassMatch(UClass* TestClass, UClass* TargetGenClas
 
 
 
-        if (OwnerClass)
-
-        {
-
-            FString TestClassName = TestClass->GetName();
-
-            FString OwnerClassName = OwnerClass->GetName();
-
-            TestClassName.RemoveFromStart(TEXT("SKEL_"));
-
-            OwnerClassName.RemoveFromStart(TEXT("SKEL_"));
-
-            TestClassName.RemoveFromEnd(TEXT("_C"));
-
-            OwnerClassName.RemoveFromEnd(TEXT("_C"));
-
-            if (TestClassName == OwnerClassName) return true;
-
-        }
+        // Generated and skeleton classes share their generating Blueprint.
+        // Short class names are not identities: different packages may reuse them.
+        if (OwnerClass && TestClass->ClassGeneratedBy
+            && TestClass->ClassGeneratedBy == OwnerClass->ClassGeneratedBy) return true;
 
     }
 
@@ -2552,39 +2847,11 @@ bool VisualRefSearcher::CheckClassMatch(UClass* TestClass, UClass* TargetGenClas
 
 
 
-    if (TargetBP.IsValid())
+    if (TargetBP.IsValid() && TestClass->ClassGeneratedBy == TargetBP.Get()) return true;
 
-    {
-
-        UPackage* TargetPackage = TargetBP->GetOutermost();
-
-        UPackage* TestPackage = TestClass->GetOutermost();
-
-        if (TargetPackage && TestPackage && TargetPackage == TestPackage) return true;
-
-    }
-
-
-
-    FString TestClassName = TestClass->GetName();
-
-    FString TargetGenName = TargetGenClass ? TargetGenClass->GetName() : TEXT("");
-
-    FString TargetSkelName = TargetSkelClass ? TargetSkelClass->GetName() : TEXT("");
-
-
-
-    TestClassName.RemoveFromEnd(TEXT("_C"));
-
-    TargetGenName.RemoveFromEnd(TEXT("_C"));
-
-    TargetSkelName.RemoveFromEnd(TEXT("_C"));
-
-
-
-    if (!TargetGenName.IsEmpty() && TestClassName == TargetGenName) return true;
-
-    if (!TargetSkelName.IsEmpty() && TestClassName == TargetSkelName) return true;
+    if (TestClass->ClassGeneratedBy
+        && ((TargetGenClass && TestClass->ClassGeneratedBy == TargetGenClass->ClassGeneratedBy)
+            || (TargetSkelClass && TestClass->ClassGeneratedBy == TargetSkelClass->ClassGeneratedBy))) return true;
 
 
 

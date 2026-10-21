@@ -4,6 +4,7 @@
 #include "TMStyle.h"
 
 #include "TMPerformanceGuard.h"
+#include "TMPluginGuide.h"
 #include "TMTraceSession.h"
 #include "TMLocalization.h"
 #include "Runtime/Launch/Resources/Version.h"
@@ -1291,6 +1292,20 @@ if (NodeOffset++ >= ResumeOffset)
 
                     ]
 
+                    + SHorizontalBox::Slot().AutoWidth().Padding(6.0f, 0.0f, 0.0f, 0.0f).VAlign(VAlign_Center)
+                    [
+                        SNew(SButton)
+                        .ButtonStyle(FAppStyle::Get(), TEXT("SimpleButton"))
+                        .ContentPadding(FMargin(9.0f, 4.0f))
+                        .ToolTipText(TMLoc::Text(TEXT("Open the annotated tutorial for Asset Usage Locator."), TEXT("애셋 사용 위치 찾기 번호 안내를 엽니다.")))
+                        .OnClicked_Lambda([]()
+                        {
+                            TMPluginGuide::OpenFeature(TEXT("TraceMotive.AssetUsageLocator"));
+                            return FReply::Handled();
+                        })
+                        [SNew(STextBlock).Text(TMLoc::Text(TEXT("?"), TEXT("?"))).Font(FCoreStyle::GetDefaultFontStyle(TEXT("Bold"), 10))]
+                    ]
+
                     + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
                     [
                         SNew(SButton)
@@ -1691,7 +1706,11 @@ bool FTMAssetUsageEvidenceTest::RunTest(const FString&)
     FTMAssetUsageFinding Candidate;
     Candidate.Reason = TEXT("Node metadata contains target");
     TestTrue(TEXT("Text-only match remains a candidate"), Candidate.IsCandidate());
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION < 4
+    TUniquePtr<FSoftObjectProperty> SoftProperty = MakeUnique<FSoftObjectProperty>(FFieldVariant(), FName(TEXT("Asset")), RF_Transient);
+#else
     TUniquePtr<FSoftObjectProperty> SoftProperty = MakeUnique<FSoftObjectProperty>(FFieldVariant(), FName(TEXT("Asset")));
+#endif
     FSoftObjectPtr SoftValue(FSoftObjectPath(TEXT("/Game/TMFixture.Target")));
     TArray<FString> SoftMatches;
     TestTrue(TEXT("Unloaded soft object path resolves without loading"), ScanPropertyValue(SoftProperty.Get(), &SoftValue, TEXT("Asset"), nullptr, TEXT("/Game/TMFixture.Target"), TEXT("/Game/TMFixture"), SoftMatches, 0));
@@ -1748,9 +1767,6 @@ namespace TMAssetUsageLocator
     }
 
 }
-
-
-
 
 
 

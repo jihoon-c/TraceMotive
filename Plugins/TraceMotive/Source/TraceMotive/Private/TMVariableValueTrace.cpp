@@ -1,6 +1,7 @@
 ﻿#include "TMVariableValueTrace.h"
 #include "Engine/World.h"
 #include "TMStyle.h"
+#include "TMPluginGuide.h"
 #include "Editor.h"
 #include "Framework/Docking/TabManager.h"
 #include "HAL/PlatformTime.h"
@@ -275,8 +276,18 @@ class SVariableValueTrace : public SCompoundWidget
     void Tick(const FGeometry &Geometry, const double CurrentTime, const float DeltaTime) override
     {
         SCompoundWidget::Tick(Geometry, CurrentTime, DeltaTime);
+        if (bIsTracing && (!TargetClass.IsValid() || TargetClass->HasAnyClassFlags(CLASS_NewerVersionExists)))
+        {
+            bIsTracing = false;
+            ActiveProperties.Reset();
+            TrackedInstances.Reset();
+            Values.Reset();
+            DisplayValues.Reset();
+            DetailValues.Reset();
+            if (Status.IsValid()) Status->SetText(TMLoc::Text(TEXT("Target class changed or was unloaded. Select the class and start tracing again."), TEXT("대상 클래스가 변경되거나 언로드되었습니다. 클래스를 다시 선택하고 추적을 시작하세요.")));
+        }
         const double Now = FPlatformTime::Seconds();
-        if (bIsTracing && bPIEActive && !bPaused && TargetClass && Now - LastSample >= SampleInterval)
+        if (bIsTracing && bPIEActive && !bPaused && TargetClass.IsValid() && Now - LastSample >= SampleInterval)
         {
             LastSample = Now;
             Sample(Now);
@@ -300,6 +311,13 @@ class SVariableValueTrace : public SCompoundWidget
                 + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(7, 0)
                     [SNew(STextBlock).Text(this, &SVariableValueTrace::FrameLabel).Font(VariableTraceFont(TEXT("Regular"), 8)).ColorAndOpacity(FLinearColor(.56f,.60f,.66f))]
                 + SHorizontalBox::Slot().FillWidth(1)
+                + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(3,0)
+                    [SNew(SButton)
+                        .ButtonStyle(FAppStyle::Get(), TEXT("SimpleButton"))
+                        .ContentPadding(FMargin(9, 3))
+                        .ToolTipText(TMLoc::Text(TEXT("Open the annotated tutorial for Variable Value Trace."), TEXT("변수 값 추적 번호 안내를 엽니다.")))
+                        .OnClicked_Lambda([](){ TMPluginGuide::OpenFeature(TEXT("TraceMotive.VariableValueTrace")); return FReply::Handled(); })
+                        [SNew(STextBlock).Text(TMLoc::Text(TEXT("?"), TEXT("?"))).Font(VariableTraceFont(TEXT("Bold"), 10))]]
                 + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(3,0)
                     [SNew(SButton).ButtonStyle(FAppStyle::Get(), TEXT("SimpleButton")).Text(TMLoc::Text(TEXT("Filter"), TEXT("Filter"))).OnClicked(this, &SVariableValueTrace::ToggleConfiguration)]
                 + SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(3,0)
@@ -410,8 +428,8 @@ class SVariableValueTrace : public SCompoundWidget
     void RefreshPropertyOptions()
     {
         PropertyCategories.Reset(); PropertiesByCategory.Reset();
-        if (!TargetClass) return;
-        for (TFieldIterator<FProperty> It(TargetClass, EFieldIteratorFlags::IncludeSuper); It; ++It)
+        if (!TargetClass.IsValid()) return;
+        for (TFieldIterator<FProperty> It(TargetClass.Get(), EFieldIteratorFlags::IncludeSuper); It; ++It)
         {
             FProperty* Property = *It;
             if (!Property->HasAnyPropertyFlags(CPF_BlueprintVisible) || Property->HasAnyPropertyFlags(CPF_Parm)) continue;
@@ -444,7 +462,7 @@ class SVariableValueTrace : public SCompoundWidget
     void OnClassSelected(TSharedPtr<FString> Item, ESelectInfo::Type)
     {
         UClass* NewTargetClass = Item.IsValid() ? ResolveTraceClass(*Item) : nullptr;
-        if (NewTargetClass == TargetClass)
+        if (NewTargetClass == TargetClass.Get())
         {
             SelectedClass = Item;
             RefreshPropertyOptions();
@@ -468,7 +486,7 @@ class SVariableValueTrace : public SCompoundWidget
         RebuildDetailsPanel();
         bIsTracing = false;
         bDirty = true;
-        if (Configuration.IsValid()) Configuration->SetText(TargetClass ? TMLoc::Text(TEXT("Select properties to trace."), TEXT("Select properties to trace.")) : TMLoc::Text(TEXT("Choose a class."), TEXT("Choose a class.")));
+        if (Configuration.IsValid()) Configuration->SetText(TargetClass.IsValid() ? TMLoc::Text(TEXT("Select properties to trace."), TEXT("Select properties to trace.")) : TMLoc::Text(TEXT("Choose a class."), TEXT("Choose a class.")));
     }
     FText SelectedClassLabel() const { return SelectedClass.IsValid() ? FText::FromString(*SelectedClass) : TMLoc::Text(TEXT("Select class"), TEXT("Select class")); }
     FText SelectedVariablesLabel() const
@@ -484,7 +502,7 @@ class SVariableValueTrace : public SCompoundWidget
     {
         if (!VariableMenuList.IsValid()) return;
         VariableMenuList->ClearChildren();
-        if (!TargetClass || PropertyCategories.IsEmpty())
+        if (!TargetClass.IsValid() || PropertyCategories.IsEmpty())
         {
             VariableMenuList->AddSlot().AutoHeight().Padding(8)
             [SNew(STextBlock)
@@ -500,7 +518,7 @@ class SVariableValueTrace : public SCompoundWidget
             TArray<FProperty*> VisibleProperties;
             for (const FString& Name : PropertiesByCategory.FindChecked(Category))
             {
-                FProperty* Property = FindFProperty<FProperty>(TargetClass, *Name);
+                FProperty* Property = FindFProperty<FProperty>(TargetClass.Get(), *Name);
                 if (!Property) continue;
 
                 const FString DisplayName = Property->GetDisplayNameText().ToString();
@@ -609,7 +627,7 @@ class SVariableValueTrace : public SCompoundWidget
     }
     FReply Apply()
     {
-        if (!TargetClass) { Configuration->SetText(TMLoc::Text(TEXT("Choose a class."), TEXT("Choose a class."))); return FReply::Handled(); }
+        if (!TargetClass.IsValid()) { Configuration->SetText(TMLoc::Text(TEXT("Choose a class."), TEXT("Choose a class."))); return FReply::Handled(); }
         if (SelectedVariables.IsEmpty()) { Configuration->SetText(TMLoc::Text(TEXT("Choose at least one variable."), TEXT("Choose at least one variable."))); return FReply::Handled(); }
 
         const bool bStartingNewTrace = !bIsTracing;
@@ -619,7 +637,7 @@ class SVariableValueTrace : public SCompoundWidget
         for (const FString& Lane : ActiveLanes)
         {
             if (!Lanes.Contains(Lane)) Lanes.Add(Lane);
-            if (FProperty* Property = FindFProperty<FProperty>(TargetClass, *Lane)) ActiveProperties.Add(Lane, Property);
+            if (FProperty* Property = FindFProperty<FProperty>(TargetClass.Get(), *Lane)) ActiveProperties.Add(Lane, Property);
         }
         if (bStartingNewTrace)
         {
@@ -672,7 +690,7 @@ class SVariableValueTrace : public SCompoundWidget
             {
                 UObject* Object = *It;
                 const UWorld* World = Object ? Object->GetWorld() : nullptr;
-                if (Object && !Object->IsTemplate() && Object->IsA(TargetClass) && World && World->WorldType == EWorldType::PIE
+                if (Object && !Object->IsTemplate() && Object->IsA(TargetClass.Get()) && World && World->WorldType == EWorldType::PIE
                     && (InstanceFilter.IsEmpty() || Object->GetPathName().Contains(InstanceFilter))) TrackedInstances.Add(Object);
             }
             LastInstanceDiscovery = Now;
@@ -809,7 +827,7 @@ class SVariableValueTrace : public SCompoundWidget
     }
     FString GetLaneType(const FString& Lane) const
     {
-        if (TargetClass) if (const FProperty* Property = FindFProperty<FProperty>(TargetClass, *Lane)) return Property->ArrayDim > 1 ? FString::Printf(TEXT("%s[%d]"), *TraceTypeName(Property), Property->ArrayDim) : TraceTypeName(Property);
+        if (TargetClass.IsValid()) if (const FProperty* Property = FindFProperty<FProperty>(TargetClass.Get(), *Lane)) return Property->ArrayDim > 1 ? FString::Printf(TEXT("%s[%d]"), *TraceTypeName(Property), Property->ArrayDim) : TraceTypeName(Property);
         return TEXT("Value");
     }
     void RebuildTimeline()
@@ -865,7 +883,7 @@ class SVariableValueTrace : public SCompoundWidget
     TSharedPtr<SVerticalBox> DetailsContent;
     FString DetailsSearchText;
     TSharedPtr<STextBlock> Status, Configuration;
-    UClass *TargetClass = nullptr;
+    TWeakObjectPtr<UClass> TargetClass;
     TArray<TSharedPtr<FString>> ClassOptions;
     TSharedPtr<FString> SelectedClass;
     TArray<FString> PropertyCategories, SelectedVariables, ActiveLanes, Lanes;

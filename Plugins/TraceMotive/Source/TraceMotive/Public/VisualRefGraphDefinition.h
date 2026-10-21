@@ -115,6 +115,26 @@ struct FVisualReferenceInfo
 
     FString MatchReason;
 
+    UPROPERTY()
+
+    bool bIsCppSource = false;
+
+    UPROPERTY()
+
+    FString SourceFilePath;
+
+    UPROPERTY()
+
+    FString SourceLineText;
+
+    UPROPERTY()
+
+    int32 SourceLine = 0;
+
+    UPROPERTY()
+
+    int32 SourceColumn = 0;
+
 };
 
 
@@ -200,6 +220,8 @@ public:
     virtual void JumpToDefinition() const override;
 
     void JumpToReference(UEdGraphNode* TargetNode);
+
+    void JumpToReference(const FVisualReferenceInfo& Reference);
 
 
 

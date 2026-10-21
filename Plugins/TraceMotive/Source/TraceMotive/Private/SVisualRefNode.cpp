@@ -491,6 +491,8 @@ void SVisualRefNode::UpdateGraphNode()
 
     LeftNodeBox.Reset();
 
+    TopNodeBox.Reset();
+
     BottomNodeBox.Reset();
 
 
@@ -500,6 +502,19 @@ void SVisualRefNode::UpdateGraphNode()
     bool bNodeIsFunction = (MyNode->RefType == EVisualRefType::Function);
 
     bool bNodeIsDispatcher = (MyNode->RefType == EVisualRefType::Dispatcher);
+
+    int32 RelationshipPortCount = 0;
+    for (const UEdGraphPin* Pin : MyNode->Pins)
+    {
+        if (Pin && !Pin->bHidden
+            && ((MyNode->bIsDefinitionNode && Pin->Direction == EGPD_Input)
+                || (!MyNode->bIsDefinitionNode && Pin->Direction == EGPD_Output)))
+        {
+            ++RelationshipPortCount;
+        }
+    }
+    const float BaseNodeWidth = (CurrentViewMode == EVisualRefViewMode::List) ? 360.0f : 250.0f;
+    const float NodeWidth = FMath::Max(BaseNodeWidth, 16.0f + (RelationshipPortCount * 30.0f));
 
 
 
@@ -781,7 +796,9 @@ void SVisualRefNode::UpdateGraphNode()
 
                 {
 
-                    TypeText = Info.bIsSetter ? TEXT("SET") : TEXT("GET");
+                    TypeText = Info.bIsCppSource
+                        ? (Info.bIsSetter ? TEXT("C++ SET") : TEXT("C++ READ"))
+                        : (Info.bIsSetter ? TEXT("SET") : TEXT("GET"));
 
                     AccentColor = Info.bIsSetter
 
@@ -837,7 +854,7 @@ void SVisualRefNode::UpdateGraphNode()
 
                                     .OnSelected_Lambda([this](int32 Idx) { SelectedReferenceIndex = Idx; })
 
-                                    .OnDoubleClicked_Lambda([MyNode, Info](int32 Idx) { MyNode->JumpToReference(Info.SourceNode); })
+                                    .OnDoubleClicked_Lambda([MyNode, Info](int32 Idx) { MyNode->JumpToReference(Info); })
 
                                     [
 
@@ -1309,7 +1326,9 @@ void SVisualRefNode::UpdateGraphNode()
 
                     TypeColor = Info.bIsSetter ? FLinearColor(1.0f, 0.4f, 0.4f) : FLinearColor(0.4f, 1.0f, 0.4f);
 
-                    TypeStr = Info.bIsSetter ? TEXT("SET") : TEXT("GET");
+                    TypeStr = Info.bIsCppSource
+                        ? (Info.bIsSetter ? TEXT("C++ SET") : TEXT("C++ READ"))
+                        : (Info.bIsSetter ? TEXT("SET") : TEXT("GET"));
 
                     IconBrush = nullptr;
 
@@ -1413,7 +1432,7 @@ void SVisualRefNode::UpdateGraphNode()
 
                                     .OnSelected_Lambda([this](int32 Idx) { SelectedReferenceIndex = Idx; })
 
-                                    .OnDoubleClicked_Lambda([MyNode, Info](int32 Idx) { MyNode->JumpToReference(Info.SourceNode); })
+                                    .OnDoubleClicked_Lambda([MyNode, Info](int32 Idx) { MyNode->JumpToReference(Info); })
 
                                     [
 
@@ -1643,7 +1662,7 @@ void SVisualRefNode::UpdateGraphNode()
 
                     SNew(SBox)
 
-                        .WidthOverride((CurrentViewMode == EVisualRefViewMode::List) ? 360.0f : 250.0f)
+                        .WidthOverride(NodeWidth)
 
                         [
 
@@ -1714,6 +1733,20 @@ void SVisualRefNode::UpdateGraphNode()
                                 ]
 
                         ]
+
+                ]
+
+                + SOverlay::Slot()
+
+                    .HAlign(HAlign_Center)
+
+                    .VAlign(VAlign_Top)
+
+                    .Padding(0.0f, -2.0f, 0.0f, 0.0f)
+
+                [
+
+                    SAssignNew(TopNodeBox, SHorizontalBox)
 
                 ]
 
@@ -1796,9 +1829,9 @@ void SVisualRefNode::CreatePinWidgets()
                 // Give each incoming relationship a separate association-end port along the declaration bottom.
                 if (MyNode->bIsDefinitionNode && BottomNodeBox.IsValid())
                 {
-                    BottomNodeBox->AddSlot().AutoWidth().Padding(1.0f, 0.0f)
+                    BottomNodeBox->AddSlot().AutoWidth().Padding(4.0f, 0.0f)
                     [
-                        SNew(SBox).WidthOverride(12.0f).HeightOverride(10.0f)
+                        SNew(SBox).WidthOverride(22.0f).HeightOverride(12.0f)
                         [
                             NewPin.ToSharedRef()
                         ]
@@ -1817,7 +1850,20 @@ void SVisualRefNode::CreatePinWidgets()
 
             {
 
-                RightNodeBox->AddSlot().AutoHeight()[NewPin.ToSharedRef()];
+                if (!MyNode->bIsDefinitionNode && TopNodeBox.IsValid())
+                {
+                    TopNodeBox->AddSlot().AutoWidth().Padding(4.0f, 0.0f)
+                    [
+                        SNew(SBox).WidthOverride(22.0f).HeightOverride(12.0f)
+                        [
+                            NewPin.ToSharedRef()
+                        ]
+                    ];
+                }
+                else if (RightNodeBox.IsValid())
+                {
+                    RightNodeBox->AddSlot().AutoHeight()[NewPin.ToSharedRef()];
+                }
 
                 OutputPins.Add(NewPin.ToSharedRef());
 

@@ -1,4 +1,5 @@
 #include "TMPluginGuide.h"
+#include "TMFeatureVisibility.h"
 #include "TMStyle.h"
 
 #include "TMLocalization.h"
@@ -24,6 +25,7 @@ namespace
 {
 const FName PluginGuideTabId(TEXT("TraceMotive.PluginGuide"));
 TWeakPtr<SDockTab> ExistingGuideTab;
+FName PendingGuideFeatureId;
 bool bGuideTabRegistered = false;
 
 FText GuideText(const TCHAR* Source)
@@ -74,12 +76,12 @@ TArray<FGuideFeature> BuildGuideFeatures()
               TEXT("TraceMotiveTools에서 빠른 진단을 선택하고 관련 도구에서 근거를 수집한 뒤 번들 내용을 미리봅니다."),
               TEXT("세션과 지원 ZIP은 프로젝트 Saved/TraceMotive에만 저장되며 자동 업로드되지 않습니다."),
               TEXT("스냅샷은 안전하게 내보낼 수 있는 리플렉션 속성만 비교하므로 네이티브 임시 상태는 별도로 확인하세요."), FLinearColor(0.40f,0.62f,1.0f) },
-            { TEXT("TraceMotive.VisualReferenceSearch"), TEXT("시각적 참조 검색 및 호출 체인"),
-              TEXT("변수, 함수, 이벤트와 디스패처의 Blueprint/C++ 참조 및 호출 경로를 찾습니다."),
-              TEXT("런타임 값을 변경하는 Blueprint 또는 C++ 호출자를 모를 때 사용합니다."),
-              TEXT("그래프 컨텍스트 메뉴에서 참조 또는 호출 체인 분석을 실행하고 결과 위치를 엽니다."),
-              TEXT("호출자에서 대상으로 이어지는 경로와 각 일치 근거를 확인할 수 있습니다."),
-              TEXT("동적 호출, 리플렉션, 인터페이스 및 런타임 생성 참조로 인해 정적 결과가 불완전할 수 있습니다."), FLinearColor(0.24f,0.58f,1.0f) },
+            { TEXT("TraceMotive.VisualReferenceSearch"), TEXT("시각적 참조 검색"),
+              TEXT("선택한 변수·함수·이벤트·디스패처의 Blueprint 그래프 참조를 시각화합니다. C++ 소스 후보는 선택 옵션입니다."),
+              TEXT("어느 Blueprint 노드와 C++ 파일이 변수를 읽거나 쓰고, 어디에서 함수를 호출하는지 찾을 때 사용합니다."),
+              TEXT("그래프 노드의 컨텍스트 메뉴에서 Visual Find References를 실행하고 범위를 선택합니다. Full scan은 기본으로 켜져 있습니다."),
+              TEXT("Blueprint 결과는 정확한 그래프 노드로, C++ 변수 결과는 파일·라인과 READ/SET 후보로 표시되며 더블 클릭으로 원본을 엽니다."),
+              TEXT("기본 검색은 Blueprint만 검사합니다. Project Content에서 Include C++ candidates를 켜면 프로젝트 Source/Plugins의 텍스트 후보도 검사하며 검색 시간이 늘어날 수 있습니다. 후보의 소유자·타입은 수동 확인하세요."), FLinearColor(0.24f,0.58f,1.0f) },
             { TEXT("TraceMotive.EnhancedOutlinerSearch"), TEXT("향상된 아웃라이너 검색"),
               TEXT("로드된 레벨 액터를 레이블, 클래스, 태그, 변수 이름/값 및 액터 참조로 검색합니다."),
               TEXT("레이블과 무관하게 DoorType 값이 Security인 배치 액터를 찾을 때 사용합니다."),
@@ -92,6 +94,12 @@ TArray<FGuideFeature> BuildGuideFeatures()
               TEXT("콘텐츠 브라우저에서 애셋을 선택하고 정확한 Blueprint 사용 위치 찾기를 실행합니다."),
               TEXT("반환된 애셋과 그래프 위치를 열어 실제 사용 여부를 검토합니다."),
               TEXT("런타임에 조합되는 소프트 경로나 Asset Registry 외부 데이터는 나타나지 않을 수 있습니다."), FLinearColor(0.32f,0.64f,0.96f) },
+            { TEXT("TraceMotive.VariableValueTrace"), TEXT("변수 값 추적"),
+              TEXT("PIE 중 선택한 클래스 프로퍼티의 샘플 값과 변경 흐름을 인스턴스별로 표시합니다."),
+              TEXT("어느 런타임 인스턴스의 값이 예상과 다르게 변하는지 확인할 때 사용합니다."),
+              TEXT("필터에서 월드/인스턴스, 클래스, 프로퍼티와 샘플 간격을 선택하고 추적을 시작한 뒤 PIE를 재현합니다."),
+              TEXT("타임라인에서 변경 시점과 인스턴스를 선택하고 상세 값을 비교할 수 있습니다."),
+              TEXT("샘플 사이에서 변했다가 돌아온 값은 누락될 수 있으며, 이 기능은 쓰기 후크가 아닙니다."), FLinearColor(0.22f,0.78f,0.68f) },
             { TEXT("TraceMotive.CollisionPairAnalyzer"), TEXT("충돌 쌍 분석기"),
               TEXT("두 액터의 충돌 설정, 형상, Sweep, Teleport 및 UpdatedComponent 문제를 비교합니다."),
               TEXT("액터가 서로 통과하거나 예상과 다르게 멈출 때 사용합니다."),
@@ -173,12 +181,12 @@ TArray<FGuideFeature> BuildGuideFeatures()
           TEXT("Choose a Quick Diagnosis tile in TraceMotiveTools. Keep the Investigation Sessions tab open, collect evidence, preview the bundle contents, then export only when needed."),
           TEXT("The session persists under Project/Saved/TraceMotive. Support ZIPs are created locally, mask common sensitive values, and are never uploaded automatically."),
           TEXT("Snapshot comparison covers safely exportable reflected editor/Blueprint-visible properties; native transient state still requires runtime confirmation."), FLinearColor(0.40f,0.62f,1.0f) },
-        { TEXT("TraceMotive.VisualReferenceSearch"), TEXT("Visual Reference Search / Call Chain"),
-          TEXT("Find Blueprint and C++ references and follow the call path around a selected variable, function, event, or dispatcher."),
-          TEXT("Example: an event changes a value at runtime, but you do not know which Blueprint or C++ caller reaches it."),
-          TEXT("Open the graph context menu, choose reference or call-chain analysis, then use normal search or enable Search Boost for a faster high-budget scan."),
-          TEXT("Read the chain from caller to target. Open a result to verify the actual graph or source location before changing code."),
-          TEXT("Dynamic dispatch, reflection, interfaces, delegates, and runtime-created references can make a static chain incomplete."), FLinearColor(0.24f,0.58f,1.0f) },
+        { TEXT("TraceMotive.VisualReferenceSearch"), TEXT("Visual Reference Search"),
+          TEXT("Map Blueprint graph references for variables, functions, events, and dispatchers. Project C++ text candidates are optional."),
+          TEXT("Example: determine which Blueprint nodes and C++ files read or write a value, or which Blueprints call a selected function."),
+          TEXT("Use Visual Find References from a graph node context menu, then choose Current Blueprint, Same Folder, or Project Content. Full scan is enabled by default."),
+          TEXT("Double-click a Blueprint result to open its node or a C++ variable result to open its file and line. Export the relationship map when it needs to be shared."),
+          TEXT("Default searches inspect Blueprint graphs only. Enable Include C++ candidates in Project Content to scan Project Source/Plugins text too; this can increase search time. Verify candidate owner and type manually."), FLinearColor(0.24f,0.58f,1.0f) },
         { TEXT("TraceMotive.EnhancedOutlinerSearch"), TEXT("Enhanced Outliner Search"),
           TEXT("Search level instances by label, class, tag, variable name, value, name/value pair, and actor references inside arrays."),
           TEXT("Example: find every placed actor whose variable 'DoorType' contains 'Security', even when the actor label is unrelated."),
@@ -191,6 +199,12 @@ TArray<FGuideFeature> BuildGuideFeatures()
           TEXT("Select the asset in the Content Browser and run the usage/reference command from its context menu."),
           TEXT("Use the returned assets and locations as a review list, then open important matches for confirmation."),
           TEXT("Soft paths assembled at runtime and data loaded outside the asset registry may not appear."), FLinearColor(0.32f,0.64f,0.96f) },
+        { TEXT("TraceMotive.VariableValueTrace"), TEXT("Variable Value Trace"),
+          TEXT("Sample selected class properties on PIE instances and show their value changes over time."),
+          TEXT("Example: determine which runtime instance has an unexpected property value and when it changed."),
+          TEXT("Use Filter to choose a world/instance scope, class, properties, and sample interval. Start the trace, then reproduce the issue in PIE."),
+          TEXT("Select a timeline change to compare the instance path and the structured property value in the details panel."),
+          TEXT("This is sampled observation, not a write hook. A value that changes and changes back between samples can be missed."), FLinearColor(0.22f,0.78f,0.68f) },
         { TEXT("TraceMotive.CollisionPairAnalyzer"), TEXT("Collision Pair Analyzer"),
           TEXT("Compare two actors and explain configuration, shape-query, movement, Sweep, Teleport, and UpdatedComponent risks."),
           TEXT("Example: the pawn visually overlaps a volume, but gameplay either passes through it or stops despite the analyzer showing no current contact."),
@@ -274,15 +288,17 @@ struct FGuidePreview
     const TCHAR* ActionNote;
 };
 
-FGuidePreview PreviewForFeature(const TCHAR* Name)
+FGuidePreview PreviewForFeature(const FGuideFeature& Feature)
 {
-    const FString Key(Name);
+    const FString FeatureId(Feature.Icon);
+    const FString Key(Feature.Name);
     if (Key == TEXT("Settings / Performance Safety")) return { TEXT("Project Settings > Plugins > TraceMotive"), TEXT("Settings / Performance Safety"), TEXT("Large Project Safe Mode: On | Budget: 1.0x"), TEXT("Results: 500 | Asset findings: 5000 | Snapshot fields: 5000"), TEXT("PIE history: 250 | Reports: Markdown / TraceMotiveReports"), TEXT("Stop All Active Work"), TEXT("Settings are stored per project/editor user."), TEXT("Safe mode and work-budget scale define per-tick editor impact."), TEXT("Every configured limit is clamped to a validated range."), TEXT("Stop All invalidates queued search generations and closes active trace tabs.") };
     if (Key == TEXT("Quick Diagnosis / Investigation Sessions")) return { TEXT("Scenario: Actors pass through | Target: BP_Player"), TEXT("Investigation Sessions"), TEXT("Before 184 fields | After 184 fields | Changed 3"), TEXT("~ Capsule.CollisionEnabled: QueryOnly -> QueryAndPhysics"), TEXT("Preview contents / Export ZIP"), TEXT("Collision Analyzer / Instance Trace / Variable Trace"), TEXT("The symptom and selected actor define one persistent investigation."), TEXT("Snapshot counts and the diff summarize whether the attempted fix changed relevant state."), TEXT("The preview reports included files, selected log lines, and redaction count before export."), TEXT("Support ZIPs stay local until the user explicitly shares them.") };
-    if (Key == TEXT("Visual Reference Search / Call Chain")) return { TEXT("Target: BP_Door.OpenDoor"), TEXT("Function Call Chain"), TEXT("Search complete | 18 assets | 7 call paths"), TEXT("[Blueprint] BP_Keypad.OnAccepted -> OpenDoor"), TEXT("[C++] ADoorTrigger::NotifyActorBeginOverlap -> OpenDoor"), TEXT("Open selected node"), TEXT("The analyzed symbol and scan mode are shown here."), TEXT("Asset count, call-path count, and incomplete-scan warnings prevent silent assumptions."), TEXT("Blueprint and C++ results display the caller and target path, not only an asset name."), TEXT("Open the exact graph node or source location to verify the inferred chain.") };
+    if (FeatureId == TEXT("TraceMotive.VisualReferenceSearch") || Key == TEXT("Visual Reference Search / Call Chain")) return { TEXT("Target: BP_Door.OpenDoor | Scope: Project Content"), TEXT("Visual Reference Viewer"), TEXT("Search complete | 18 assets | 7 references"), TEXT("BP_Keypad / OnAccepted -> OpenDoor | Exact function owner"), TEXT("BP_DoorWidget / OnClicked -> OpenDoor | Custom event call"), TEXT("Double-click node / Export report"), TEXT("The selected symbol and Current Blueprint, Same Folder, or Project Content scope define the scan."), TEXT("Progress, scanned assets, result limits, and incomplete-scan warnings prevent silent assumptions."), TEXT("Each result preserves its Blueprint, graph, exact node, action type, and match reason."), TEXT("Double-click opens the source node; Export saves the investigation in the selected format.") };
     if (Key == TEXT("Enhanced Outliner Search")) return { TEXT("Pair: DoorType = Security"), TEXT("Enhanced Outliner Search"), TEXT("12 / 846 actors matched | Search Boost: Off"), TEXT("SecurityDoor_Lobby | DoorType = Security"), TEXT("SecurityDoor_B2 | DoorType = Security | Tags: Locked"), TEXT("Select actor"), TEXT("The active name/tag/variable/value/pair query remains visible."), TEXT("Scanned and matched counts show whether the search is still partial."), TEXT("Every result includes the exact matched field and value evidence."), TEXT("Select focuses the Outliner label and keeps this result highlighted.") };
-    if (Key == TEXT("Asset Usage Locator")) return { TEXT("Asset: M_Master_Wall"), TEXT("Asset Usage Locator"), TEXT("31 references in 14 assets"), TEXT("SM_Wall_A.Materials[0] -> M_Master_Wall"), TEXT("BP_Building.DefaultWallMaterial -> M_Master_Wall"), TEXT("Browse to reference"), TEXT("The Content Browser asset selected for analysis is fixed here."), TEXT("Reference and asset totals indicate the scope of the result."), TEXT("The owning asset and property/graph location explain how it is used."), TEXT("Browse opens the concrete reference for manual confirmation.") };
-    if (Key == TEXT("Collision Pair Analyzer")) return { TEXT("A: BP_MainPawn | B: BlockingVolume9"), TEXT("Collision Pair Analyzer"), TEXT("Block capable: 1 | Current shape contact: 0 | Confidence: Medium"), TEXT("CapsuleComponent <-> BrushComponent0 | BLOCK CAPABLE"), TEXT("Movement check: Sweep/Teleport/UpdatedComponent requires runtime verification"), TEXT("Show details / Find movement node"), TEXT("The exact A/B actors can be replaced without reopening the window."), TEXT("Configuration capability and actual contact are deliberately reported separately."), TEXT("Important component pairs and the likely movement-side cause stay visible; auxiliary pairs are hidden."), TEXT("Details reveals channels, BodySetup, Chaos limitations, and suspected node locations.") };
+    if (FeatureId == TEXT("TraceMotive.AssetUsageLocator") || Key == TEXT("Asset Usage Locator")) return { TEXT("Asset: M_Master_Wall | Search Boost: Off"), TEXT("Asset Usage Locator"), TEXT("Completed | BP 14/14 | Verified 28 | Candidates 3 | Load failures 0"), TEXT("Verified | BP_Building / ConstructionScript / Set Material"), TEXT("Candidate | BP_LevelStyle / metadata contains target"), TEXT("Double-click result / Rescan / Cancel"), TEXT("The selected asset path and Search Boost state define the current scan."), TEXT("Status separates verified results, candidates, failures, truncation, and partial cancellation."), TEXT("Each row shows Blueprint, graph, node/property, match reason, and evidence strength."), TEXT("Double-click opens the exact node when available; Rescan restarts and Cancel keeps collected results.") };
+    if (FeatureId == TEXT("TraceMotive.VariableValueTrace") || Key == TEXT("Variable Value Trace")) return { TEXT("PIE World: UEDPIE_0 | Class: BP_Door | Properties: DoorState, OpenAlpha"), TEXT("Variable Value Trace"), TEXT("Live | Frame 128 - 00:06 | Sample interval 0.10 s"), TEXT("BP_Door_C_2.DoorState | Closed -> Opening"), TEXT("BP_Door_C_2.OpenAlpha | 0.00 -> 0.35"), TEXT("Select change / Inspect details / Clear"), TEXT("The world/instance filter, class, properties, and interval define what is sampled."), TEXT("Waiting, Armed, Live, or Paused plus frame/time shows the current capture state."), TEXT("Timeline lanes identify the property, instance, previous/current value, and sample time."), TEXT("Select a change for structured details; Clear removes captured samples without changing the setup.") };
+    if (FeatureId == TEXT("TraceMotive.CollisionPairAnalyzer") || Key == TEXT("Collision Pair Analyzer")) return { TEXT("A: BP_MainPawn | B: BlockingVolume9"), TEXT("Collision Pair Analyzer"), TEXT("Block capable: 1 | Current shape contact: 0 | Confidence: Medium"), TEXT("CapsuleComponent <-> BrushComponent0 | BLOCK CAPABLE"), TEXT("Movement check: Sweep/Teleport/UpdatedComponent requires runtime verification"), TEXT("Show details / Find movement node / Copy report"), TEXT("The selected A/B actors define the exact pair; Swap changes which side is treated as moving."), TEXT("Configuration capability, overlap/contact evidence, scan completeness, and confidence remain separate."), TEXT("Important primitive-component pairs and the likely movement-side cause stay visible; auxiliary pairs are collapsed."), TEXT("Details exposes channels, BodySetup, sweep evidence, limitations, and suspected movement-node locations.") };
     if (Key == TEXT("Click Event Diagnostics")) return { TEXT("Armed | Click anywhere in PIE"), TEXT("Click Event Diagnostics"), TEXT("Last click (612, 348) | Consumed by UI"), TEXT("Slate hit test -> WBP_PauseMenu (Visible, blocking)"), TEXT("World actor -> Not reached | Bound event -> Not reached"), TEXT("Copy log / View full diagnostic steps"), TEXT("Capture state confirms whether the next click/touch will be analyzed."), TEXT("The final delivery outcome is summarized without requiring raw logs."), TEXT("The pipeline shows the exact stage that consumed or lost the input."), TEXT("Copy shares evidence; full steps exposes UMG, input, controller, visibility, and collision checks.") };
     if (Key == TEXT("Audio Playback Trace")) return { TEXT("PIE World: Lv_Menu | Filter: All playback"), TEXT("Audio Playback Trace"), TEXT("24 events | 3 active sounds"), TEXT("S_UI_Confirm | WBP_MainMenu.Button_Play | Confidence: High"), TEXT("S_Ambient_Wind | Fire-and-forget near BP_WindZone | Confidence: Medium"), TEXT("Details / Copy report"), TEXT("World and filters prevent unrelated editor-preview audio from mixing into the trace."), TEXT("Active and historical event counts reveal repeated or overlapping playback."), TEXT("Sound, owner/source candidate, playback type, and confidence appear together."), TEXT("Details exposes location and evidence; the report preserves recent playback context.") };
     if (Key == TEXT("Widget Lifecycle Trace")) return { TEXT("Filter: WBP_ | Source: All"), TEXT("Widget Lifecycle Trace"), TEXT("4 live UserWidgets | Real-time"), TEXT("Visibility | Image_HealthBar | Visible -> Collapsed"), TEXT("Destroyed | WBP_DamageNumber | GC teardown detected"), TEXT("Details / Copy report"), TEXT("Widget/class and source filters keep large PIE sessions readable."), TEXT("The live-widget count is separate from lifecycle-event history."), TEXT("Meaningful lifecycle/visibility transitions appear without Tick or frame noise."), TEXT("Details shows owner path, controller evidence, timestamp, and confidence only when requested.") };
@@ -304,6 +320,51 @@ TSharedRef<SWidget> PreviewLine(const FText& Text, const bool bStrong = false)
         [
             SNew(STextBlock).Text(Text).AutoWrapText(true).Font(GuideFont(bStrong ? TEXT("Bold") : TEXT("Regular"), 9))
         ];
+}
+
+TSharedRef<SWidget> BuildCalloutExplanationTable(const FGuidePreview& Preview)
+{
+    const auto BuildCell = [](const FText& Text, const float Width, const bool bHeader)
+    {
+        return SNew(SBox)
+            .WidthOverride(Width)
+            .Padding(FMargin(7.0f, 5.0f))
+            [
+                SNew(STextBlock)
+                .Text(Text)
+                .AutoWrapText(true)
+                .Font(GuideFont(bHeader ? TEXT("Bold") : TEXT("Regular"), bHeader ? 9 : 8))
+                .ColorAndOpacity(bHeader ? FSlateColor::UseForeground() : FSlateColor::UseSubduedForeground())
+            ];
+    };
+
+    const auto BuildRow = [&BuildCell](const FText& Number, const FText& Item, const FText& Description, const bool bHeader)
+    {
+        return SNew(SBorder)
+            .BorderImage(FAppStyle::GetBrush(bHeader ? TEXT("Brushes.Header") : TEXT("Brushes.Recessed")))
+            .Padding(0.0f)
+            [
+                SNew(SHorizontalBox)
+                + SHorizontalBox::Slot().AutoWidth()[BuildCell(Number, 58.0f, bHeader)]
+                + SHorizontalBox::Slot().AutoWidth()[BuildCell(Item, 180.0f, bHeader)]
+                + SHorizontalBox::Slot().FillWidth(1.0f)[BuildCell(Description, 520.0f, bHeader)]
+            ];
+    };
+
+    TSharedRef<SVerticalBox> Rows = SNew(SVerticalBox);
+    Rows->AddSlot().AutoHeight()[BuildRow(
+        TMLoc::Text(TEXT("Number"), TEXT("번호")),
+        TMLoc::Text(TEXT("Item"), TEXT("항목")),
+        TMLoc::Text(TEXT("Description"), TEXT("설명")), true)];
+    Rows->AddSlot().AutoHeight()[BuildRow(FText::AsNumber(1), GuideText(TEXT("Target / context")), GuideText(Preview.ContextNote), false)];
+    Rows->AddSlot().AutoHeight()[BuildRow(FText::AsNumber(2), GuideText(TEXT("Diagnostic summary")), GuideText(Preview.StatusNote), false)];
+    Rows->AddSlot().AutoHeight()[BuildRow(FText::AsNumber(3), GuideText(TEXT("Evidence")), GuideText(Preview.ResultNote), false)];
+    Rows->AddSlot().AutoHeight()[BuildRow(FText::AsNumber(4), GuideText(TEXT("Next action")), GuideText(Preview.ActionNote), false)];
+
+    return SNew(SVerticalBox)
+        + SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 5)
+        [SNew(STextBlock).Text(TMLoc::Text(TEXT("Numbered UI guide"), TEXT("번호별 UI 안내"))).Font(GuideFont(TEXT("Bold"), 11))]
+        + SVerticalBox::Slot().AutoHeight()[Rows];
 }
 
 struct FGuideCallout
@@ -455,7 +516,7 @@ private:
 
 TSharedRef<SWidget> BuildAnnotatedPreview(const FGuideFeature& Feature)
 {
-    const FGuidePreview Preview = PreviewForFeature(Feature.Name);
+    const FGuidePreview Preview = PreviewForFeature(Feature);
     TSharedRef<SWidget> ExampleWidget =
         SNew(SBorder).BorderImage(FAppStyle::GetBrush(TEXT("Brushes.Panel"))).Padding(10.0f)
         [
@@ -509,7 +570,8 @@ TSharedRef<SWidget> BuildAnnotatedPreview(const FGuideFeature& Feature)
                 [SNew(STextBlock).Text(GuideText(TEXT("Show callouts")))]
             ]
         ]
-        + SVerticalBox::Slot().AutoHeight()[OverlayWidget];
+        + SVerticalBox::Slot().AutoHeight()[OverlayWidget]
+        + SVerticalBox::Slot().AutoHeight()[BuildCalloutExplanationTable(Preview)];
 }
 
 enum class EGuideDetailSection : uint8
@@ -583,11 +645,24 @@ class STMPluginGuideWidget : public SCompoundWidget
 {
 public:
     SLATE_BEGIN_ARGS(STMPluginGuideWidget) {}
+        SLATE_ARGUMENT(FName, InitialFeatureId)
     SLATE_END_ARGS()
 
-    void Construct(const FArguments&)
+    void Construct(const FArguments& InArgs)
     {
         Features = BuildGuideFeatures();
+        if (TMFeatureVisibility::IsCoreOnlyRelease())
+        {
+            Features.RemoveAll([](const FGuideFeature& Feature)
+            {
+                const FName FeatureId(Feature.Icon);
+                return FeatureId != TEXT("TraceMotive.VisualReferenceSearch")
+                    && FeatureId != TEXT("TraceMotive.AssetUsageLocator")
+                    && FeatureId != TEXT("TraceMotive.VariableValueTrace")
+                    && FeatureId != TEXT("TraceMotive.CollisionPairAnalyzer");
+            });
+        }
+
         TSharedRef<SVerticalBox> Navigation = SNew(SVerticalBox);
         SAssignNew(ContentSwitcher, SWidgetSwitcher);
 
@@ -599,6 +674,8 @@ public:
             ];
             ContentSwitcher->AddSlot()[BuildFeaturePage(Features[Index])];
         }
+
+        SelectFeatureById(InArgs._InitialFeatureId);
 
         ChildSlot
         [
@@ -633,6 +710,26 @@ public:
                 ]
             ]
         ];
+    }
+
+    void SelectFeatureById(const FName& FeatureId)
+    {
+        if (FeatureId.IsNone())
+        {
+            return;
+        }
+        for (int32 Index = 0; Index < Features.Num(); ++Index)
+        {
+            if (FName(Features[Index].Icon) == FeatureId)
+            {
+                SelectedIndex = Index;
+                if (ContentSwitcher.IsValid())
+                {
+                    ContentSwitcher->SetActiveWidgetIndex(Index);
+                }
+                return;
+            }
+        }
     }
 
 private:
@@ -700,14 +797,23 @@ private:
     int32 SelectedIndex = 0;
 };
 
+TWeakPtr<STMPluginGuideWidget> ExistingGuideWidget;
+
 TSharedRef<SDockTab> SpawnGuideTab(const FSpawnTabArgs&)
 {
+    TSharedRef<STMPluginGuideWidget> GuideWidget = SNew(STMPluginGuideWidget)
+        .InitialFeatureId(PendingGuideFeatureId);
     TSharedRef<SDockTab> Tab = SNew(SDockTab)
         .TabRole(ETabRole::NomadTab)
         .Label(GuideText(TEXT("TraceMotive — Debug Pathfinder for Unreal Guide")))
-        .OnTabClosed(SDockTab::FOnTabClosedCallback::CreateLambda([](TSharedRef<SDockTab>){ ExistingGuideTab.Reset(); }))
-        [SNew(STMPluginGuideWidget)];
+        .OnTabClosed(SDockTab::FOnTabClosedCallback::CreateLambda([](TSharedRef<SDockTab>)
+        {
+            ExistingGuideTab.Reset();
+            ExistingGuideWidget.Reset();
+        }))
+        [GuideWidget];
     ExistingGuideTab = Tab;
+    ExistingGuideWidget = GuideWidget;
     return Tab;
 }
 
@@ -755,10 +861,12 @@ void UnregisterMenus()
         bGuideTabRegistered = false;
     }
     ExistingGuideTab.Reset();
+    ExistingGuideWidget.Reset();
 }
 
 void OpenWindow()
 {
+    PendingGuideFeatureId = NAME_None;
     RegisterGuideTabSpawner();
     if (ExistingGuideTab.IsValid())
     {
@@ -766,5 +874,16 @@ void OpenWindow()
         return;
     }
     ExistingGuideTab = FGlobalTabmanager::Get()->TryInvokeTab(PluginGuideTabId);
+}
+
+void OpenFeature(const FName& FeatureId)
+{
+    PendingGuideFeatureId = FeatureId;
+    RegisterGuideTabSpawner();
+    ExistingGuideTab = FGlobalTabmanager::Get()->TryInvokeTab(PluginGuideTabId);
+    if (TSharedPtr<STMPluginGuideWidget> GuideWidget = ExistingGuideWidget.Pin())
+    {
+        GuideWidget->SelectFeatureById(FeatureId);
+    }
 }
 }

@@ -11,6 +11,7 @@ no HTTP, socket, cloud-service, advertising, or account integration.
 Depending on the tool used, the plugin may inspect:
 
 - Asset Registry metadata and Blueprint graph structure
+- project `Source` and `Plugins` C++ source text when searching variable candidates
 - selected actors, components, properties, references, and transforms
 - PIE Blueprint execution context and runtime error messages
 - `UAudioComponent` playback state during PIE
